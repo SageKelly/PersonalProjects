@@ -1,0 +1,42 @@
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Display All Bids</title>
+</head>
+
+<body>
+<?php if(isset($_POST['_Bid'])){?>
+<?php
+include('connect.php');
+	$bid_id =$_POST['_bid_id'];
+	$bid_amount =$_POST['_bid_amount'];
+	$timestamp =$_POST['timestamp'];
+	$userID =$_POST['_userID'];
+	$item_no = $_POST['_item_no'];
+
+	$query= ("SELECT * from Bid");
+	$result=pg_query($query);
+		$query="INSERT INTO Bid VALUES($1,$2,$3,$4, $5)";
+		pg_query_params($query,array($bid_id, $bid_amount, $timestamp, $userID, $item_no ));
+}?>
+<h1 style="text-align:center"> Bid Display </h1>
+
+<table border = 'border'align="center">
+<tr><th> Bid ID</th>	<th> Bid Amount</th><th> Time Stamp</th>
+	<th> UserId</th><th> Item Number</th></tr>
+	<tr><td>1</td><td>$10.00</td><td>3:00am April 24</td><td> 4</td><td>6</td></tr>
+	<tr><td>2</td><td>$15.00</td><td>6:00pm April 24</td><td> 6</td><td>7</td></tr>
+	<tr><td>3</td><td>$8.00</td><td>10:00am April 26</td><td>10 </td><td>7</td></tr>
+	<tr><td>4</td><td>$20.00</td><td>12:00am April 27</td><td>5</td><td>6</td></tr>
+
+</table>
+
+<form action="Home_Screen.php" method = "post">
+
+<input type="submit" value="Home page">
+
+</form>
+</body>
+
+</html>

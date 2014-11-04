@@ -1,0 +1,210 @@
+<?php
+function CheckForExistingAdmin()
+{
+	$name='admin';
+	$admin='t';
+	/*first name, middle name, last name*/
+	$pass='admin';
+	/*street, city, state, zip*/
+	$query="Select username, admin FROM users WHERE username=$1 AND admin=$2";
+	$result=pg_query_params($query,array($name,$admin));
+	if(pg_num_rows($result)==0)
+		ReaddAdmin();
+}
+function ReaddAdmin() 
+{
+	$name='admin';
+	$admin='t';
+	/*first name, middle name, last name*/
+	$pass='admin';
+	/*street, city, state, zip*/
+	$query="INSERT INTO users VALUES ($1,$2,'dummy','dummy','dummy',$3,'dummy','dummy','dummy','dummy')";
+	pg_query_params($query,array($name,$admin,$pass));
+}
+function DisplayAllTables() 
+{
+	
+}
+function ResetTables() 
+{
+$query="	DROP TABLE Orders CASCADE;
+DROP TABLE Item_Record CASCADE;
+DROP TABLE Credit_Card CASCADE;
+DROP TABLE Auction CASCADE;
+DROP TABLE Category CASCADE;
+DROP TABLE Item CASCADE;
+DROP TABLE Bid CASCADE;
+DROP TABLE Users CASCADE;
+
+CREATE TABLE Users(
+username VARCHAR(30) Primary key,
+Admin bool NOT NULL,
+first_name VARCHAR (50) NOT NULL,
+middle_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+password VARCHAR(50) NOT NULL,
+street VARCHAR(50) NOT NULL,
+city VARCHAR(50) NOT NULL,
+state VARCHAR(50) NOT NULL,
+zip_code VARCHAR (50) NOT NULL
+);
+
+CREATE TABLE Item(
+ISBN Integer PRIMARY KEY,
+Description text
+);
+
+CREATE TABLE Category(
+ID integer PRIMARY KEY,
+Name VARCHAR(20)
+);
+
+CREATE TABLE Auction(
+user_no VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+Auction_num VARCHAR(20) NOT NULL,
+Opening_time time NOT NULL,
+Closing_time time NOT NULL
+);
+
+CREATE TABLE Credit_Card(
+user_no VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+Card_number VARCHAR(20) NOT NULL,
+Epir_date date NOT NULL
+);
+
+CREATE TABLE Item_Record(
+Cat_ID integer REFERENCES Category(ID) ON UPDATE cascade ON DELETE CASCADE,
+Item_ID integer REFERENCES Item(ISBN) ON UPDATE cascade ON DELETE CASCADE
+);
+
+CREATE TABLE Orders(
+user_no VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+recipient VARCHAR(30) NOT NULL,
+Order_num VARCHAR(20) NOT NULL,
+PRIMARY KEY (user_no,Order_num)
+);
+
+CREATE TABLE Bid(
+bid_id integer NOT NULL,
+bid_amount integer NOT NULL,
+bid_time integer NOT NULL,  
+userID VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+item_no integer NOT NULL
+);";
+$result=pg_query($query);
+
+	echo"All tables dropped and reset";
+}
+
+function SetupSession() 
+{
+	session_start();
+	if(isset($_POST['user']))
+		ReassignSessionVars();
+}
+
+function ReassignSessionVars() 
+{
+	
+	$_SESSION['user']=$_POST['user'];
+	$_SESSION['pass']=$_POST['pass'];
+	$_SESSION['admin']=$_POST['admin'];
+}	
+function DeletePerson($id)
+{
+	$query="SELECT * FROM users WHERE username=$1";
+	$result=pg_query_params($query, array($id));
+	if(pg_num_rows($result)==0)
+	{
+		echo"Account of $id does not exist<br>
+		------------------------------------";
+	}
+	else
+	{
+		$query="Delete FROM Users WHERE username=$1";
+		pg_query_params($query,array($id));
+		echo"Account of $id has been deleted<br>
+		------------------------------------";	
+	}
+	DisplayAll();
+
+}
+
+function DisplayAll()
+{
+	$query="SELECT * FROM Users";
+	$result=pg_query($query);
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		printf("<br>Username: $object->username<br>Admin: $object->admin<br>Password: $object->password<br>First Name: $object->first_name<br>Middle Name: $object->middle_name
+		<br>Last Name: $object->last_name<br>Address: $object->street $object->city $object->state<br>$object->zip_code
+		<br>------------------------------------<p>");
+	}
+}
+
+function DeleteAll()
+{
+	$query="DELETE FROM Users WHERE admin='f'";
+	$result=pg_query($query);
+	echo'All regular accounts have been deleted.';
+}
+
+/** library_inc.php common functions */
+
+/**
+ * This function connects to the postgresql database, and returns the connection.
+ * Notice the return value is usually not needed, since all the pg_ functions use the last connection anyway.
+ */
+function connect() {
+    return pg_connect("host=localhost user=www-data dbname=www-data password=abc123");
+}
+/*
+ * This function returns whether the username and password combination is valid (that is, is stored in the
+ * database). IT ALSO SETS SESSION VARIABLES username, userid, fname
+ * @param username the username, a string
+ * @param password the password
+ */ 
+function ValidateLogin($username, $password) {
+    $query="SELECT username,password FROM users WHERE username=$1 AND password=$2";
+    $res=pg_query_params($query, array($username, $password));
+    if(pg_numrows($res)==0)
+    {
+			    
+        return false;
+    }
+    echo"validated."; 
+    $obj=pg_fetch_object($res,0);
+    $_SESSION['username']=$username;
+    $_SESSION['password']=$password;
+    return true;
+}
+
+function EnsureLoggedIn() {
+    
+    if(!isset($_SESSION['username'])) {
+        header("Location: bad_login.html");
+    }
+}
+
+/** this function returns a postgresql result set containing the 5 most recent tweets for a given userid.
+ * @param string|int $userid the user id.
+ * @return resultset  a postgresql result set
+ */
+function getRecentTweetsUname($userName) {
+    $query="SELECT tweet,to_char(tstamp,'Mon, DD, YY HH:MM') AS pretty_tstamp FROM tweets_username WHERE username=$1 ORDER BY tstamp DESC LIMIT 5";
+    return pg_query_params($query,array($userName));
+}
+
+function displayFollowedPeople($userid) {
+    $res=getFollowedPeople($userid);
+    print "<table>\n<tr><th>username</th><th>name</th></tr>\n";
+    for($i=0; $i<pg_numrows($res); ++$i) {
+        $obj=pg_fetch_object($res,$i);
+        $class=($i%2==0 ? "even" : "odd");
+        print "   <tr class=\"$class\"> <td><a href=\"display_tweets.php?username=$obj->username\">$obj->username</a></td><td>$obj->fullname</td></tr>\n";
+    }
+    print "</table>\n";  
+}
+
+?>

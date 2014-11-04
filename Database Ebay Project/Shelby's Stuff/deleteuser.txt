@@ -1,0 +1,28 @@
+<head>
+<title>Delete User php</title>
+</head>
+<body>
+<?php
+if (isset($_REQUEST["deleteuser"])){
+	$user_id = $_REQUEST["user_id"];
+	$conn = pg_connect("host=localhost dbname=shenry user=shenry password=shenry");
+	$qrystr = "DELETE FROM Users WHERE user_id = $1";
+ 	$result = @pg_query_params($conn,$qrystr,Array($user_id));
+ 	
+ 	if($result) 
+ 		echo("Successfully deleted!");
+	else{
+		echo("Error");
+		echo("<a href='delete_user.html'>return</a>");
+		echo(" to enter information");
+	}
+}
+else { 
+	echo("Please enter the person data by ");
+	echo("<a href='delete_user.html'> clicking here");
+}	
+?>
+
+<p><a href="readme.html" >Read Me</a>
+</body>
+</html>

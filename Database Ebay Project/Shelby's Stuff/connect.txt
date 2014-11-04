@@ -1,0 +1,8 @@
+<html>
+<head>
+<title>connect.php</title>
+</head>
+<?php
+$conn=pg_connect("host=localhost dbname=shenry user=shenry password=018742209109");
+?>
+</html>

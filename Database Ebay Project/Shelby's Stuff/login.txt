@@ -1,0 +1,37 @@
+<?php
+include_once('connect.php');
+include_once('method_library.php');
+SetupSession();
+if(isset($_POST['_login']))
+{
+	Login();
+}
+else if(isset($_POST['_logout']))
+{
+	header('Location:Home_Screen.php');
+	Logout();	
+}
+function Login()
+{
+	$username=$_POST['_user'];
+	$password=$_POST['_pass'];
+	$query="SELECT username,password,admin FROM USERS WHERE username=$1";
+	$result=pg_query_params($query, array($username));
+	if(pg_num_rows($result)==0)
+	{
+		echo'Invalid login<br>';
+	}
+	else
+	{
+		$object=pg_fetch_object($result);
+		$_SESSION['user']=$object->username;
+		$_SESSION['pass']=$object->password;
+		$_SESSION['admin']=$object->admin;		
+	}
+	
+}
+function  Logout()
+{
+	session_destroy();
+}
+?>

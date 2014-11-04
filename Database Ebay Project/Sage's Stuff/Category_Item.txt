@@ -1,0 +1,21 @@
+INSERT INTO category VALUES(default,'Electronics');
+INSERT INTO category VALUES(default,'Clothes');
+INSERT INTO category VALUES(default,'Books');
+INSERT INTO category VALUES(default,'Movies');
+INSERT INTO category VALUES(default,'Music');
+INSERT INTO category VALUES(default,'Games');
+INSERT INTO category VALUES(default,'Jewelry');
+INSERT INTO category VALUES(default,'Automotives');
+INSERT INTO category VALUES(default,'Sports');
+INSERT INTO category VALUES(default,'Health and Beauty');
+
+/*Electronics
+Clothes
+Books 
+Movies
+Music
+ames
+Jewelry
+Automotives
+Sports
+Health and Beauty*/

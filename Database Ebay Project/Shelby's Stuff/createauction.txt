@@ -1,0 +1,71 @@
+<?php
+include_once('connect.php'); 
+?>
+<h1> Create an Auction </h1>
+<?php
+if(isset($_POST['create_auction'])):
+?>
+<form action="user.php" method="POST">
+<table>
+<th>
+<td><b>Item Name</b></td>
+<td><b>Item Description</b></td>
+<td><b>Opening Time (y/m/d hh:mm:ss)</b></td>
+<td><b>Closing Time (y/m/d hh:mm:ss)</b></td>
+<td><b>Category</b></td>
+</th>
+<tr>
+<td></td>
+<td> <input type = "text" name="item_name" size = "30" /> </td>
+<td> <input type = "text" name="item_desc" size = "30" /> </td>
+<td> <input type = "text" name="opening_time" size = "30" /> </td> 
+<td> <input type = "text" name="closing_time" size = "30" /> </td>  
+<td>
+<?php
+$query="SELECT name from Category";
+$result=pg_query($query);
+echo"<select name=\"cat_decide\" value=\"Search by category\">";
+echo"<option value=\"0\">Category...</option>";
+for($i =0;$i<pg_numrows($result);$i++)
+{
+	$object=pg_fetch_object($result,$i);
+	$value=$i+1;
+	echo"<option value=\"$value\">$object->name</option>";
+}
+echo"</select>";
+?>
+</td>
+</tr>
+</table> 
+<input type="hidden" name="user" value="<?php echo $_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo $_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo $_SESSION['pass'];?>"/>	
+
+<input type="submit" name="_auction"/>
+</form>
+<?php
+endif;
+if(isset($_POST['_auction']))
+{
+	$user_no=$_SESSION['user'];
+	$item=$_POST['item_name'];
+	$item_desc=$_POST['item_dec'];
+	$Opening_time=$_POST['opening_time'];
+	$Closing_time=$_POST['closing_time'];
+	
+	$query="INSERT INTO Item VALUES(default,$1,$2)";
+	$result=pg_query_params($query,array($item,$item_desc));
+	
+	$query="SELECT i.ISBN FROM Item i WHERE i.name=$1 AND i.description=$2";
+	$result=pg_query_params($query,array($item,$item_desc));
+	$object=pg_fetch_object($result,0);
+	
+	$query="INSERT INTO auction VALUES ($1, default,$2, $3, $4)";
+	pg_query_params($query,array($user_no,$object->isbn,$Opening_time,$Closing_time));
+	
+	echo"Your auction was successfully added to database";	
+}
+?>
+<form action = "Home_Screen.php">
+<input type = "submit" value = "Home Page">
+</form>

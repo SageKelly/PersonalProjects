@@ -1,0 +1,63 @@
+<?php
+include_once('connect.php');
+include_once('method_library.php');
+SetupSession();
+?>
+Welcome <?php echo $_SESSION['user']?>!
+<!--
+I want to:
+1. Create auction
+2. Remove auction
+3. Check for highest bidder and current highest bid
+4. Remove User (Person should have the power to remove their own account.
+-->
+<form action="create_auction.php" method="POST">
+<input type="hidden" name="user" value="<?php echo $_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo $_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo $_SESSION['pass'];?>"/>		
+
+<input type="submit" name="create_auction" value="Create New Auction"/>
+<!--<input type="submit" name="remove_auction" value="Remove Auction"/>-->
+</form>
+
+Your current auctions:<br>
+<?php
+$query="SELECT * FROM Auction WHERE username=$1";
+$result=pg_query_params($query,array($_SESSION['user']));
+if(pg_num_rows($result)==0)
+echo"You have no active auctions.";
+else 
+{
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>Username</b></td>
+	<td><b>Auction No.</b></td>
+	<td><b>Item No.</b></td>
+	<td><b>Opening Time</b></td>
+	<td><b>Closing Time</b></td>
+	</th>
+	";
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</td>
+		<td>$object->username</td>
+		<td>$object->auction_num</td>
+		<td>$object->item_no</td>
+		<td>$object->opening_time</td>
+		<td>$object->closing_time</td>
+		</tr>		
+		";
+	}
+	echo"</table>";
+}
+?>
+
+
+<form action="Home_Screen.php">
+<input type="submit" value="Back to Home"/>
+</form>

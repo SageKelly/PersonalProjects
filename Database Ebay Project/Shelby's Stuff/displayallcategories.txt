@@ -1,0 +1,48 @@
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<title>Display All Categories</title>
+</head>
+
+<h1 style="text-align:center"> Category Display </h1>
+
+<body> 
+
+<?php if(isset($_POST['_Category'])){?>
+<?php
+include('connect.php');
+	$ID =$_POST['_ID'];
+	$Name = $_POST['_Name'];
+
+	$query= ("SELECT * from Category");
+	$result=pg_query($query);
+		$query="INSERT INTO Bid VALUES($1,$2)";
+		pg_query_params($query,array($ID, $Name));
+}?>
+
+<table border = 'border' align="center">
+
+<tr><th> Id</th><th> Name </th></tr>
+<tr><td>1</td><td>Electronics</td></tr>
+<tr><td>2</td><td>Clothes</td></tr>
+<tr><td>3</td><td>Books</td></tr>
+<tr><td>4</td><td>Movies</td></tr>
+<tr><td>5</td><td>Music </td></tr>
+<tr><td>6</td><td>Games </td></tr>
+<tr><td>7</td><td>Jewelry</td></tr>
+<tr><td>8</td><td>Automotive</td></tr>
+<tr><td>9</td><td>Sports </td></tr>
+<tr><td>10</td><td> Health and Beauty</td></tr>
+
+
+</table>
+
+<form action="Home_Screen.php" method = "post">
+
+<input type="submit" value="Home page">
+
+</form>
+
+</body>
+</html>

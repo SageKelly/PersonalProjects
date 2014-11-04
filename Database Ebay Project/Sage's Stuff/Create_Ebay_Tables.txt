@@ -1,0 +1,66 @@
+DROP TABLE Orders CASCADE;
+DROP TABLE Item_Record CASCADE;
+DROP TABLE Credit_Card CASCADE;
+DROP TABLE Auction CASCADE;
+DROP TABLE Category CASCADE;
+DROP TABLE Item CASCADE;
+DROP TABLE Bid CASCADE;
+DROP TABLE Users CASCADE;
+
+CREATE TABLE Users(
+username VARCHAR(30) Primary key,
+Admin bool NOT NULL,
+first_name VARCHAR (50) NOT NULL,
+middle_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+password VARCHAR(50) NOT NULL,
+street VARCHAR(50) NOT NULL,
+city VARCHAR(50) NOT NULL,
+state VARCHAR(50) NOT NULL,
+zip_code VARCHAR (50) NOT NULL
+);
+
+CREATE TABLE Item(
+ISBN serial PRIMARY KEY,
+Name VARCHAR(50) NOT NULL,
+Description text
+);
+
+CREATE TABLE Category(
+ID serial PRIMARY KEY,
+Name VARCHAR(20)
+);
+
+CREATE TABLE Auction(
+username VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+Auction_num serial NOT NULL,
+item_no integer REFERENCES item(ISBN) NOT NULL,
+Opening_time timestamp NOT NULL,
+Closing_time timestamp NOT NULL
+);
+
+CREATE TABLE Credit_Card(
+user_no VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+Card_number VARCHAR(20) NOT NULL,
+Epir_date date NOT NULL
+);
+
+CREATE TABLE Item_Record(
+Cat_ID integer REFERENCES Category(ID) ON UPDATE cascade ON DELETE CASCADE,
+Item_ID integer REFERENCES Item(ISBN) ON UPDATE cascade ON DELETE CASCADE
+);
+
+CREATE TABLE Orders(
+user_no VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+recipient VARCHAR(30) NOT NULL,
+Order_num VARCHAR(20) NOT NULL,
+PRIMARY KEY (user_no,Order_num)
+);
+
+CREATE TABLE Bid(
+bid_id serial NOT NULL,
+bid_amount numeric NOT NULL,
+bid_time timestamp NOT NULL,  
+userID VARCHAR(30) REFERENCES Users(username) ON UPDATE cascade ON DELETE CASCADE,
+item_no integer REFERENCES Item(ISBN) NOT NULL
+);

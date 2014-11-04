@@ -1,0 +1,90 @@
+<?php
+include_once('connect.php'); 
+include_once('method_library.php');
+SetupSession();
+?>
+<h1> Create an Auction </h1>
+<?php
+if(isset($_POST['create_auction'])):
+?>
+Please enter in all information.
+<form action="create_auction.php" method="POST">
+<table border="1">
+<th>
+<td><b>Item Name</b></td>
+<td><b>Item Description</b></td>
+<td><b>Opening Time (yyyy-mm-dd hh:mm:ss)</b></td>
+<td><b>Closing Time (yyyy-mm-dd hh:mm:ss)</b></td>
+<!--<td><b>Starting Bid</b></td>-->
+<td><b>Category</b></td>
+</th>
+<tr>
+<td></td>
+<td> <input type = "text" name="item_name" size = "30" /> </td>
+<td> <input type = "text" name="item_desc" size = "30" /> </td>
+<td> <input type = "text" name="opening_time" size = "30" /> </td> 
+<td> <input type = "text" name="closing_time" size = "30" /> </td> 
+<!--<td> <input type = "text" name="start_bid" size="30" /> </td> -->
+<td>
+<?php
+$query="SELECT name from Category";
+$result=pg_query($query);
+echo"<select name=\"cat_decide\" value=\"Search by category\">";
+echo"<option value=\"0\">Category...</option>";
+for($i =0;$i<pg_numrows($result);$i++)
+{
+	$object=pg_fetch_object($result,$i);
+	$value=$i+1;
+	echo"<option value=\"$value\">$object->name</option>";
+}
+echo"</select>";
+?>
+</td>
+</tr>
+</table> 
+<input type="hidden" name="user" value="<?php echo $_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo $_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo $_SESSION['pass'];?>"/>	
+
+<input type="submit" name="_auction"/>
+</form>
+<?php
+endif;
+if(isset($_POST['_auction']))
+{
+	$user_no=$_SESSION['user'];
+	$item=$_POST['item_name'];
+	/*$starting_bid=$_POST['start_bid'];
+	$starting_bid+=0.00;*/
+	$item_desc=$_POST['item_desc'];
+	$cat_id=(int)$_POST['cat_decide'];
+	$Opening_time=$_POST['opening_time'];
+	$Closing_time=$_POST['closing_time'];
+	
+	$query="INSERT INTO Item VALUES(default,$1,$2)";
+	$result=pg_query_params($query,array($item,$item_desc));
+	
+	$query="SELECT i.ISBN FROM Item i WHERE i.name=$1 AND i.description=$2";
+	$result=pg_query_params($query,array($item,$item_desc));
+	$object=pg_fetch_object($result,0);
+	
+	$query="INSERT INTO Item_record VALUES($1,$2)";
+	$result=pg_query_params($query,array($cat_id,$object->isbn));
+	
+	$query="INSERT INTO auction VALUES ($1, default,$2, $3, $4)";
+	pg_query_params($query,array($user_no,$object->isbn,$Opening_time,$Closing_time));
+	
+	/*$query="SELECT $1+'1 second'";
+	pg_query_params($query,array($Opening_time));	*/
+	
+	/*$query="INSERT INTO Bid VALUES(default,$1,$2 + '1 second',$3,$4)";
+	pg_query_params($query,array($starting_bid,$Opening_time,$user_no,$object->isbn));*/
+	echo"Your auction was successfully added to database";	
+}
+?>
+<form action = "user.php">
+<input type="hidden" name="user" value="<?php echo $_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo $_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo $_SESSION['pass'];?>"/>	
+<input type = "submit" value = "Home Page">
+</form>

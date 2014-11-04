@@ -1,0 +1,68 @@
+<?php
+include_once('login.php');
+include_once('method_library.php');
+CheckForExistingAdmin();
+if(isset($_SESSION['user'])&& isset($_SESSION['admin']))
+	echo 'Hello, '.$_SESSION['user'].'!<br>';
+?>
+WELCOME TO E-BAY!!!<br>
+<form action="register.php" method="POST">
+<input type="submit" name="_regist" value="Register"/>
+</form>
+<?php
+if(!isset($_SESSION['user'])):
+?>
+<form action="Home_Screen.php" method="POST">
+<table>
+	<tr>
+		<td>Username:</td>
+	</tr>
+	<tr>
+			<td><input type="text" name="_user"/></td>
+	</tr>
+	<tr>
+		<td>Password:</td>	
+	</tr>
+	<tr>
+		<td><input type="password" name="_pass"/></td>	
+	</tr>
+</table>
+
+<input type="submit" name="_login" value="Log In Here"/><br>
+</form>
+<?php
+else:
+?>
+
+<form action="login.php" method="POST">
+<input type="submit" name="_logout" value="Logout"/>
+</form>
+<?php
+endif;
+if(isset($_SESSION['admin']) && $_SESSION['admin']=='t'):
+?>
+<form action="Admin_ops.php" method="POST">
+<input type="hidden" name="user" value="<?php echo$_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo$_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo$_SESSION['pass'];?>"/>
+
+<input type="submit" name="delete_accounts" value="Delete Accounts Here"/><br>
+<input type="submit" name="display_accounts" value="Display all accounts"/><br>
+<input type="submit" name="reset_tables" value="Reset Tables"/><br>
+</form>
+<form action="register.php" method="POST">
+<input type="hidden" name="user" value="<?php echo$_SESSION['user'];?>"/>
+<input type="hidden" name="admin" value="<?php echo$_SESSION['admin'];?>"/>
+<input type="hidden" name="pass" value="<?php echo$_SESSION['pass'];?>"/>
+
+<input type="submit" name="admin_regist" value="Register Admin"/>
+</form>
+<?php
+endif;
+?>
+<!--temporary addition
+It will have it's own page later.-->
+
+<form action="ebay.php" method="POST">
+<input type="submit" name="_enter" value="Enter Site"/>
+</form>

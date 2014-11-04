@@ -1,0 +1,315 @@
+<?php
+
+function RunSQLFile ($file_name)
+{
+	$SQL_file=file($file_name);
+	$sub_query="";
+	foreach($SQL_file as $query)
+	{
+		$sub_query=$sub_query.$query;
+		if(trim($sub_query)!="" && strpos($sub_query,"--")==false && strpos($sub_query,";")==true)
+		{
+			pg_query($sub_query);
+			$sub_query="";
+		}
+	}
+	echo"file "."\"".$file_name."\""." run succuessfully.<br>"; 
+}
+
+function CheckForExistingAdmin()
+{
+	$name='admin';
+	$admin='t';
+	/*first name, middle name, last name*/
+	$pass='admin';
+	/*street, city, state, zip*/
+	$query="Select username, admin FROM users WHERE username=$1 AND admin=$2";
+	$result=pg_query_params($query,array($name,$admin));
+	if(pg_num_rows($result)==0)
+		ReaddAdmin();
+}
+function ReaddAdmin() 
+{
+	$name='admin';
+	$admin='t';
+	/*first name, middle name, last name*/
+	$pass='admin';
+	/*street, city, state, zip*/
+	$query="INSERT INTO users VALUES ($1,$2,'dummy','dummy','dummy',$3,'dummy','dummy','dummy','dummy')";
+	pg_query_params($query,array($name,$admin,$pass));
+}
+
+function DisplayAllTables() 
+{
+	echo"USERS table: <br>";
+	$query="SELECT * FROM users";
+	$result=pg_query($query);
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>Username</b></td>
+	<td><b>Admin Permissions</b></td>
+	<td><b>Password</b></td>
+	<td><b>First</b> Name</td>
+	<td><b>Middle Name</b></td>
+	<td><b>Last Name</b></td>
+	<td><b>Address</b></td>
+	</th>";
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		printf("
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->username</td>
+		<td>$object->admin</td>
+		<td>$object->password</td>
+		<td>$object->first_name</td>
+		<td>$object->middle_name</td>
+		<td>$object->last_name</td>
+		<td>$object->street $object->city, $object->state, $object->zip_code</td>
+		</tr>");
+	}
+	echo"</table>";
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"ORDERS table: <br>";
+	$query="SELECT * FROM orders";
+	$result=pg_query($query);
+		for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		printf("<br>User No.: $object->user_no<br>Recipient: $object->recipient<br>Order No.: $object->order_num<br>------------------------------------<p>");
+	}
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"ITEM table: <br>";
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>ISBN</b></td>
+	<td><b>Name</b></td>
+	<td><b>Description</b></td>
+	</th>";
+	
+	$query="SELECT * FROM item ORDER BY name ASC";
+	$result=pg_query($query);
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->isbn</td>
+		<td>$object->name</td>
+		<td>$object->description</td>
+		</tr>
+		";
+	}
+	echo"</table>";
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"CATEGORY table: <br>";
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>ID</b></td>
+	<td><b>Name</b></td>	
+	</th>	
+	";
+	$query="SELECT * FROM category";
+	$result=pg_query($query);
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->id</td>
+		<td>$object->name</td>
+		</tr>		
+		";
+	}
+	echo"</table>";
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"BID table: <br>";
+	echo"
+	<table border =\"1\">
+	<th>
+	<td><b>Bid ID</b></td>
+	<td><b>Bid Amount</b></td>
+	<td><b>Bid Time</b></td>
+	<td><b>Username</b></td>
+	<td><b>Item No.</b></td>
+	</th>
+	";
+	$query="SELECT * FROM bid";
+	$result=pg_query($query);
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->bid_id</td>
+		<td>$object->bid_amount</td>
+		<td>$object->bid_time</td>
+		<td>$object->userid</td>
+		<td>$object->item_no</td>
+		</tr>
+		";
+	}
+	echo"</table>";
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"AUCTION table: <br>";
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>Username</b></td>
+	<td><b>Auction No.</b></td>
+	<td><b>Item No.</b></td>
+	<td><b>Opening Time</b></td>
+	<td><b>Closing Time</b></td>
+	</th>
+	";
+	$query="SELECT * FROM auction";
+	$result=pg_query($query);
+		for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</td>
+		<td>$object->username</td>
+		<td>$object->auction_num</td>
+		<td>$object->item_no</td>
+		<td>$object->opening_time</td>
+		<td>$object->closing_time</td>
+		</tr>		
+		";
+	}
+	echo"</table>";
+	echo"-----------------------------------------------------------------------------------------------------<br>";
+	echo"ITEM RECORD table: <br>";
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>Category ID</b></td>
+	<td><b>Item ID</b></td>
+	</th>
+	";
+	$query="SELECT * FROM item_record";
+	$result=pg_query($query);
+		for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		echo"
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->cat_id</td>
+		<td>$object->item_id</td>
+		</tr>
+		";
+	}
+	echo"</table>";
+}
+function ResetTables() 
+{
+	$SQL_file=file('Create_Ebay_Tables.sql');
+	$sub_query="";
+	foreach($SQL_file as $query)
+	{
+		$sub_query=$sub_query.$query;
+		if(trim($sub_query)!="" && strpos($sub_query,"--")==false && strpos($sub_query,";")==true)
+		{
+			pg_query($sub_query);
+			$sub_query="";
+		}
+	}
+	echo"All tables reset";
+}
+function SetupSession() 
+{
+	session_start();
+	if(isset($_POST['user']))
+		ReassignSessionVars();
+}
+function ReassignSessionVars() 
+{
+	
+	$_SESSION['user']=$_POST['user'];
+	$_SESSION['pass']=$_POST['pass'];
+	$_SESSION['admin']=$_POST['admin'];
+}function DeletePerson($id)
+{
+	$query="SELECT * FROM users WHERE username=$1";
+	$result=pg_query_params($query, array($id));
+	if(pg_num_rows($result)==0)
+	{
+		echo"Account of $id does not exist<br>
+		------------------------------------";
+	}
+	else
+	{
+		$query="Delete FROM Users WHERE username=$1";
+		pg_query_params($query,array($id));
+		echo"Account of $id has been deleted<br>
+		------------------------------------";	
+	}
+	DisplayAll();
+
+}
+function DisplayAll()
+{
+	echo"USERS table: <br>";
+	$query="SELECT * FROM users";
+	$result=pg_query($query);
+	echo"
+	<table border=\"1\">
+	<th>
+	<td><b>Username</b></td>
+	<td><b>Admin Permissions</b></td>
+	<td><b>Password</b></td>
+	<td><b>First</b> Name</td>
+	<td><b>Middle Name</b></td>
+	<td><b>Last Name</b></td>
+	<td><b>Address</b></td>
+	</th>";
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		$value=$i+1;
+		printf("
+		<tr>
+		<td><b>$value</b></td>
+		<td>$object->username</td>
+		<td>$object->admin</td>
+		<td>$object->password</td>
+		<td>$object->first_name</td>
+		<td>$object->middle_name</td>
+		<td>$object->last_name</td>
+		<td>$object->street $object->city, $object->state, $object->zip_code</td>
+		</tr>");
+	}
+	echo"</table>";
+}
+function DeleteAll()
+{
+	$query="DELETE FROM Users WHERE admin='f'";
+	$result=pg_query($query);
+	echo'All regular accounts have been deleted.';
+}
+function ValidateUser($username)
+{
+    $query="SELECT username FROM users WHERE username=$1";
+    $res=pg_query_params($query, array($username));
+    if(pg_numrows($res)==0)
+    {
+        return false;
+    }
+    return true;
+}
+?>

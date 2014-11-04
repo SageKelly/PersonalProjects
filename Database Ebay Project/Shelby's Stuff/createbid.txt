@@ -1,0 +1,64 @@
+<?php
+include_once('connect.php'); 
+?>
+<h1> Create a Bid </h1>  
+<?php
+if(isset($_POST['_Bid']))
+{
+
+	$bid_id=$_POST['_bid_id'];
+	$bid_amount=$_POST['_bid_amount'];
+	$bid_time=$_POST['_bid_time'];
+	$userID=$_POST['_userID'];
+	$item_no=$_POST['_item_no'];
+
+	$query="INSERT INTO Bid VALUES ($1, 'true,'$2, $3, $4, $5)";
+	pg_query_params($query,array($bid_id,$bid_amount,$bid_time,$userID,$item_no));
+	printf("Bid was successfully added to database",$bidid); 
+	
+	
+}
+?>
+
+<table>
+<tr>
+<td>Enter Bid_id</td>
+<td> <input type = "text" name = "_bid_id" size = "30" /> </td>
+</tr>
+<tr> 
+<td> Enter Bid_amount </td>
+<td> <input type = "text" name = "_bid_amount" size = "30" /> </td>
+</tr>
+<tr> 
+<td> Enter Bid_time </td>
+<td> <input type = "text" name = "_bid_time"size = "30" /> </td>
+</tr>
+<tr> 
+<td> Enter UserId </td>
+<td> <input type = "text" name = "_userID" size = "30" /> </td>
+</tr>
+<tr> 
+<td> Enter Item_no </td>
+<td> <input type = "text" name = "_item_no" size = "30" /> </td>
+</tr>
+
+</table>   
+       
+ <script type="text/javascript">
+  <!--        
+     function alert_link()
+     {
+     alert("Your bid has been added!");
+     }        
+  //-->        
+ </script>
+ 
+ <p><a href = "Home_Screen.php" onclick = "alert_link(); return false;"> Submit bid!!!</a></p>
+
+
+   
+<form action = "Home_Screen.php">
+<input type = "submit" value = "Home Page">
+</form>
+
+

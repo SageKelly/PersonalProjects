@@ -1,0 +1,131 @@
+<?php
+include_once('connect.php');
+include_once('method_library.php');
+if(isset($_POST['_register'])|| isset($_POST['admin_register']))
+{
+
+	$username=$_POST['_username'];
+	$pass1=$_POST['_pass1'];
+	$pass2=$_POST['_pass2'];
+	$first=$_POST['_first'];
+	$middle=$_POST['_middle'];
+	$last=$_POST['_last'];
+	$street=$_POST['_street'];
+	$city=$_POST['_city'];
+	$state=$_POST['_state'];
+	$zip=$_POST['_zip'];
+
+	$query="SELECT username from Users";
+	$result=pg_query($query);
+	for($i=0;$i<pg_numrows($result);++$i)
+	{
+		$object=pg_fetch_object($result,$i);
+		if($username==$object)
+		{
+			printf("That username is taken. Try another one.");
+		}
+	}
+	if($pass1!=$pass2)
+	{
+		printf("Passwords are not the same. Try again<br>");	
+		echo '<form action="register.html">
+		<input type="submit"  value="Try again"/>
+		</form><br>';
+	}
+	else
+	{
+		if(isset($_POST['admin_register']))
+		{
+				$query="INSERT INTO Users VALUES($1,'true',$2,$3,$4,$5,$6,$7,$8,$9)";
+		pg_query_params($query,array($username,$first,$middle,$last,$pass1,$street,$city,$state,$zip));
+		printf("user %s successfully added to database",$username);
+}
+else {
+		$query="INSERT INTO Users VALUES($1,'false',$2,$3,$4,$5,$6,$7,$8,$9)";
+		pg_query_params($query,array($username,$first,$middle,$last,$pass1,$street,$city,$state,$zip));
+		printf("user %s successfully added to database",$username);
+	}
+	}
+}
+?>
+<?php if(isset($_POST['_regist'])||isset($_POST['admin_regist'])):?>
+Enter all of your information in the following text boxes<br>
+<form action="register.php" method="POST">
+<table style="	" >
+<tr>
+	<td>
+		Username:<br>
+		<input type="text" name="_username"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Password:<br>
+		<input type="password" name="_pass1"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Repeat Password:<br>
+		<input type="password" name="_pass2"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		First Name:<br>
+		<input type="text" name="_first"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Middle Name(If you have more than one,<br>pick one: we won't use the rest):<br>
+		<input type="text" name="_middle"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Last Name:<br>
+		<input type="text" name="_last"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Street:<br>
+		<input type="text" name="_street"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		City:<br>
+		<input type="text" name="_city"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		State:<br>
+		<input type="text" name="_state"/>
+	</td>
+</tr>
+<tr>
+	<td>
+		Zip:<br>
+		<input type="text" name="_zip"/>
+	</td>
+</tr>
+</table>
+<?php if(isset($_POST['admin_regist'])):?>
+<input type="hidden" name="admin" value="<?php echo$_SESSION['user'];?>"/>
+<input type="hidden" name="is_admin" value="<?php echo$_SESSION['admin'];?>"/>
+<input type="hidden" name="admin_pass" value="<?php echo$_SESSION['pass'];?>"/>
+<input type="submit" name="admin_register" value="Register Admin"/>
+<?php elseif(isset($_POST['_regist'])):?>
+<input type="submit" name="_register" value="Register"/>
+<?php endif;?>
+</form>
+<?php endif;?>
+<form action="Home_Screen.php">
+<input type="hidden" name="admin" value="<?php echo$_SESSION['user'];?>"/>
+<input type="hidden" name="is_admin" value="<?php echo$_SESSION['admin'];?>"/>
+<input type="hidden" name="admin_pass" value="<?php echo$_SESSION['pass'];?>"/>
+<input type="submit" value="Return to Main page"/>
+</form>

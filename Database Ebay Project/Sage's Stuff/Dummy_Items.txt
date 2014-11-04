@@ -1,0 +1,53 @@
+INSERT INTO Item VALUES(default,'Electronic Hedge Clippers','Manual Ones are so Passe. Now with turbo mode');
+INSERT INTO Item VALUES(default,'Pedal Steel Guitar','Feel like using more limbs than just your upper appendages? Then, grab one of these!');
+INSERT INTO Item VALUES(default,'Nose Hair Clippers','Too much hair up in there? Get rid of it with one of these!');
+INSERT INTO Item VALUES(default,'Void-O-Lax','Its like dying on the inside!!!');
+INSERT INTO Item VALUES(default,'Crunchy Milks','The new revolutionary metal band');
+INSERT INTO Item VALUES(default,'She Came...with Cookies','The story of true love and poisoning with Chocolate-Chip confections');
+INSERT INTO Item VALUES(default,'Balls for Fury','... I try not to think about this too much...');
+INSERT INTO Item VALUES(default,'Home_brewed Botox','Why pay thousands of dollars when you can use this experimental serum? (*syringe not included*)');
+INSERT INTO Item VALUES(default,'1970 Pinto','Rear-end at your own risk. Do not throw rocks at or kick the back end of the car: youll be sorry');
+INSERT INTO Item VALUES(default,'Eardrum Ring','......huh?...did you say something?');
+INSERT INTO Item VALUES(default,'Pin the Tail on the <insert name here>','Stab the Jackass in your life!');
+INSERT INTO Item VALUES(default,'Childrens Rugby','Helmets NEVER included: ITS RUGBY!!');
+INSERT INTO Item VALUES(default,'24-inch thigh-high heels','Platform height not included in measurement');
+INSERT INTO Item VALUES(default,'Paddy Wagon','Your passengers will ride in comfort and safety thanks to the lovely white, padded walls.');
+INSERT INTO Item VALUES(default,'Ambulance','Dont ask how we got it, just enjoy traffic-free driving.');
+INSERT INTO Item VALUES(default,'Appendix Piercing','Eh, you were going to lose it, anyway.');
+INSERT INTO Item VALUES(default,'Tu-hi Miniskirt','...and you thought daisy dukes were too high...');
+INSERT INTO Item VALUES(default,'Lead Baseball Bat','Good for one time use...if you can lift it...');
+INSERT INTO Item VALUES(default,'Pop Goes the Weasel','Contents: 1 Microwave, 1 Weasel');
+INSERT INTO Item VALUES(default,'Hillbilly Blues','Cant tell if theyre sad, or strung out on home-made whiskey.');
+
+/*Electronics
+Clothes
+Books 
+Movies
+Music
+
+Games
+Jewelry
+Automotives
+Sports
+Health and Beauty*/
+
+INSERT INTO Item_Record VALUES(1,1);
+INSERT INTO Item_Record VALUES(1,2);
+INSERT INTO Item_Record VALUES(1,3);
+INSERT INTO Item_Record VALUES(10,4);
+INSERT INTO Item_Record VALUES(5,5);
+INSERT INTO Item_Record VALUES(3,6);
+INSERT INTO Item_Record VALUES(4,7);
+INSERT INTO Item_Record VALUES(10,8);
+INSERT INTO Item_Record VALUES(8,9);
+INSERT INTO Item_Record VALUES(7,10);
+INSERT INTO Item_Record VALUES(6,11);
+INSERT INTO Item_Record VALUES(6,12);
+INSERT INTO Item_Record VALUES(2,13);
+INSERT INTO Item_Record VALUES(8,14);
+INSERT INTO Item_Record VALUES(8,15);
+INSERT INTO Item_Record VALUES(7,16);
+INSERT INTO Item_Record VALUES(2,17);
+INSERT INTO Item_Record VALUES(9,18);
+INSERT INTO Item_Record VALUES(6,19);
+INSERT INTO Item_Record VALUES(5,20);

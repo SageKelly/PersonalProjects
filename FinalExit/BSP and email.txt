@@ -1,0 +1,97 @@
+PlayerBunker
+X: 508
+Y: 508
+Z: 196
+
+Hallway:
+X: 5284
+Y: 188
+Z: 196
+
+Bunker2:
+X: 508
+Y: 508
+Z: 196
+
+Bunker3:
+X: 508
+Y: 508
+Z: 196
+
+Bunker4:
+X: 508
+Y: 508
+Z: 196
+
+Bunker5:
+X: 508
+Y: 508
+Z: 196
+
+Bunker6:
+X: 508
+Y: 508
+Z: 196
+
+HallwayExtention:
+X: 968
+Y: 188
+Z: 196
+
+Hallway2:
+X: 188
+Y: 968
+Z: 196
+
+Hallway3:
+X: 188
+Y: 968
+Z: 196
+
+ElevatorRoom:
+X: 1028
+Y: 1028
+Z: 512
+
+Elevator:
+X: 252
+Y: 252
+Z: 1976
+
+PuzzleRoom:
+X: 2048
+Y: 2044
+Z: 1024
+
+MiddleRoom:
+X: 192
+Y: 268
+Z: 196
+
+StairwayRoom:
+X: 2044
+Y: 252
+Z: 1024
+
+HighMiddleRoom:
+X: 184
+Y: 512
+Z: 316
+
+ControlRoom:
+X: 1536
+Y: 260
+Z: 316
+
+FakePortalRoom:
+X: 312
+Y: 260
+Z: 316
+
+SecretPortalRoom:
+X: 128
+Y: 128
+Z: 128
+
+jravebd@aol.com
+mrjared.sanchez@gmail.com

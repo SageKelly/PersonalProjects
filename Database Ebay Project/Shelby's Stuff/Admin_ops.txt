@@ -1,0 +1,87 @@
+<?php /*updated 5/7/12 3:28 AM*/
+include_once('connect.php');
+include_once('method_library.php');
+SetupSession();
+if	(isset($_POST['_delOne']))
+{
+	$id=$_POST['_name'];
+	DeletePerson($id);
+}
+else if(isset($_POST['display_accounts']))
+{
+	DisplayAll();
+}
+else if(isset($_POST['_delAll']))
+{
+	DeleteAll();
+} 
+elseif(isset($_POST['drop_decision']))
+{
+	if($_POST['drop_decision']=='2')
+	{
+		echo"Dropping tables...";
+		ResetTables();
+	}
+	else 
+	{
+		header('Location:Home_Screen.php');
+	}
+}
+elseif(isset($_POST['display_all_tables']))
+{
+	DisplayAllTables();
+}
+else if(isset($_POST['reset_tables'])):
+?>
+Are you sure? (you will lose all content from all tables)
+<form action="Admin_ops.php" method="POST">
+<select name="drop_decision">
+	<option value="1">...</option>
+	<option value="2">Yes</option>
+	<option value="3">No</option>
+</select>
+<input type="submit" value="Done"/>
+</form>
+<?php
+endif;
+if(isset($_POST['delete_accounts'])):
+?>
+<form  action="Admin_ops.php" method="POST" >
+Type the Username that you want to delete.<br>
+	<input type="text" name ="_name"/><br>
+	<input type="submit" name="_delOne" value="Delete"/><br>
+	<input type="submit" name="_delAll" value="Delete all accounts"/><br>
+</form>
+<?php 
+endif;
+if(isset($_POST['run_file']))
+{
+	/*echo"passed run_file<br>";
+	if(isset($_POST['file_name']))
+	{
+		echo"passed file_name<br>";
+		$file_name=$_POST['file_name'];
+		$file_exists=file_exists($file_name);
+		if(!$file_exists)
+			echo "file "."\"".$file_name."\""." does not exist.";
+		else
+		{
+			echo"file exists<br>";
+			RunSQLFile($file_name);
+		}
+	}*/
+	RunSQLFile('Category_Item.sql');
+	RunSQLFile('Dummy_Items.sql');
+	RunSQLFile('Auctions.sql');
+}/*||*/
+if(isset($_POST['run_files'])&&!isset($_POST['run_file'])):
+?>
+	<form action="Admin_ops.php" method="POST">
+	<input type="submit" name="run_file" value="Run File"/>	
+	</form>
+<?php
+endif;
+?>
+<form action="Home_Screen.php">
+<input type="submit" value="Return to Main Page"/>
+</form>

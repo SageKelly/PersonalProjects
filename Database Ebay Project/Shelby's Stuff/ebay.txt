@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>connect.php</title>
+</head>
+</html>Welcome to Ebay!<form action="search_results.php">
+Search by text:<br>
+<input type="text" name="text_val" value="Search for Items here" style="color:gray"/>
+<br>
+<select value="Search by category"></select><br>
+<input type="submit" value="Search"/>
+</form>
+
+<form action = "items.php" method = "post">
+<input type = "submit" value = "Items"/>
+</form>
+
+
+<form action = "display_all_bids.php" method = "post">
+<input type = "submit" value = "Show all bids">
+</form>
+
+<form action = "display_all_auctions.php" method = "post">
+<input type = "submit" value = "Show all auctions">
+</form>
+
+<form action = "display_all_categories.php" method = "post">
+<input type = "submit" value = "Show all categories">
+</form>
+
+<form action = "Home_Screen.php">
+<input type = "submit" value = "Home Page">
+</form>

@@ -1,0 +1,175 @@
+<?php /*updated 5/7/12 3:28 AM*/
+include_once('connect.php');
+include_once('method_library.php');
+SetupSession();
+echo 'Welcome to Ebay!<br>';
+
+/*
+I want to...
+1. Bid, but only if the price is higher than the current, and if the username exists.
+2. Show the name of the highest bidder.
+3. Change the date and time shown to something easier readable.
+*/
+
+if(isset($_POST['cat_search']))
+{
+	if(isset($_POST['cat_decide']))
+	{
+		$decision=(int)$_POST['cat_decide'];
+		$query="SELECT * FROM Auction A JOIN Item_record IR ON (A.item_no=IR.Item_ID)
+		 JOIN Item I ON (IR.item_id=i.isbn) WHERE IR.Cat_ID=$1";
+		$result=pg_query_params($query,array($decision));
+		
+		$query ="Select b.bid_amount,b.userID FROM bid b JOIN Auction a ON (b.item_no=a.item_no) 
+		JOIN Item_record IR ON (a.item_no=IR.item_ID) WHERE IR.cat_ID=$1";
+		$result2=pg_query_params($query, array($decision));
+		if(pg_num_rows($result)==0)
+		{
+			if((int)$_POST['cat_decide']!=0)
+				echo"No data to show.";
+		}
+		else
+		{
+			$object2;
+			echo"<table border=\"1\">";
+			echo"<th>
+			<td><b>Username</b></td>
+			<td><b>Auction No.</b></td>
+			<td><b>Item No.</b></td>
+			<td><b>Item Name</b></td>
+			<td><b>Description</b></td>
+			<td><b>Opening Time</b></td>
+			<td><b>Closing Time</b></td>";
+			if(pg_num_rows($result2)!=0)
+			{			
+				echo"<td><b>Highest Bidder</b></td>";
+				echo"<td><b>Highest Bid</b></td>";
+				
+				
+			}
+			echo"
+			<td><b>Bid Amount</b></td>
+			<td><b>Bid</b></td>
+			</th>";
+			
+			for($i=0;$i<pg_num_rows($result);$i++)
+			{
+				$object=pg_fetch_object($result,$i);
+				$object2=pg_fetch_object($result2,$i);
+				$value=$i+1;
+				echo"
+				<tr>
+				<td><b>$value</b></td>
+				<td>$object->username</td>
+				<td>$object->auction_num</td>
+				<td>$object->item_no</td>
+				<td>$object->name</td>
+				<td width=\"150\">$object->description</td>
+				<td>$object->opening_time</td>
+				<td>$object->closing_time</td>";
+				if(pg_num_rows($result2)!=0)
+				{				
+					echo"<td>$object2->userid</td>";
+					echo"<td>$$object2->bid_amount</td>";
+				}
+				?>			
+				<td>
+				<form action="bid.php" method="POST">		
+				<input type="hidden" name="user" value="<?php echo $_SESSION['user'];?>"/>
+				<input type="hidden" name="admin" value="<?php echo $_SESSION['admin'];?>"/>
+				<input type="hidden" name="pass" value="<?php echo $_SESSION['pass'];?>"/>		
+				<input type="hidden" name="bid_item" value="<?php echo $object->item_no;?>"/>
+				<input type="hidden" name="_bidder" value="<?php echo $_SESSION['user'];?>"/>	
+				<input type="text" name="_bid">	
+				</td>
+				<td>				
+				<input type="submit" value="Bid!"/>		
+				</form>
+				</td>
+				</tr>
+				<?php
+			}
+			
+			echo"</table>";
+		}
+	}
+}
+/*elseif(isset($_POST['price_search']))
+{
+	if(isset($_POST['price_decide']))
+	{
+		if($_POST['price_decide']=='1')
+		{
+			$query="SELECT I.Description FROM Item I Sort";
+		}
+		else
+		{
+			
+		}
+	}
+}
+elseif(isset($_POST['alpha_search']))
+{
+	if(isset($_POST['alpha_decide']))
+	{
+		
+	}
+}*/
+?>
+
+<form action="ebay.php" method="POST">
+Show auctions by...
+<table >
+	<th>
+		<td>			
+			<?php
+			$query="SELECT name from Category";
+			$result=pg_query($query);
+			echo"<select name=\"cat_decide\" value=\"Search by category\">";
+			echo"<option value=\"0\">Category...</option>";
+			for($i =0;$i<pg_numrows($result);$i++)
+			{
+				$object=pg_fetch_object($result,$i);
+				$value=$i+1;
+				echo"<option value=\"$value\">$object->name</option>";
+			}
+			echo"</select>";
+			?>			
+		</td>
+	<!--	<td>
+			<select name="price_decide">
+				<option>Price...</option>
+				<option value="1">Lowest bids</option>
+				<option value="2">Highest bids</option>
+			</select>
+		</td>
+		<td>
+			<select name="alpha_decide">
+				<option>Alphabetically...</option>
+				<option value="1">A-to-Z</option>
+				<option value="2">Z-to-A</option>
+			</select>
+		</td>-->
+	</th>
+	<tr>
+		<td></td>
+		<td><input type="submit" name="cat_search" value="Search"/></td>
+		<!--<td><input type="submit" name="price_search" value="Search"/></td>
+		<td><input type="submit" name="alpha_search" value="Search"/></td>-->
+	</tr>
+</table>
+</form>
+<!--<form action="search_results.php">
+Search by text:<br>
+<input type="text" name="text_val" value="Search for Items here" style="color:gray"/><br>
+<input type="submit" value="Search"/>
+<input type="submit" name="Search" value="Search"/>
+</form>-->
+
+<form action="display_all_bids.php">
+<input type="submit" name="all_bids" value="Show All bids"/>
+</form>
+
+<form action="Home_Screen.php">
+<input type="submit" value="Back to Home"/>
+</form>

@@ -1,0 +1,129 @@
+<?php /*updated 5/7/12 3:28AM*/
+/*
+I want to...
+1. Validate username, amount and current time.
+2. If true then insert bid.
+3. Print a successful bid.
+3. Return to ebay.php.
+*/ 
+	//Grab the time as soon as possible
+	
+	include_once('connect.php');
+	include_once('method_library.php');
+	SetupSession();
+	$bid_time=date("y/m/d H:i:s", time());
+	$bid=$_POST['_bid'];
+	$bid+=0.00;
+	
+	$is_validated=false;
+	$is_higher=false;
+	$after_open=false;
+	$before_close=false;
+	
+	$bid_item=(int)$_POST['bid_item'];
+	
+	
+	$query="SELECT * FROM auction a WHERE a.item_no=$1";
+	$result=pg_query_params($query, array((int)$_POST['bid_item']));
+	$object=pg_fetch_object($result,0);
+	
+	//Grab the fancy date of opening time
+	$raw_time=$object->opening_time;
+	//Substring the info
+	$year="20".substr($raw_time,0,2);
+	$month =substr($raw_time,3,2);
+	$day=substr($raw_time,6,2);		
+	$hour=substr($raw_time,9,2);
+	$minute=substr($raw_time,12,2);
+	$second=substr($raw_time,15,2);
+	//turn it into an int
+	$open_time=mktime((int)$hour,(int) $minute, (int)$second,(int)$month,(int) $day,(int)$year);
+	
+	//Grab the fancy date of closing time
+	$raw_time=$object->closing_time;
+	//Substring the info
+	$year="20".substr($raw_time,0,2);
+	$month =substr($raw_time,3,2);
+	$day=substr($raw_time,6,2);		
+	$hour=substr($raw_time,9,2);
+	$minute=substr($raw_time,12,2);
+	$second=substr($raw_time,15,2);
+	//turn it into an int
+	$close_time=mktime((int)$hour,(int) $minute, (int)$second,(int)$month,(int) $day,(int)$year);
+	
+	if(isset($_POST['_bid'])&& isset($_POST['_bidder']))
+	{
+		//Validate the username
+		if($_SESSION['user']!=null && $_SESSION['user']==$_POST['_bidder']);
+		{
+				echo $_SESSION['user'];
+				$is_validated=true;
+				echo "Name validated. <br>";
+		}
+		//validate the amount
+		$query="SELECT b.bid_amount from bid b WHERE b.item_no=$1";
+		$result_bid_exist=pg_query_params($query,array($_POST['bid_item']));
+		if(pg_num_rows($result_bid_exist)!=0)
+		{
+			$object=pg_fetch_object($result_bid_exist);			
+			if($_POST['_bid']>$object->bid_amount)
+			{	
+				$is_higher=true;
+				echo "Bid is higher<br>";
+			}
+		}
+		
+
+		
+		//validate the time
+		if($open_time-$bid_time>0)
+		{
+			$after_open=true;
+			echo"Time is after opening time.<br>";
+		}
+		if($bid_time-$close_time<0)
+		{
+			$before_close=true;
+			echo "Time is before closing time.<br>";
+		}
+		
+		if($is_validated&&$is_higher&&$after_open&&$before_close)
+		{
+			//delete the recently placed one
+			$query="DELETE FROM Bid WHERE userid=$1";
+			$result=pg_query_params($query,array($_POST['bid_item']));
+			//Update the old one
+			$query="UPDATE Bid SET bid_amount=$1,bid_time=$2,userID=$3 WHERE item_no=$4";
+			$result=pg_query_params($query, array($bid,	$bid_time,	$_POST['_bidder'],	(int)$_POST['bid_item']));
+			echo"Bid successfully added.";
+		}
+		else if(!$is_validated)
+		{
+			echo"Username has not been registered.";
+		}
+		else if(!$after_open)
+		{
+			echo"Early Bird! The auction hasn't opened yet!";
+		}
+		else if(!$before_close) 
+		{
+				echo"Aw, Just missed it! The auction has closed.";
+		}
+		else if(!$is_higher)
+		{
+			if(pg_num_rows($result_bid_exist)==0)
+			{
+				echo"No bid exists";
+				$query="INSERT INTO Bid VALUES(default,$1,$2,$3,$4)";
+				$result=pg_query_params($query, array($bid,	$bid_time,	$_POST['_bidder'],	(int)$_POST['bid_item']));
+				echo"Bid successfully added.";
+			}
+			else
+				echo"Bid is not higher than current bid.";
+		}
+	}
+	
+?>	
+<form action="ebay.php">
+<input type="submit" value="Back"/>
+</form>

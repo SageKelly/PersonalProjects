@@ -1,0 +1,40 @@
+<?php
+include_once('connect.php');
+?>
+<h1>Auction Display</h1>
+
+<table border="1" cellspacing="15" align="center" class="auto-style3">
+<tr>
+	<th> Title</th>
+	<th> User_no</th>
+	<th> Category</th>
+	<th> Item Name</th>
+	<th> Item No.</th>
+	<th> Opening time</th>
+	<th> closing time</th>	
+</tr>
+<tr><td>Auction 1234</td><td>susieq</td><td>Movies</td><td>Finding Nemo</td><td>56</td><td>March 30 at 12:00am</td><td>May 30 at 12:00am</td></tr>
+
+<tr><td>Auction 1235</td><td>sexytom</td><td>Automotive</td><td>F150</td><td>65</td><td>April 1 at 12:00am</td><td>June 1 30 at 12:00am</td></tr>
+
+<tr><td>Auction 1236</td><td>sallysue</td><td>Health & Beauty</td><td>Conair Hair dryer</td><td>67</td><td>April 2 at 12:00am</td><td>June 2 at 12:00am</td></tr>
+
+<tr><td>Auction 1237</td><td>bobbyb</td><td>Books</td><td>Discrete Math</td><td>76</td><td>April 3 at 12:00am</td><td>June 3 at 12:00am</td></tr>
+
+<tr><td>Auction 1238</td><td>jack187</td><td>Music</td><td>I'm Sexy and I Know it</td><td>78</td><td>April 4 at 12:00am</td><td>June 4 at 12:00am</td></tr>
+
+<?php
+$result = pg_query("SELECT * FROM Auction");
+for($i=0;$i<pg_num_rows($result);$i++)
+{
+	$data=pg_fetch_object($result,$i);
+	echo"<tr>
+   <td> $data->user_no</td>
+   <td> $data->category</td>
+	<td> $data->item_name</td>
+	<td> $data->item_no</td>
+   <td> $data->opening_time</td>
+   <td> $data->closing_time</td></tr>";
+}       
+?>
+</table>
