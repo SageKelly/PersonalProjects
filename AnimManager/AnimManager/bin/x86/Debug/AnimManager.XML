@@ -1,0 +1,488 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AnimManager</name>
+    </assembly>
+    <members>
+        <member name="T:PicAnimator.AnimatorEventHandler">
+            <summary>
+            Used to register to Playing Pausing and Stopping events
+            </summary>
+        </member>
+        <member name="T:PicAnimator.HappeningEvent">
+            <summary>
+            Used to register operations to active FrameData
+            </summary>
+        </member>
+        <member name="T:PicAnimator.PlayState">
+            <summary>
+            Holds the current state of a Mover's Play State
+            </summary>
+        </member>
+        <member name="F:PicAnimator.PlayState.Play">
+            <summary>
+            The Mover is Playing
+            </summary>
+        </member>
+        <member name="F:PicAnimator.PlayState.Pause">
+            <summary>
+            The Mover has been paused
+            </summary>
+        </member>
+        <member name="F:PicAnimator.PlayState.Stop">
+            <summary>
+            The Mover has been stopped
+            </summary>
+        </member>
+        <member name="F:PicAnimator.PlayState.Inactive">
+            <summary>
+            Default state: the Mover has not been setup or played yet.
+            </summary>
+        </member>
+        <member name="T:PicAnimator.Animator">
+            <summary>
+            Animates a collection of Animatinons, and allows the user to play, pause, stop and rewind animations at will.
+            </summary>
+               
+        </member>
+        <member name="F:PicAnimator.Animator.MotherList">
+            <summary>
+            The main list of all Mover objects associated with this Animator
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.RecentList">
+            <summary>
+            The most recent Movers used
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.PlayList">
+            <summary>
+            A list off all the Movers currently being played
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Rotation">
+            <summary>
+            The rotation, in radians, of the Mover
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Origin">
+            <summary>
+            The rotation origin for the Mover
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Position">
+            <summary>
+            The position of the Mover: for drawing and movement purposes
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.MaxVelocity">
+            <summary>
+            The maximum velocity for the Mover: should be used for player movement
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.DeltaVelocity">
+            <summary>
+            The default vector for player movement. Holds how much local positional change occurs
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Acceleration">
+            <summary>
+            The acceleration for movement purposes
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Scale">
+            <summary>
+            The scale for the Mover
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Animator.Tint">
+            <summary>
+            The tint for drawing the Mover
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.#ctor(Microsoft.Xna.Framework.Game,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Animates Movers
+            </summary>
+            <param name="game">The game you're using (Just do it...I dont know)</param>
+            <param name="pos">Drawing position for the Mover. Velocity and
+            Accleration are also available (See SetupVectors()).</param>
+        </member>
+        <member name="M:PicAnimator.Animator.AddData(PicAnimator.Mover)">
+            <summary>
+            Adds Animation data to the collection
+            </summary>
+            <param name="Data">The Animation data to be added</param>
+        </member>
+        <member name="M:PicAnimator.Animator.RegisterData(System.Collections.Generic.List{PicAnimator.Mover})">
+            <summary>
+            Allows you to assign a list to the in-class collection of Mover data
+            </summary>
+            <param name="Data">The list of Mover Data</param>
+        </member>
+        <member name="M:PicAnimator.Animator.SetupVectors(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Sets up the positional vectors for drawing and moving the overall animation
+            </summary>
+            <param name="vel">Velocity</param>
+        </member>
+        <member name="M:PicAnimator.Animator.SetupVectors(Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Sets up the positional vectors for drawing and moving the overall animation
+            </summary>
+            <param name="max_vel">Max Velocity: with Acceleration used, this should be used to 
+            keep track of how fast the can ever move.</param>
+            <param name="accel">Acceleration: if used this should be 1/60 of the desired speed,
+            since XNA runs at 60 fps.</param>
+        </member>
+        <member name="M:PicAnimator.Animator.PlayAnimation(PicAnimator.Mover,Microsoft.Xna.Framework.Graphics.SpriteEffects,System.Single)">
+            <summary>
+            ...Plays...Animation
+            </summary>
+            <param name="data">The data which will be animated</param>
+            <param name="SPE">The Sprite effect for the animation</param>
+            <param name="SpeedPercentage">The speed at which to play the animation. 1.00 is regular speed.</param>
+        </member>
+        <member name="M:PicAnimator.Animator.PauseAnimation(PicAnimator.Mover)">
+            <summary>
+            Pauses the animation at the current frame; does not stop or reset it
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.StopAnimation(PicAnimator.Mover)">
+            <summary>
+            Stops and resets animation
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.Animate(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Continues to animate the Anima data until the animation has stopped
+            </summary>
+            <param name="gameTime">GameTime parameter for persistent animation</param>
+        </member>
+        <member name="M:PicAnimator.Animator.LoadContent">
+            <summary>
+            Loads content
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.Update(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Updates the current frame for animation
+            </summary>
+            <param name="gameTime">Update's GameTime</param>
+        </member>
+        <member name="M:PicAnimator.Animator.Draw(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Draws animation (NOT READY)
+            </summary>
+            <param name="gameTime">Draw's GameTime</param>
+        </member>
+        <member name="M:PicAnimator.Animator.FindCurFrame(PicAnimator.Mover)">
+            <summary>
+            Find the current frame for a particular Mover
+            </summary>
+            <param name="mover">The Mover holding the Frame</param>
+            <returns>Returns the current Frame for the particular Mover, if found. Otherwise, returns null</returns>
+        </member>
+        <member name="T:PicAnimator.Animator.MoverData">
+            <summary>
+            A structure containing A particular Mover object's animation specs
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.MoverData.Stop">
+            <summary>
+            stops the mover
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.MoverData.Play(Microsoft.Xna.Framework.Graphics.SpriteEffects,System.Single)">
+            <summary>
+            Plays the Mover given
+            </summary>
+            <param name="SPE"></param>
+            <param name="speedPerc"></param>
+        </member>
+        <member name="T:PicAnimator.Anima">
+            <summary>
+            Collection of FrameData
+            </summary>
+        </member>
+        <member name="T:PicAnimator.DataContainer">
+            <summary>
+            Abstract Container class
+            </summary>
+        </member>
+        <member name="F:PicAnimator.DataContainer.INF_CONST">
+            <summary>
+            Holds the standard value for an infinitely animating animation
+            </summary>
+        </member>
+        <member name="F:PicAnimator.DataContainer.hasLooped">
+            <summary>
+            Tells whether or not the Anima has looped in animation
+            </summary>
+        </member>
+        <member name="F:PicAnimator.DataContainer.b_is_active">
+            <summary>
+            Determines whether or not the current DataContainer is active
+            </summary>
+        </member>
+        <member name="M:PicAnimator.DataContainer.#ctor">
+            <summary>
+            Holds animation data
+            </summary>
+        </member>
+        <member name="M:PicAnimator.DataContainer.#ctor(System.Int32)">
+            <summary>
+            Creates Anima data which holds FrameData objects
+            </summary>
+            <param name="loop_for">Determines how many subsequent times the data will loop. "-1" is for infinite. "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.DataContainer.OnActivate">
+            <summary>
+            Runs the Activated event delegate
+            </summary>
+        </member>
+        <member name="M:PicAnimator.DataContainer.OnDeactivate">
+            <summary>
+            Runs the Deactivated event delegate
+            </summary>
+        </member>
+        <member name="E:PicAnimator.DataContainer.ActivationEvent">
+            <summary>
+            Used to register events to active Anima (NOT CURRENTLY IMPLEMENTED)
+            </summary>
+        </member>
+        <member name="E:PicAnimator.DataContainer.DeactivationEvent">
+            <summary>
+            Used to register events to active Anima (NOT CURRENTLY IMPLEMENTED)
+            </summary>
+        </member>
+        <member name="P:PicAnimator.DataContainer.LoopFor">
+            <summary>
+            How many times the Anima should play. 0 is infinite
+            </summary>
+        </member>
+        <member name="P:PicAnimator.DataContainer.IsInfinite">
+            <summary>
+            Tell whether or not the Anima loops infinitely
+            </summary>
+        </member>
+        <member name="P:PicAnimator.DataContainer.IsActive">
+            <summary>
+            Tells whether or not the Anima is active
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Anima.Frames">
+            <summary>
+            The collection of FrameData
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Anima.#ctor(System.Int32)">
+            <summary>
+            Creates Anima data which holds FrameData objects
+            </summary>
+            <param name="loop_for">Determines how many subsequent times the data will loop. "-1" is for infinite. "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Anima.#ctor(System.Collections.Generic.List{PicAnimator.Frame},System.Int32)">
+            <summary>
+            Creates Anima data which holds FrameData objects
+            </summary>
+            <param name="frames">A given list of frames to add to the anima</param>
+            <param name="loop_for">Determines how many subsequent times the data will loop. "-1" is for infinite. "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Anima.AddFrame(PicAnimator.Frame)">
+            <summary>
+            Adds the frame the list of frames
+            </summary>
+            <param name="data">The Frame object to add</param>
+        </member>
+        <member name="M:PicAnimator.Anima.AddFrames(PicAnimator.Frame,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Adds frames to the frame and any systematically different frames, assuming the frames
+            are added in sequential order during method call
+            </summary>
+            <param name="data">The intial frame data, which will be used as a template for the rest of the frames</param>
+            <param name="ExtraFrames">The amount of subsequent frames after the intial frame</param>
+            <param name="XSourceDelta">The amount of change in the source image file's X axis in relation to the
+            initial frame</param>
+            <param name="YSourceDelta">The amount of change in the source image file's Y axis in relation to the
+            initial frame</param>
+        </member>
+        <member name="T:PicAnimator.Mover">
+            <summary>
+            A collection of animations, the animation of which cannot be concatenated with another Mover object
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Mover.#ctor(System.Int32)">
+            <summary>
+            Allows for a combination of Animations to be played
+            one after the other.
+            </summary>
+            <param name="loop_for">Determines how many subsequent times the data will loop.
+            "-1" is infinite, "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Mover.#ctor(System.Collections.Generic.List{PicAnimator.Animation},System.Int32)">
+            <summary>
+            Allows for a combination of Animations to be played
+            one after the other.
+            </summary>
+            <param name="data">The list of animas for the animation</param>
+            <param name="loop_for">Determines how many subsequent times the data will loop.
+            "-1" is infinite, "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Mover.#ctor(System.Collections.Generic.List{PicAnimator.Anima},System.Int32,System.Int32)">
+            <summary>
+            Allows for a combination of Animations to be played
+            one after the other.
+            </summary>
+            <param name="Animas">The list of Animas to add</param>
+            <param name="mover_loop_for">Determins how many subsequent times the mover data wil loop.
+            "-1" is infinite, "0" is none.</param>
+            <param name="anim_loop_for">The same mover_loop_foor, but for the list of anima</param>
+        </member>
+        <member name="M:PicAnimator.Mover.#ctor(System.Collections.Generic.List{PicAnimator.Frame},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Take a list of frames and turns them into a Mover object
+            </summary>
+            <param name="Frames">The list of frames to add</param>
+            <param name="mover_loop_for">Determines how many subsequent times the mover data wil loop.
+            "-1" is infinite, "0" is none.</param>
+            <param name="anim_loop_for">The same mover_loop_foor, but for the automatically-generated animation</param>
+            <param name="anima_loop_for">The same mover_loop_foor, but for the automatically-generated anima</param>
+        </member>
+        <member name="M:PicAnimator.Mover.#ctor(PicAnimator.Frame,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Accepts a base frame to automatically generate a Mover
+            </summary>
+            <param name="baseFrame">The base frame to use to add the rest</param>
+            <param name="mover_loop_for">Determines how many subsequent times the mover data wil loop.
+            "-1" is infinite, "0" is none.</param>
+            <param name="anim_loop_for">The same as mover_loop_for, but for the automatically-generated animation</param>
+            <param name="anima_loop_for">The same as mover_loop_for, but for the automatically-genereated anima</param>
+            <param name="ExtraFrames">The amount of subsequent frames after the intial frame</param>
+            <param name="XSourceDelta">The amount of change in the source image file's X axis in relation to the
+            initial frame</param>
+            <param name="YSourceDelta">The amount of change in the source image file's Y axis in relation to the
+            initial frame</param>
+        </member>
+        <member name="M:PicAnimator.Mover.AddData(PicAnimator.Animation)">
+            <summary>
+            Adds new Animation objects to the list of the animas
+            </summary>
+            <param name="data">The Animation object to be added</param>
+        </member>
+        <member name="P:PicAnimator.Mover.PState">
+            <summary>
+            Dictates the state of this Mover object
+            </summary>
+        </member>
+        <member name="P:PicAnimator.Mover.Animations">
+            <summary>
+            A collection of Animation objects
+            </summary>
+        </member>
+        <member name="E:PicAnimator.Mover.PlayingEvent">
+            <summary>
+            Used for registering to the animation beginning its playback
+            </summary>
+        </member>
+        <member name="E:PicAnimator.Mover.PausingEvent">
+            <summary>
+            Used to register to the animation pausing
+            </summary>
+        </member>
+        <member name="E:PicAnimator.Mover.StoppingEvent">
+            <summary>
+            Used to register to the animation stopping
+            </summary>
+        </member>
+        <member name="T:PicAnimator.Frame">
+            <summary>
+            A class which contains information of a particular frame of animation
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Frame.Image">
+            <summary>
+            The actual image
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Frame.Name">
+            <summary>
+            Name the frame...
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Frame.Source">
+            <summary>
+            The location of the frame on the sprite sheet
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Frame.FPS">
+            <summary>
+            The rate which this frame plays, or the latency of the frame
+            </summary>
+        </member>
+        <member name="F:PicAnimator.Frame.MilliDelay">
+            <summary>
+            Extra latency of the frame added to the FPS
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Frame.#ctor(Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Rectangle,System.Int32,System.Int32)">
+            <summary>
+            Creates data based on the given image based on the data provided.
+            </summary>
+            <param name="image">The image to be manipulated</param>
+            <param name="source">The section of the image</param>
+            <param name="fps">The frames per second in which the image can be animated
+            (FrameData class is compatible with Anima and Animator classes)</param>
+            <param name="delay">Anima/Animator specific:The delay, in milliseconds, before the FrameData.
+            If 0, delay will be calculated from the given fps. Else it will be the literal delay</param>
+        </member>
+        <member name="P:PicAnimator.Frame.IsActive">
+            <summary>
+            Tells whether or not the current frame is active
+            </summary>
+        </member>
+        <member name="E:PicAnimator.Frame.ActivatedFrame">
+            <summary>
+            The event to which to register methods
+            </summary>
+        </member>
+        <member name="E:PicAnimator.Frame.DeactivatedFrame">
+            <summary>
+            The event to which to register methods
+            </summary>
+        </member>
+        <member name="T:PicAnimator.Animation">
+            <summary>
+            Holds a collection of Anima data
+            </summary>
+        </member>
+        <member name="M:PicAnimator.Animation.#ctor(System.Int32)">
+            <summary>
+            Allows for a combination of Animas to be played
+            one after the other.
+            </summary>
+            <param name="loop_for">Determines how many subsequent times the data will loop.
+            "-1" is infinite, "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Animation.#ctor(System.Collections.Generic.List{PicAnimator.Anima},System.Int32)">
+            <summary>
+            Allows for a combination of Animas to be played
+            one after the other.
+            </summary>
+            <param name="animas">The list of animas for the animation</param>
+            <param name="loop_for">Determines how many subsequent times the data will loop.
+            "-1" is infinite, "0" is none.</param>
+        </member>
+        <member name="M:PicAnimator.Animation.AddData(PicAnimator.Anima)">
+            <summary>
+            Adds new Anima objects to the list of the animas
+            </summary>
+            <param name="data">The Anima object to be added</param>
+        </member>
+        <member name="P:PicAnimator.Animation.Animas">
+            <summary>
+            Holds the list of animas
+            </summary>
+        </member>
+    </members>
+</doc>

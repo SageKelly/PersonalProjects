@@ -1,0 +1,30 @@
+C:\Users\Kasha\documents\visual studio 2010\Projects\MasterMind\MasterMind\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\documents\visual studio 2010\Projects\MasterMind\MasterMind\bin\Debug\MasterMind.exe
+C:\Users\Kasha\documents\visual studio 2010\Projects\MasterMind\MasterMind\bin\Debug\MasterMind.pdb
+C:\Users\Kasha\documents\visual studio 2010\Projects\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe
+C:\Users\Kasha\documents\visual studio 2010\Projects\MasterMind\MasterMind\obj\x86\Debug\MasterMind.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\obj\x86\Debug\MasterMind.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\bin\Debug\MasterMind.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\bin\Debug\MasterMind.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\bin\Debug\MasterMind.exe.CodeAnalysisLog.xml
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\MasterMind\MasterMind\bin\Debug\MasterMind.exe.lastcodeanalysissucceeded
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.exe.manifest
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.application
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe.manifest
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.application
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.pdb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.exe.manifest
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.application
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\bin\Debug\MasterMind.pdb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.csprojResolveAssemblyReference.cache
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.exe.manifest
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\MasterMind\MasterMind\obj\x86\Debug\MasterMind.application

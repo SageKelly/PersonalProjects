@@ -1,0 +1,26 @@
+The objective of the game is to figure out the code that the computer has randomly created.
+
+When you first reach the game screen, it will show the available symbols you can use to 
+figure out the computer's code. Type in a combination of symbols of length 4 and press 
+"Enter". It will then appear on the screen in the first available slot.
+
+The computer will then let you know how close your were to its code by using the last four 
+slots on the screen and placing either 0, 1, or 2 in the slots. "0" means that that on of 
+the symbols are wrong, "1" means that one of the symbols is right, but in the wrong slot, 
+and "2" means that one of the symbols is right AND in the right slot. They are placed 
+randomly, so there is no correspondence between your code and the placement numbers (i.e.
+if the first slot is "0", that does not that the first symbol you put in was wrong).
+
+For example, I may have put in the code "!@#$" and got this in return:
+
+    - - - -   - - - -
+1. |!|@|#|$| |0|1|2|0| <---Here, it's saying that two are wrong (the zeros), one is right,
+    - - - -   - - - -      but not in the right place (the one), and one is both right AND
+2. | | | | | | | | | |     in the right place (the two).
+    - - - -   - - - - 
+
+You have ten turns to figure it out. If you figure out before then, or one the tenth turn,
+you win. However, if you can't you lose, at which point, you will be sent to a screen that
+will tell you what the computer's code was. Afterwards, you can then choose whether or not
+you want to play again. The game will start over, and you will have to choose your name and
+your piece amount again.
