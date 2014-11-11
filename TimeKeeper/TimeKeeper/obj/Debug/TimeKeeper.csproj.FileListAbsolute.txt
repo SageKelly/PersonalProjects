@@ -4,3 +4,9 @@ C:\Users\Kasha\Documents\Visual Studio 2013\Projects\TimeKeeper\TimeKeeper\bin\D
 C:\Users\Kasha\Documents\Visual Studio 2013\Projects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.exe
 C:\Users\Kasha\Documents\Visual Studio 2013\Projects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.pdb
 C:\Users\Kasha\Documents\Visual Studio 2013\Projects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.csprojResolveAssemblyReference.cache
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\bin\Debug\TimeKeeper.exe.config
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.exe
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.pdb
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\bin\Debug\TimeKeeper.exe
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\bin\Debug\TimeKeeper.pdb
+C:\PersonalProjects\PersonalProjects\TimeKeeper\TimeKeeper\obj\Debug\TimeKeeper.csprojResolveAssemblyReference.cache

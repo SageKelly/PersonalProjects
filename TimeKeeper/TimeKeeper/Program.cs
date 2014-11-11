@@ -72,6 +72,8 @@ namespace TimeKeeper
         static ConsoleKeyInfo CKI;
         static Stopwatch Timer;
         static List<TimeEntry> Times;
+        delegate void MethodInvoker();
+        static Queue<MethodInvoker> PrintQueue;
         static int listIndex = 0;
         static TimeSpan curTime = TimeSpan.Zero, prevTime = curTime;
         /// <summary>
@@ -97,7 +99,7 @@ namespace TimeKeeper
             }
         }
 
-        #region consts
+        #region CONSTANTS
         /// <summary>
         /// Represents the last line the Console's cursor before
         /// a method manipulated it.
@@ -109,7 +111,7 @@ namespace TimeKeeper
         /// </summary>
         const int COMMENT_LEFT = 16;
 
-        static int COMMENT_PAD = Console.BufferWidth - COMMENT_LEFT;
+        static int COMMENT_PAD = Console.BufferWidth - COMMENT_LEFT - 1;
 
         /// <summary>
         /// The Top location for the program's status. Also used for Total Time
@@ -146,7 +148,7 @@ namespace TimeKeeper
         /// <summary>
         /// Holds the tab escape sequences for printing
         /// </summary>
-        const int PRINT_TABS = 11/*two tabs*/;
+        const int TAB_PAD = 12/*two tabs*/;
 
         /// <summary>
         /// Represents the cursor's top location for the instructions
@@ -157,7 +159,7 @@ namespace TimeKeeper
         /// Represents how much console padding should happen
         /// on certain printing instructions
         /// </summary>
-        const int PAD_AMOUNT = 39;
+        const int INSTRUCTIONS_PAD = 39;
         #endregion
 
         #region Printing Booleans
@@ -170,6 +172,127 @@ namespace TimeKeeper
         private static bool printAllTimes = false;
         private static bool printTotalTime = false;
         private static bool saveTimes = false;
+
+        private static bool BPrintCombineMark
+        {
+            get
+            {
+                return printCombineMark;
+            }
+            set
+            {
+                printCombineMark = value;
+                if (printCombineMark)
+                    PrintQueue.Enqueue(PrintCombineMark);
+            }
+        }
+        private static bool BPrintInstructions
+        {
+            get
+            {
+                return printInstructions;
+            }
+            set
+            {
+                printInstructions = value;
+                if (printInstructions)
+                    PrintQueue.Enqueue(PrintInstructions);
+            }
+        }
+        private static bool BPrintMark
+        {
+            get
+            {
+                return printMark;
+            }
+            set
+            {
+                printMark = value;
+                if (printMark)
+                    PrintQueue.Enqueue(PrintMark);
+            }
+        }
+        private static bool BPrintTime
+        {
+            get
+            {
+                return printTime;
+            }
+            set
+            {
+                printTime = value;
+                if (printTime)
+                {
+                    PrintQueue.Enqueue(PrintTime);
+                }
+            }
+        }
+        private static bool BPrintScreen
+        {
+            get
+            {
+                return printScreen;
+            }
+            set
+            {
+                printScreen = value;
+                if (printScreen)
+                    PrintQueue.Enqueue(PrintScreen);
+            }
+        }
+        private static bool BPrintStatus
+        {
+            get
+            {
+                return printStatus;
+            }
+            set
+            {
+                printStatus = value;
+                if (printStatus)
+                    PrintQueue.Enqueue(PrintStatus);
+            }
+        }
+        private static bool BPrintAllTimes
+        {
+            get
+            {
+                return printAllTimes;
+            }
+            set
+            {
+                printAllTimes = value;
+                if (printAllTimes)
+                    PrintQueue.Enqueue(PrintAllTimes);
+            }
+        }
+        private static bool BPrintTotalTime
+        {
+            get
+            {
+                return printTotalTime;
+            }
+            set
+            {
+                printTotalTime = value;
+                if (printTotalTime)
+                    PrintQueue.Enqueue(PrintTotalTime);
+            }
+        }
+        private static bool BSaveTimes
+        {
+            get
+            {
+                return saveTimes;
+            }
+            set
+            {
+                saveTimes = value;
+                if (saveTimes)
+                    PrintQueue.Enqueue(SaveTimes);
+            }
+        }
+
         #endregion
 
         static TimeSpan TotalTimeSpan;
@@ -202,8 +325,8 @@ namespace TimeKeeper
             set
             {
                 programState = value;
-                printStatus = true;
-                printInstructions = true;
+                BPrintStatus = true;
+                BPrintInstructions = true;
             }
         }
         private static States PrevState;
@@ -212,6 +335,15 @@ namespace TimeKeeper
         /// Represents the day this program was initialized
         /// </summary>
         private static DateTime StartingDate;
+
+        /// <summary>
+        /// Represents the previous cycle's time
+        /// </summary>
+        private static DateTime Previous = DateTime.Now;
+        /// <summary>
+        /// Represents the current cycle's time
+        /// </summary>
+        private static DateTime Now = DateTime.Now;
 
         /// <summary>
         /// Represents the first-most possible index for current TimeEntry combining
@@ -230,6 +362,9 @@ namespace TimeKeeper
             ///Start the threads
             InputWatcher = new Thread(ReadKeys);
             DayWatcher = new Thread(ClockAndPrintWatcher);
+
+            //Setup printing queue
+            PrintQueue = new Queue<MethodInvoker>();
 
             ///Set special colors
             CombineOnColor = ConsoleColor.Cyan;
@@ -253,7 +388,7 @@ namespace TimeKeeper
             Timer = new Stopwatch();
             TotalTimeSpan = new TimeSpan();
 
-            PrintScreen();
+            BPrintScreen = true;
             ProgramState = States.Off;
             DayWatcher.Start();
             InputWatcher.Start();
@@ -268,19 +403,17 @@ namespace TimeKeeper
             if (Times.Count > 0)
             {
                 Timer.Stop();
-                Times[Times.Count - 1].timeSpent = Timer.Elapsed;
                 Times[Times.Count - 1].ended = DateTime.Now;
-                TotalTimeSpan += Timer.Elapsed;
+                Times[Times.Count - 1].timeSpent = Timer.Elapsed;
                 Times.Add(new TimeEntry(DateTime.Now));
-                Times[Times.Count - 1].started = DateTime.Now;
                 Timer.Restart();
             }
             else
             {
                 Times.Add(new TimeEntry(DateTime.Now));
-                Times[Times.Count - 1].started = DateTime.Now;
                 Timer.Start();
             }
+            BPrintTotalTime = true;
         }
 
         /// <summary>
@@ -314,42 +447,6 @@ namespace TimeKeeper
                 CombineIndex--;
             }
 
-        }
-
-        /// <summary>
-        /// Checks to see if any TimeEntries are marked for combining
-        /// </summary>
-        /// <returns>returns true if there are, else false</returns>
-        private static bool NoCombineMarks()
-        {
-            #region Logic behind method
-            /*
-             * Since the CombineIndexFirst and ""Last variables are going
-             * to keep ListIndex within their bounds, and grow/shrink each
-             * time the TimeEntry at ListIndex is toggled on/off, that means
-             * that those variables, if there's only one marked, will be
-             * directly next to, or equalling, ListIndex. Therefore, you only
-             * need to check, at most, three indices.
-             */
-            #endregion
-            if (!Times[ListIndex].combine)
-            {
-                //If not at 0, and above location not combine
-                if (ListIndex - 1 > -1 && !Times[ListIndex - 1].combine)
-                {
-                    //If not at end and location below not combine
-                    if (ListIndex + 1 < Times.Count - 1 && !Times[ListIndex + 1].combine)
-                    {
-                        return true;
-                    }
-                }
-                //If you made it here, then there was only one entry
-                else if (Times.Count == 1)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         /// <summary>
@@ -418,6 +515,81 @@ namespace TimeKeeper
         public static void IncListAndTop()
         {
             ListIndex++;
+        }
+
+        /// <summary>
+        /// Checks to see if any TimeEntries are marked for combining
+        /// </summary>
+        /// <returns>returns true if there are, else false</returns>
+        private static bool NoCombineMarks()
+        {
+            #region Logic behind method
+            /*
+             * Since the CombineIndexFirst and ""Last variables are going
+             * to keep ListIndex within their bounds, and grow/shrink each
+             * time the TimeEntry at ListIndex is toggled on/off, that means
+             * that those variables, if there's only one marked, will be
+             * directly next to, or equalling, ListIndex. Therefore, you only
+             * need to check, at most, three indices.
+             */
+            #endregion
+            if (!Times[ListIndex].combine)
+            {
+                //If not at 0, and above location not combine
+                if (ListIndex - 1 > -1 && !Times[ListIndex - 1].combine)
+                {
+                    //If not at end and location below not combine
+                    if (ListIndex + 1 < Times.Count - 1 && !Times[ListIndex + 1].combine)
+                    {
+                        return true;
+                    }
+                }
+                //If you made it here, then there was only one entry
+                else if (Times.Count == 1)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Prints all Time Entries
+        /// </summary>
+        public static void PrintAllTimes()
+        {
+            int left = Console.CursorLeft;
+            int top = Console.CursorTop;
+            Console.SetCursorPosition(0, 7);
+            Console.WriteLine("Time Spent\tComment");
+
+            //Print all the times and their associated marker
+            foreach (TimeEntry TI in Times)
+            {
+                if (programState == States.Combine)
+                {
+                    Console.ForegroundColor = TI.combine ? CombineOnColor : CombineOffColor;
+                    Console.Write(CombineChar);
+                }
+                else
+                {
+                    Console.ForegroundColor = TI.marked ? MarkOnColor : MarkOffColor;
+                    Console.Write(MarkChar);
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                string temp = string.Empty;
+                if (TI.comment.Length != 0)
+                    temp = TI.comment.ToString().Remove(TI.comment.Length - 1);
+#if DEBUG
+                Console.WriteLine("{0}:{1}{2}",
+                    TI.timeSpent.Minutes.ToString().PadLeft(2, '0'), TI.timeSpent.Seconds.ToString().PadRight(TAB_PAD), temp.PadRight(COMMENT_PAD));
+#else
+                Console.WriteLine("{0}:{1}{2}",
+                    TI.timeSpent.Hours.ToString().PadLeft(2, '0'), TI.timeSpent.Minutes.ToString().PadRight(TAB_PAD),
+                temp.PadRight(COMMENT_PAD));
+#endif
+            }
+            Console.SetCursorPosition(left, top);
         }
 
         /// <summary>
@@ -525,9 +697,9 @@ namespace TimeKeeper
              * 14 is the extra spaces in the \t that aren't counted...for some reason
              */
             Console.WriteLine(
-                l1p1.PadRight(PAD_AMOUNT) + l1p2.PadRight(PAD_AMOUNT) + "\n" +
-                l2p1.PadRight(PAD_AMOUNT) + l2p2.PadRight(PAD_AMOUNT) + "\n" +
-                l3p1.PadRight(PAD_AMOUNT) + l3p2.PadRight(PAD_AMOUNT) + "\n" +
+                l1p1.PadRight(INSTRUCTIONS_PAD) + l1p2.PadRight(INSTRUCTIONS_PAD) + "\n" +
+                l2p1.PadRight(INSTRUCTIONS_PAD) + l2p2.PadRight(INSTRUCTIONS_PAD) + "\n" +
+                l3p1.PadRight(INSTRUCTIONS_PAD) + l3p2.PadRight(INSTRUCTIONS_PAD) + "\n" +
                 "------------------------------------".PadRight(Console.BufferWidth));
             Console.SetCursorPosition(left, top);
         }
@@ -547,33 +719,11 @@ namespace TimeKeeper
         }
 
         /// <summary>
-        /// Uses ListIndex to print a TimeEntry to the screen
-        /// </summary>
-        public static void PrintTime()
-        {
-            int left = Console.CursorLeft;
-            int top = Console.CursorTop;
-            PrintMark();
-            Console.CursorLeft = TIME_LEFT;
-#if DEBUG
-            Console.WriteLine("{0}:{1}{2}",
-                Times[ListIndex].timeSpent.Minutes,
-                Times[ListIndex].timeSpent.Seconds.ToString().PadRight(PRINT_TABS),
-                Times[ListIndex].comment.ToString().PadRight(COMMENT_PAD));
-#else
-            Console.WriteLine("{0}:{1}{2}",
-                Times[ListIndex].timeSpent.Hours,
-                Times[ListIndex].timeSpent.Minutes.ToString().PadRight(PRINT_TABS),
-                Times[ListIndex].comment.ToString().PadRight(COMMENT_PAD));
-#endif
-            Console.SetCursorPosition(left, top);
-        }
-
-        /// <summary>
         /// Clears and prints the entire screen
         /// </summary>
         public static void PrintScreen()
         {
+            Console.Clear();
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("TIME KEEPER");
@@ -581,8 +731,6 @@ namespace TimeKeeper
             PrintInstructions();
             PrintStatus();
             PrintTotalTime();
-            Console.WriteLine();//Just to add a new line
-
             PrintAllTimes();
             SetToBottom();
         }
@@ -627,37 +775,28 @@ namespace TimeKeeper
         }
 
         /// <summary>
-        /// Prints all Time Entries
+        /// Uses ListIndex to print a TimeEntry to the screen
         /// </summary>
-        public static void PrintAllTimes()
+        public static void PrintTime()
         {
             int left = Console.CursorLeft;
             int top = Console.CursorTop;
-            Console.SetCursorPosition(0, 7);
-            Console.WriteLine("Time Spent\tComment");
-
-            //Print all the times and their associated marker
-            foreach (TimeEntry TI in Times)
-            {
-                if (programState == States.Combine)
-                {
-                    Console.ForegroundColor = TI.combine ? CombineOnColor : CombineOffColor;
-                    Console.Write(CombineChar);
-                }
-                else
-                {
-                    Console.ForegroundColor = TI.marked ? MarkOnColor : MarkOffColor;
-                    Console.Write(MarkChar);
-                }
-                Console.ForegroundColor = ConsoleColor.White;
+            PrintMark();
+            Console.CursorLeft = TIME_LEFT;
+            string temp = "";
+            if (Times[ListIndex].comment.Length != 0)
+                temp = Times[listIndex].comment.ToString().Remove(Times[ListIndex].comment.Length - 1);
 #if DEBUG
-                Console.WriteLine("{0}:{1}{2}",
-                    TI.timeSpent.Minutes.ToString().PadRight(2,'0'), TI.timeSpent.Seconds.ToString().PadRight(PRINT_TABS), TI.comment.ToString().PadRight(COMMENT_PAD));
+            Console.WriteLine("{0}:{1}{2}",
+                Times[ListIndex].timeSpent.Minutes.ToString().PadLeft(2, '0'),
+                Times[ListIndex].timeSpent.Seconds.ToString().PadRight(TAB_PAD),
+                temp.PadRight(COMMENT_PAD));
 #else
-                Console.WriteLine("{0}:{1}{2}",
-                    TI.timeSpent.Hours, TI.timeSpent.Minutes.ToString().PadRight(PRINT_TABS), TI.comment.ToString().PadRight(COMMENT_PAD));
+            Console.WriteLine("{0}:{1}{2}",
+                Times[ListIndex].timeSpent.Hours.ToString().PadLeft(2, '0'),
+                Times[ListIndex].timeSpent.Minutes.ToString().PadRight(TAB_PAD),
+                temp.PadRight(COMMENT_PAD));
 #endif
-            }
             Console.SetCursorPosition(left, top);
         }
 
@@ -674,7 +813,7 @@ namespace TimeKeeper
             Console.CursorLeft = TOTAL_LEFT;
 
             //Console.Write("Total Time: {0}:{1} ", TotalTimeSpan.Hours, TotalTimeSpan.Minutes);
-            Console.Write("Total Time: {0}".PadRight(PAD_AMOUNT), TotalTimeSpan.Duration());
+            Console.Write("Total Time: {0}".PadRight(INSTRUCTIONS_PAD), TotalTimeSpan.Duration());
 
             Console.SetCursorPosition(left, top);
         }
@@ -745,7 +884,7 @@ namespace TimeKeeper
                                 //TODO: Get combine marking working
                                 CombineMarked();
                                 ResetCombineIndices();
-                                printScreen = true;
+                                BPrintScreen = true;
                                 ProgramState = PrevState;
                                 break;
                             case States.Comment:
@@ -757,11 +896,11 @@ namespace TimeKeeper
                                 {
                                     Console.CursorLeft = COMMENT_LEFT;
                                     //Remove the comment from the screen buffer
-                                    int spaces = Times[ListIndex].comment.Length;
-                                    for (int i = 0; i < spaces; i++)
-                                        Console.Write(" ");
+                                    string temp = string.Empty;
+                                    if (Times[ListIndex].comment.Length != 0)
+                                        temp = Times[ListIndex].comment.ToString().Remove(Times[ListIndex].comment.Length - 1);
+                                    Console.Write(" ".PadRight(temp.Length));
                                     Console.CursorLeft = COMMENT_LEFT;
-
                                     Times[ListIndex].comment.Clear();
 
                                     //begin editing
@@ -784,8 +923,8 @@ namespace TimeKeeper
                             case States.Watch:
                                 AddNewTime();
                                 ListIndex++;
-                                printTime = true;
-                                printTotalTime = true;
+                                BPrintTime = true;
+                                BPrintTotalTime = true;
                                 break;
                         }
                         break;
@@ -802,9 +941,9 @@ namespace TimeKeeper
                                     ProgramState = States.Save;
                                     SetToBottom();
                                     LastLine = Console.CursorTop;
-                                    saveTimes = true;
+                                    BSaveTimes = true;
+                                    PrevState = States.Exit;
                                 }
-                                ProgramState = States.Exit;
                                 break;
                             case States.Combine:
                                 ProgramState = States.Edit;
@@ -898,10 +1037,10 @@ namespace TimeKeeper
                                 if (ListIndex < Times.Count && Times.Count != 0)
                                 {
                                     Times[ListIndex].marked = !Times[ListIndex].marked;
-                                    printMark = true;
+                                    BPrintMark = true;
                                     Console.CursorLeft = MARK_LEFT;
                                     TallyTime();
-                                    printTotalTime = true;
+                                    BPrintTotalTime = true;
                                 }
                                 break;
                         }
@@ -932,11 +1071,10 @@ namespace TimeKeeper
                             case States.Watch:
                             case States.Mark:
                             case States.Edit:
-                                Console.Clear();
                                 int left = Console.CursorLeft;
                                 LastLine = Console.CursorTop;
                                 int index = ListIndex;
-                                printScreen = true;
+                                BPrintScreen = true;
                                 Console.SetCursorPosition(left, LastLine);
                                 ListIndex = index;
                                 break;
@@ -956,7 +1094,7 @@ namespace TimeKeeper
                                     ProgramState = States.Save;
                                     SetToBottom();
                                     LastLine = Console.CursorTop;
-                                    saveTimes = true;
+                                    BSaveTimes = true;
                                     SetToBottom();
                                     ProgramState = PrevState;
                                 }
@@ -1092,7 +1230,7 @@ namespace TimeKeeper
                 }
             } while (!ValidInput);
             #endregion
-            printScreen = true;
+            PrintScreen();
             #region Do you want save the time sheet?
             do
             {
@@ -1128,6 +1266,8 @@ namespace TimeKeeper
                         break;
                     case ConsoleKey.N:
                         ValidInput = true;
+                        if (PrevState == States.Exit)
+                            ProgramState = States.Exit;
                         return;
                     default:
                         ValidInput = false;
@@ -1181,6 +1321,8 @@ namespace TimeKeeper
 
             } while (!ValidInput);
             #endregion
+            if (PrevState == States.Exit)
+                ProgramState = States.Exit;
         }
 
         /// <summary>
@@ -1205,8 +1347,6 @@ namespace TimeKeeper
                     if (TI.marked)
                         TotalTimeSpan += TI.timeSpent;
                 }
-                if (Times[Times.Count - 1].marked)
-                    TotalTimeSpan += Timer.Elapsed;
             }
         }
 
@@ -1228,10 +1368,13 @@ namespace TimeKeeper
         /// </summary>
         public static void WatchForNewDay()
         {
-            DateTime Previous = DateTime.Now, Now = DateTime.Now;
             string newDay = "New Day!";
             Now = DateTime.Now;
+#if DEBUG
+            if (Now.Minute != Previous.Minute)
+#else
             if (Now.Day != Previous.Day)
+#endif
             {
                 newDayOccurred = true;
                 AddNewTime();
@@ -1251,10 +1394,13 @@ namespace TimeKeeper
                     //Finally, add the entire comment to the newest time entry
                     Times[length].comment.Append(temp);
                 }
-                SetToBottom();
             }
             if (newDayOccurred && ProgramState == States.Watch)
-                printTime = true;
+            {
+                BPrintTime = true;
+                newDayOccurred = false;
+                SetToBottom();
+            }
             Previous = Now;
         }
 
@@ -1264,63 +1410,19 @@ namespace TimeKeeper
         /// </summary>
         public static void WatchForPrintTasks()
         {
-            bool printed = false;
-            if (printScreen)
+            if (PrintQueue.Count != 0)
             {
-                PrintScreen();
-                printScreen = false;
-                printed = true;
+                MethodInvoker temp = PrintQueue.Dequeue();
+                temp.Invoke();
+                switch (programState)
+                {
+                    case States.Comment:
+                        break;
+                    default:
+                        SetToBottom();
+                        break;
+                }
             }
-            if (printInstructions)
-            {
-                PrintInstructions();
-                printInstructions = false;
-                printed = true;
-            }
-            if (printStatus)
-            {
-                PrintStatus();
-                printStatus = false;
-                printed = true;
-            }
-            if (printTotalTime)
-            {
-                PrintTotalTime();
-                printTotalTime = false;
-                printed = true;
-            }
-            if (printAllTimes)
-            {
-                PrintAllTimes();
-                printAllTimes = false;
-                printed = true;
-            }
-            if (printMark)
-            {
-                PrintMark();
-                printMark = false;
-                printed = true;
-            }
-            if (printCombineMark)
-            {
-                PrintCombineMark();
-                printCombineMark = false;
-                printed = true;
-            }
-            if (printTime)
-            {
-                PrintTime();
-                printTime = false;
-                printed = true;
-            }
-            if (saveTimes)
-            {
-                SaveTimes();
-                saveTimes = false;
-                printed = true;
-            }
-            if (printed)
-                SetToBottom();
         }
 
         /// <summary>
@@ -1332,11 +1434,10 @@ namespace TimeKeeper
             curTime = Timer.Elapsed;
 #if DEBUG
             if (prevTime.Seconds != curTime.Seconds)
-                TimerChanged = true;
 #else
             if (prevTime.Minutes != curTime.Minutes)
-                TimerChanged = true;
 #endif
+                TimerChanged = true;
             switch (programState)
             {
                 case States.Watch:
@@ -1345,7 +1446,9 @@ namespace TimeKeeper
                         listIndex = Times.Count - 1;
                         Times[Times.Count - 1].timeSpent = Timer.Elapsed;
                         SetToBottom();
-                        printTime = true;
+                        BPrintTime = true;
+                        if (Times[Times.Count - 1].marked)
+                            BPrintTotalTime = true;
                         TimerChanged = false;
                     }
                     break;
@@ -1379,15 +1482,23 @@ namespace TimeKeeper
             sw.WriteLine("Program Started on {0}/{1}/{2} at {3}",
                 StartingDate.Month, StartingDate.Day, StartingDate.Year, StartingDate.TimeOfDay);
             sw.WriteLine("Total Time: {0}", TotalTimeSpan.Duration());
-            sw.WriteLine(" Time In\t\tTime Out\t\tTime Spent\t\t\tComment");
+            sw.WriteLine(" Time In".PadRight(16) + "Time Out".PadRight(16) + "Time Spent".PadRight(20) + "Comment");
 
             foreach (TimeEntry TI in Times)
             {
-                sw.WriteLine("{0}{1}\t\t\t{2}\t\t\t{3}:{4}\t\t\t\t\t{5}", TI.marked ? "M" : " ",
-                    TI.started.TimeOfDay.Duration().ToString(@"hh\:mm"), TI.ended.TimeOfDay.Duration().ToString(@"hh\:mm"), TI.timeSpent.Hours, TI.timeSpent.Minutes, TI.comment);
+                string tempComment = string.Empty;
+                if (TI.comment.Length != 0)
+                    tempComment = TI.comment.ToString().Remove(TI.comment.Length - 1);
+                sw.WriteLine("{0}{1}{2}{3}:{4}{5}",
+                    TI.marked ? "M" : " ",
+                    TI.started.TimeOfDay.Duration().ToString(@"hh\:mm").PadRight(15),
+                    TI.ended.TimeOfDay.Duration().ToString(@"hh\:mm").PadRight(16),
+                    TI.timeSpent.Hours.ToString().PadLeft(2, '0'),
+                    TI.timeSpent.Minutes.ToString().PadRight(17, '.'),
+                    tempComment);
             }
             DateTime tempEnding = DateTime.Now;
-            sw.Write("Program ended on {0}/{1}/{2} at ", tempEnding.Month, tempEnding.Day, tempEnding.Year, tempEnding.TimeOfDay);
+            sw.WriteLine("Program ended on {0}/{1}/{2} at {3}", tempEnding.Month, tempEnding.Day, tempEnding.Year, tempEnding.TimeOfDay);
             sw.Close();
 
         }
