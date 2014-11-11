@@ -768,6 +768,7 @@ namespace TimeKeeper
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
             }
+            //Just enough to clear the longest state name
             Console.Write(ProgramState.ToString().PadRight(7));
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -1475,9 +1476,6 @@ namespace TimeKeeper
                 fs = new FileStream(temp, FileMode.CreateNew);
 
             StreamWriter sw = new StreamWriter(fs);
-
-            if (File.Exists(temp))
-                sw.WriteLine("---------------------------");
 
             sw.WriteLine("Program Started on {0}/{1}/{2} at {3}",
                 StartingDate.Month, StartingDate.Day, StartingDate.Year, StartingDate.TimeOfDay);
