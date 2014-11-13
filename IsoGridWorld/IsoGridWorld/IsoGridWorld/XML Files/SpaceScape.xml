@@ -1,0 +1,8 @@
+﻿<project name="SpaceScape" width="182" height="99" layer_height="30">
+  <file in-game="true" directory="C:/Users/Ks/Pictures/Assorted Game Pics/SpaceScape/platform.png">
+    <footprint directory="C:/Users/Ks/Pictures/Assorted Game Pics/Iso Stuff/Iso Dump Footprints.png">
+      <isopiece name="platform" srcx="0" srcy="0"></isopiece>
+    </footprint>
+  </file>
+</project>
+<!--this is a test-->

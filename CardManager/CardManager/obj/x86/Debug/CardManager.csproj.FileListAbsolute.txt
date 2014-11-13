@@ -1,0 +1,7 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\bin\x86\Debug\CardManager.dll
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\bin\x86\Debug\CardManager.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\obj\x86\Debug\CardManager.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\obj\x86\Debug\CardManager.dll
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\obj\x86\Debug\CardManager.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\CardManager\CardManager\bin\x86\Debug\CardManager.XML

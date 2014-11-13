@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="GoTheGame">
+</Property><Property Name="Solution File" Value="F:\GoTheGame\GoTheGame.sln">
+</Property><Property Name="User Options File" Value="F:\GoTheGame\GoTheGame.suo">
+</Property><Property Name="Date" Value="Sunday, January 30, 2011">
+</Property><Property Name="Time" Value="10:00 AM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="GoTheGame.sln" Description="File successfully backed up as F:\GoTheGame\Backup\GoTheGame.sln">
+</Event><Event ErrorLevel="0" Project="" Source="GoTheGame.suo" Description="File successfully backed up as F:\GoTheGame\Backup\GoTheGame.suo">
+</Event><Event ErrorLevel="0" Project="GoTheGame" Source="GoTheGame\GoTheGame.csproj" Description="Project file successfully backed up as F:\GoTheGame\Backup\GoTheGame\GoTheGame.csproj">
+</Event><Event ErrorLevel="0" Project="GoTheGame" Source="GoTheGame\Program.cs" Description="File successfully backed up as F:\GoTheGame\Backup\GoTheGame\Program.cs">
+</Event><Event ErrorLevel="0" Project="GoTheGame" Source="GoTheGame\Properties\AssemblyInfo.cs" Description="File successfully backed up as F:\GoTheGame\Backup\GoTheGame\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="GoTheGame" Source="GoTheGame\GoTheGame.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="GoTheGame" Source="GoTheGame\GoTheGame.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="GoTheGame.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="GoTheGame.sln" Description="Converted">
+</Event><Event ErrorLevel="0" Project="GoTheGame" Source="GoTheGame\GoTheGame.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

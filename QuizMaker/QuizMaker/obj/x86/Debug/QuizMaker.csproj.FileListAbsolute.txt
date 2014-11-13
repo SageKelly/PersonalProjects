@@ -1,0 +1,5 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\QuizMaker\QuizMaker\bin\Debug\QuizMaker.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\QuizMaker\QuizMaker\bin\Debug\QuizMaker.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\QuizMaker\QuizMaker\obj\x86\Debug\QuizMaker.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\QuizMaker\QuizMaker\obj\x86\Debug\QuizMaker.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\QuizMaker\QuizMaker\obj\x86\Debug\QuizMaker.pdb

@@ -1,0 +1,5 @@
+E:\GoTheGame\Backup\GoTheGame\bin\Debug\GoTheGame.exe
+E:\GoTheGame\Backup\GoTheGame\bin\Debug\GoTheGame.pdb
+E:\GoTheGame\Backup\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+E:\GoTheGame\Backup\GoTheGame\obj\Debug\GoTheGame.exe
+E:\GoTheGame\Backup\GoTheGame\obj\Debug\GoTheGame.pdb

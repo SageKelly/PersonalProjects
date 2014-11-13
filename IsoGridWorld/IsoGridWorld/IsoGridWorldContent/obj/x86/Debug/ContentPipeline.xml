@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Font.spritefont</Source>
+      <Name>Font</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Font.xnb</Output>
+      <Time>2014-04-15T00:35:24.9813562-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Iso Dump.png</Source>
+      <Name>Iso Dump</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Iso Dump.xnb</Output>
+      <Time>2014-04-25T22:55:19.0787737-04:00</Time>
+    </Item>
+    <Item>
+      <Source>IsomanANIM.png</Source>
+      <Name>IsomanANIM</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\IsomanANIM.xnb</Output>
+      <Time>2014-04-26T02:55:09.6874869-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Iso Arrow.png</Source>
+      <Name>Iso Arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Iso Arrow.xnb</Output>
+      <Time>2014-04-30T12:59:48.4355645-04:00</Time>
+    </Item>
+    <Item>
+      <Source>Square Hit.wav</Source>
+      <Name>Square Hit</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Square Hit.xnb</Output>
+      <Time>2014-05-05T18:44:25.2797538-04:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorldContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorldContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2013-01-27T22:14:24.2697162-05:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,10 @@
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache

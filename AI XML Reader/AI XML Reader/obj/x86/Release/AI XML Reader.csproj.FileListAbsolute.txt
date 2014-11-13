@@ -1,0 +1,10 @@
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\bin\Release\AI XML Reader.exe
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\bin\Release\AI XML Reader.pdb
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\obj\x86\Release\AI XML Reader.exe
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\obj\x86\Release\AI XML Reader.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\AI XML Reader\AI XML Reader\bin\Release\AI XML Reader.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\AI XML Reader\AI XML Reader\bin\Release\AI XML Reader.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\AI XML Reader\AI XML Reader\obj\x86\Release\AI XML Reader.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\AI XML Reader\AI XML Reader\obj\x86\Release\AI XML Reader.pdb
+C:\Users\Kasha\Desktop\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Release\AI XML Reader.exe
+C:\Users\Kasha\Desktop\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Release\AI XML Reader.pdb

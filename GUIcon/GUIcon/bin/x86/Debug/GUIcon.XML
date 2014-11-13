@@ -1,0 +1,744 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GUIcon</name>
+    </assembly>
+    <members>
+        <member name="T:EZUI.PicLibrary">
+            <summary>
+            A class that holds both Texture2Ds and user-defined GUIcons
+            </summary>
+        </member>
+        <member name="M:EZUI.PicLibrary.#ctor">
+            <summary>
+            Keeps track of all the images within the SceneManager: DOES NOT WORK; DO NOT USE
+            </summary>
+        </member>
+        <member name="M:EZUI.PicLibrary.AddPic(System.String,Microsoft.Xna.Framework.Graphics.Texture2D)">
+            <summary>
+            Adds a image to a list with a name attached
+            </summary>
+            <param name="name">The name of the image</param>
+            <param name="pic">The image</param>
+        </member>
+        <member name="M:EZUI.PicLibrary.AddGUIcon(System.String,EZUI.GUIcon)">
+            <summary>
+            Adds a GUIcon to a list with a name attached
+            </summary>
+            <param name="name">The name of the GUIcon</param>
+            <param name="GUIC">The GUIcon</param>
+        </member>
+        <member name="M:EZUI.PicLibrary.GetPic(System.String)">
+            <summary>
+            Returns the requested image by name
+            </summary>
+            <param name="name">The name of the image</param>
+            <returns>The image</returns>
+        </member>
+        <member name="M:EZUI.PicLibrary.GetGUIcon(System.String)">
+            <summary>
+            Returns the GUIcon by name
+            </summary>
+            <param name="name">The name of the GUIcon</param>
+            <returns>The GUIcon</returns>
+        </member>
+        <member name="T:EZUI.ClickEventHandler">
+            <summary>
+            Handles any clicks that occur
+            </summary>
+            <param name="MS">The State of the Mouse</param>
+        </member>
+        <member name="T:EZUI.HoldEventHandler">
+            <summary>
+            Handles when the mouse is holding down a button
+            </summary>
+            <param name="MS"></param>
+        </member>
+        <member name="T:EZUI.ReleaseEventHandler">
+            <summary>
+            Handles when the mouse has been released from a hold event
+            </summary>
+            <param name="MS"></param>
+        </member>
+        <member name="T:EZUI.SceneManager">
+            <summary>
+            Keeps track of all the scenes within the game
+            </summary>
+        </member>
+        <member name="F:EZUI.SceneManager.DIST_TOL">
+             <summary>
+            1
+            </summary>
+        </member>
+        <member name="F:EZUI.SceneManager.TrackingMouse">
+            <summary>
+            Denotes whether or not mouse events are being raised by the SceneManager
+            </summary>
+        </member>
+        <member name="F:EZUI.SceneManager.isDebug">
+            <summary>
+            Toggles debug utilities on and off
+            </summary>
+        </member>
+        <member name="M:EZUI.SceneManager.#ctor(Microsoft.Xna.Framework.Game,EZUI.Scene)">
+            <summary>
+            A class that keeps a collection of scenes and maintains the order to their drawing.
+            </summary>
+            <param name="game">The game in which the class is being used</param>
+            <param name="DefaultScene">The starting scene</param>
+        </member>
+        <member name="M:EZUI.SceneManager.AddScene(EZUI.Scene)">
+            <summary>
+            Adds scenes to the collection of scenes
+            </summary>
+            <param name="SceneObject">The Scene Object</param>
+        </member>
+        <member name="M:EZUI.SceneManager.FindScene(System.String)">
+            <summary>
+            Finds a Scene Object
+            </summary>
+            <param name="name">The name of the Scene</param>
+            <returns>Return the Scene if found. Else, it returns null</returns>
+        </member>
+        <member name="M:EZUI.SceneManager.SetupDebug(Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Graphics.SpriteFont)">
+            <summary>
+            Sets up the SceneManager to display debug information
+            </summary>
+            <param name="debugSprite">A necessary sprite</param>
+            <param name="font">a necessary SpriteFont</param>
+        </member>
+        <member name="M:EZUI.SceneManager.TurnOffDebug">
+            <summary>
+            Turns off debug mode
+            </summary>
+        </member>
+        <member name="M:EZUI.SceneManager.Initialize">
+            <summary>
+            Sets up the SceneManager
+            </summary>
+        </member>
+        <member name="M:EZUI.SceneManager.Update(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Updates SceneManager: THIS DOES NOT NEED TO BE CALLED
+            </summary>
+            <param name="gameTime">GameTime</param>
+        </member>
+        <member name="M:EZUI.SceneManager.Draw(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Draws the active Scene
+            </summary>
+            <param name="gameTime">GameTime</param>
+        </member>
+        <member name="T:EZUI.ActivityHandler">
+            <summary>
+            Handles any of the Scene's activities
+            </summary>
+            <param name="S">The calling Scene</param>
+        </member>
+        <member name="T:EZUI.Scene">
+            <summary>
+            Represents a game state
+            </summary>
+        </member>
+        <member name="F:EZUI.Scene.BGColor">
+            <summary>
+            The background color for the Scene
+            </summary>
+        </member>
+        <member name="F:EZUI.Scene.GUICs">
+            <summary>
+            The list of GUIcons
+            </summary>
+        </member>
+        <member name="M:EZUI.Scene.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Color)">
+            <summary>
+            A set of Widgets for a particular game state
+            </summary>
+            <param name="game">The game in which this scene will be</param>
+            <param name="name">The name of the Scene</param>
+            <param name="BackgroundColor">The color of the background for the scene</param>
+        </member>
+        <member name="M:EZUI.Scene.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Color,System.Collections.Generic.List{EZUI.Widget})">
+            <summary>
+            A set of Widgets for a particular game state
+            </summary>
+            <param name="game">The game in which this scene will be</param>
+            <param name="name">The name of the Scene</param>
+            <param name="BackgroundColor">The color of the background for the scene</param>
+            <param name="widgets">Predefined Widgets to be inserted into this Scene</param>
+        </member>
+        <member name="M:EZUI.Scene.AddToActiveList(EZUI.Widget)">
+            <summary>
+            Adds a Widget to the Active and Clickable Widget lists
+            </summary>
+            <param name="W">The alleged Widget</param>
+        </member>
+        <member name="M:EZUI.Scene.RemoveFromActiveList(EZUI.Widget)">
+            <summary>
+            Removes a Widget from the Active and Clickable Widget lists
+            </summary>
+            <param name="W">The alleged Widget</param>
+        </member>
+        <member name="M:EZUI.Scene.FindWidget(System.String)">
+            <summary>
+            Finds a Widget by name
+            </summary>
+            <param name="name">The name of Widget being sought</param>
+            <returns>Returns the Widget if found. Else returns null</returns>
+        </member>
+        <member name="M:EZUI.Scene.FindGUIcon(System.String)">
+            <summary>
+            Finds a GUIcon by name
+            </summary>
+            <param name="name">The name of GUIcon being sought</param>
+            <returns>Returns the GUIcon if found. Else returns null</returns>
+        </member>
+        <member name="M:EZUI.Scene.AddWidget(EZUI.Widget)">
+            <summary>
+            Adds a Widget to the Scene
+            </summary>
+            <param name="W">The Widget to be added</param>
+        </member>
+        <member name="M:EZUI.Scene.AddGUIcon(EZUI.GUIcon)">
+            <summary>
+            Adds a GUIcon to the Scene. Is active by default
+            </summary>
+            <param name="GUIC">The GUIcon to be added</param>
+        </member>
+        <member name="M:EZUI.Scene.UpdateScene(Microsoft.Xna.Framework.GameTime,Microsoft.Xna.Framework.Input.MouseState)">
+            <summary>
+            Updates the Scene
+            </summary>
+            <param name="gameTime">GameTime</param>
+            <param name="MS">Mouse State</param>
+        </member>
+        <member name="M:EZUI.Scene.DrawScene(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Draws the Scene
+            </summary>
+            <param name="gameTime">GameTime</param>
+        </member>
+        <member name="P:EZUI.Scene.Name">
+            <summary>
+            The meta-name of the Scene
+            </summary>
+        </member>
+        <member name="P:EZUI.Scene.IsActive">
+            <summary>
+            Denotes whether or not the Scene is active
+            </summary>
+        </member>
+        <member name="E:EZUI.Scene.Activate">
+            <summary>
+            An event that triggers when the Scene is turned on
+            </summary>
+        </member>
+        <member name="E:EZUI.Scene.Deactivate">
+            <summary>
+            An event that triggers when the Scene is turned off
+            </summary>
+        </member>
+        <member name="T:EZUI.MouseClickHandler">
+            <summary>
+            This will occur once this GUIcon has been on clicked
+            </summary>
+        </member>
+        <member name="T:EZUI.MouseEnterHandler">
+            <summary>
+            Handles any time the Mouse cursor enters a GUIcon
+            </summary>
+            <param name="GUIC">The calling GUIcon</param>
+        </member>
+        <member name="T:EZUI.MouseExitHandler">
+            <summary>
+            Handles any time the Mouse exits the GUIcon
+            </summary>
+            <param name="GUIC">The calling GUIcon</param>
+        </member>
+        <member name="T:EZUI.GUIconActivationHandler">
+            <summary>
+            Handles any activation or deactivation of the GUIcon
+            </summary>
+            <param name="GUIC">The calling GUIcon</param>
+        </member>
+        <member name="T:EZUI.GUIcon">
+            <summary>
+            The most basic element of a Widget or Scene
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Rotation">
+            <summary>
+            Used to determine the rotation origin of the image
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.FontText">
+            <summary>
+            What the text of the GUIcon reads
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.HitBounds">
+            <summary>
+            The collision bounds for the GUIcon in terms of click or whatever
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.SrcBounds">
+            <summary>
+            The area of space referencing the sampled image
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Image">
+            <summary>
+            The image itself
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Center">
+            <summary>
+            The center orientation of the image
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Position">
+            <summary>
+            The position of the GUIcon
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Velocity">
+            <summary>
+            The velocity of the GUIcon
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Acceleration">
+            <summary>
+            The acceleration of the GUIcon
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.FontPosition">
+            <summary>
+            Used to designate the GUIcon's font's position
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Scale">
+            <summary>
+            Used to determine the size of which to display the scale of the image
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Tint">
+            <summary>
+            The tint of the image
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.BGColor">
+            <summary>
+            The Basic Background color
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.FontColor">
+            <summary>
+            The color for the font
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.Font">
+            <summary>
+            The SpriteFont used for the GUIcon
+            </summary>
+        </member>
+        <member name="F:EZUI.GUIcon.spriteEffects">
+            <summary>
+            The effect of the image for the GUIcon
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.#ctor(Microsoft.Xna.Framework.Game,System.String)">
+            <summary>
+            Creates a default clickable icon for the screen to display
+            </summary>
+            <param name="game">The Game in which this GUIcon will be used</param>
+            <param name="name">The name of the GUIcon</param>
+        </member>
+        <member name="M:EZUI.GUIcon.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Color)">
+             <summary>
+             Creates a clickable icon for the screen to display.
+             This creates a basic background for the GUIcon
+             </summary>
+             <param name="game">The Game in which this GUIcon will be used</param>
+             <param name="name">The name of the GUIcon</param>
+            <param name="Bounds">The hitboudns for the button</param>
+             <param name="position">Where to display the GUIcon. In this constructor,
+             the hitbounds are automatically calculated by the image</param>
+             <param name="BackgroundColor">The tint of the image</param>
+             <param name="tint">The tint of the background</param>
+        </member>
+        <member name="M:EZUI.GUIcon.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Creates a clickable icon for the screen to display
+            </summary>
+            <param name="game">The Game in which this GUIcon will be used</param>
+            <param name="name">The name of the GUIcon</param>
+            <param name="image">The Texture2D used for image</param>
+            <param name="position">Where to display the GUIcon. In this constructor,
+            the hitbounds are automatically calculated by the image</param>
+            <param name="tint">The tint of the image</param>
+        </member>
+        <member name="M:EZUI.GUIcon.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Creates a clickable icon for the screen to display
+            </summary>
+            <param name="game">The Game in which this GUIcon will be used</param>
+            <param name="name">The name of the GUIcon</param>
+            <param name="image">The Texture2D used for image</param>
+            <param name="position">Where to display the GUIcon</param>
+            <param name="tint">The tint of the image</param>
+            <param name="hitBounds">The hitbox for the image</param>
+        </member>
+        <member name="M:EZUI.GUIcon.DefineDrawType(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Inherently determines the drawtype based on the method version used
+            </summary>
+            <param name="SourceBounds">Standard</param>
+        </member>
+        <member name="M:EZUI.GUIcon.DefineDrawType(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Graphics.SpriteEffects)">
+            <summary>
+            Inherently determines the drawtype based on the method version used
+            </summary>
+            <param name="SourceBounds">Standard</param>
+            <param name="RotationOrigin">Standard</param>
+            <param name="Scale">Standard</param>
+            <param name="spriteEffects">Standard</param>
+        </member>
+        <member name="M:EZUI.GUIcon.DefineDrawType(Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Graphics.SpriteEffects)">
+            <summary>
+            Inherently determines the drawtype based on the method version used
+            </summary>
+            <param name="SourceBounds">Standard</param>
+            <param name="Scale">Standard</param>
+            <param name="spriteEffects">Standard</param>
+        </member>
+        <member name="M:EZUI.GUIcon.DefineFont(Microsoft.Xna.Framework.Graphics.SpriteFont,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Vector2,System.String)">
+            <summary>
+            Define the parameters for a SpriteFont to draw
+            </summary>
+            <param name="font">Standard</param>
+            <param name="fontColor">Standard</param>
+            <param name="fontPosition">Standard</param>
+            <param name="text">What the SpriteFont Object will read</param>
+        </member>
+        <member name="M:EZUI.GUIcon.Equals(EZUI.GUIcon)">
+            <summary>
+            Used to set a GUIcon equal to a Piece
+            </summary>
+            <param name="p"></param>
+        </member>
+        <member name="M:EZUI.GUIcon.Initialize">
+            <summary>
+            Sets up the GUIcon
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.CheckForMouseEnterOrExit(Microsoft.Xna.Framework.Input.MouseState)">
+            <summary>
+            Checks to see if the mouse has entered or exited this 
+            particular GUIcon
+            </summary>
+            <param name="MS">State of the mouse when the click occurred</param>
+        </member>
+        <member name="M:EZUI.GUIcon.OnActivate">
+            <summary>
+            Throws the GUIconActivation event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.OnDeactivate">
+            <summary>
+            Throws the GUIconDeactivation event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.OnMouseLClick">
+            <summary>
+            Throws the MethodLauncher event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.OnMouseRClick">
+            <summary>
+            Throws the MethodLauncher event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.OnMouseEnter">
+            <summary>
+            Throws the MouseEnter Event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.OnMouseExit">
+            <summary>
+            Throwst the MouseExit event
+            </summary>
+        </member>
+        <member name="M:EZUI.GUIcon.CheckForLClick(Microsoft.Xna.Framework.Input.MouseState)">
+            <summary>
+            Checks to see if the click has occurred on this 
+            particular GUIcon
+            </summary>
+            <param name="MS">State of the mouse when the click occurred</param>
+        </member>
+        <member name="M:EZUI.GUIcon.CheckForRClick(Microsoft.Xna.Framework.Input.MouseState)">
+            <summary>
+            Checks to see if the click has occurred on this 
+            particular GUIcon
+            </summary>
+            <param name="MS">State of the mouse when the click occurred</param>
+        </member>
+        <member name="P:EZUI.GUIcon.IsActive">
+            <summary>
+            Used to determine if the GUIcon is active
+            </summary>
+        </member>
+        <member name="P:EZUI.GUIcon.DrawType">
+            <summary>
+            Used to determine how the GUIcon should be drawn 
+            when considering the Draw method down below (1-3)
+            </summary>
+        </member>
+        <member name="P:EZUI.GUIcon.Name">
+            <summary>
+            The meta-name of the GUIcon
+            </summary>
+        </member>
+        <member name="P:EZUI.GUIcon.IsEntered">
+            <summary>
+            Denotes whether or not the cursor is hovering over the GUIcon
+            </summary>
+        </member>
+        <member name="P:EZUI.GUIcon.IsLClicked">
+            <summary>
+            Denotes whether or not the GUIcon has been clicked
+            </summary>
+        </member>
+        <member name="P:EZUI.GUIcon.IsRClicked">
+            <summary>
+            Denotes whether or not the GUIcon has been clicked
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.MouseLClickEvent">
+            <summary>
+            The event for when the GUIcon is left clicked
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.MouseRClickEvent">
+            <summary>
+            The event for when the GUIcon is right clicked
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.MouseEnterEvent">
+            <summary>
+            The event for whenever the mouse enters the GUIcon's collision bounds
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.MouseExitEvent">
+            <summary>
+            The event for whenever the mouse exits the GUIcon's collision bounds
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.Activated">
+            <summary>
+            Sends an event when the GUIcon is activated
+            </summary>
+        </member>
+        <member name="E:EZUI.GUIcon.Deactivated">
+            <summary>
+            Sends and event when the GUIcon is deactivated
+            </summary>
+        </member>
+        <member name="T:EZUI.FocusHandler">
+            <summary>
+            Handles Focusing events
+            </summary>
+        </member>
+        <member name="T:EZUI.WidgetActivityHandler">
+            <summary>
+            Handles any Widget activity
+            </summary>
+            <param name="W">The calling Widget</param>
+        </member>
+        <member name="T:EZUI.WidgetClickHandler">
+            <summary>
+            Handles clicking on the Widget
+            </summary>
+            <param name="W">The calling Widget</param>
+        </member>
+        <member name="T:EZUI.Widget">
+            <summary>
+            A window/ dialog box for the Scene
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.WindowWidth">
+            
+        </member>
+        <member name="F:EZUI.Widget.WindowHeight">
+            
+        </member>
+        <member name="F:EZUI.Widget.BackGroundColor">
+            <summary>
+            The back ground color for the widget
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.MaskingTint">
+            <summary>
+            The tint for the font
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.Background">
+            <summary>
+            The GUIcon used for the background
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.HeaderBackground">
+            <summary>
+            The GUIcon used for the background image of the header of the Widget
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.HeaderColor">
+            <summary>
+            The color of the Header
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.HeaderTextColor">
+            <summary>
+            The tint of the title bar's text
+            </summary>
+        </member>
+        <member name="F:EZUI.Widget.Hitbounds">
+            <summary>
+            Hitbounds for the Widget
+            </summary>
+        </member>
+        <member name="M:EZUI.Widget.#ctor(Microsoft.Xna.Framework.Game,System.String)">
+            <summary>
+            Sets up an interface Scene
+            </summary>
+            <param name="game">The game in which this will be</param>
+            <param name="name">The name of the Widget</param>
+        </member>
+        <member name="M:EZUI.Widget.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,System.Int32,Microsoft.Xna.Framework.Color,System.Boolean)">
+            <summary>
+            Sets up an interface Scene
+            </summary>
+            <param name="game">The game in which this will be</param>
+            <param name="name">The name of the Widget</param>
+            <param name="bgColor">The color of the background to be drawn
+            <param name="position">The position of the main body of the Widget</param>
+            <param name="BGSize">The startup size of the Background for the Widget </param>
+            if no picture is necessary(smallest is 5 X 11)</param>
+            <param name="headerHeight">The height of the draggable header of the Widget (can't be smaller than 10)</param>
+            <param name="headerColor">The color of the title bar</param>
+            <param name="forceFocus">To designate this widget holding focus until deactivation</param>
+        </member>
+        <member name="M:EZUI.Widget.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Vector2,EZUI.GUIcon,EZUI.GUIcon)">
+            <summary>
+            Sets up an interface Scene
+            </summary>
+            <param name="game">The game in which this will be</param>
+            <param name="name">The name of the Widget</param>
+            <param name="position">The position of the main body of the Widget</param>
+            <param name="background">Sets a user-define background for the main body of the Widget</param>
+            <param name="headerBackgroud">Sets a user-defined background for the header of the Widget</param>
+        </member>
+        <member name="M:EZUI.Widget.#ctor(Microsoft.Xna.Framework.Game,System.String,Microsoft.Xna.Framework.Vector2,EZUI.GUIcon,System.Int32)">
+            <summary>
+            Sets up an interface Scene
+            </summary>
+            <param name="game">The game in which this will be</param>
+            <param name="name">The name of the Widget</param>
+            <param name="position">The position of the main body of the Widget</param>
+            <param name="background">Sets a user-defined background for the entire Widget</param>
+            <param name="headerHeight">The height of the draggable header of the Widget (can't be smaller than 10)</param>
+        </member>
+        <member name="M:EZUI.Widget.AddGUIcon(EZUI.GUIcon)">
+            <summary>
+            Adds a GUIcon to the Widget
+            </summary>
+            <param name="GUIC">The GUIcon to be added</param>
+        </member>
+        <member name="M:EZUI.Widget.FindGUIcon(System.String)">
+            <summary>
+            Finds a GUIcon by name
+            </summary>
+            <param name="name">The name of GUIcon being sought</param>
+            <returns>Returns the GUIcon if found. Else returns null</returns>
+        </member>
+        <member name="M:EZUI.Widget.DefineHeader(Microsoft.Xna.Framework.Graphics.SpriteFont,System.String,Microsoft.Xna.Framework.Color)">
+            <summary>
+            Defines the details of the header for this Widget
+            </summary>
+            <param name="headerFont">The SpriteFont used for the header</param>
+            <param name="text">What the header will say</param>
+            <param name="textColor">The color of the header's text</param>
+        </member>
+        <member name="M:EZUI.Widget.Initialize">
+            <summary>
+            Sets up the Widget
+            </summary>
+        </member>
+        <member name="M:EZUI.Widget.Draw(Microsoft.Xna.Framework.GameTime)">
+            <summary>
+            Draws the Widget
+            </summary>
+            <param name="gameTime">GameTime</param>
+        </member>
+        <member name="P:EZUI.Widget.InFocus">
+            <summary>
+            Denotes whether of not the Widget is in focus
+            </summary>
+        </member>
+        <member name="P:EZUI.Widget.IsActive">
+            <summary>
+            Denotes whether or not the Widget is open
+            </summary>
+        </member>
+        <member name="P:EZUI.Widget.Name">
+            <summary>
+            The meta name of the Widget
+            </summary>
+        </member>
+        <member name="P:EZUI.Widget.HeaderText">
+            <summary>
+            What the Widget's Title bar will say
+            </summary>
+        </member>
+        <member name="P:EZUI.Widget.ForceFocus">
+            <summary>
+            Denotes whether or not this Widget will open
+            other Widgets that force focus until completion
+            </summary>
+        </member>
+        <member name="P:EZUI.Widget.Position">
+            <summary>
+            Offset position for the Widget and its GUIcons collectively
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.GainFocus">
+            <summary>
+            For when the Widget gains focus/gets clicked on
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.LoseFocus">
+            <summary>
+            For the when the Widget loses focus
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.Activated">
+            <summary>
+            For when the Widget pops up
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.Deactivated">
+            <summary>
+            For when the Widget
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.LClicked">
+            <summary>
+            Handles when the Widget has been Left clicked
+            </summary>
+        </member>
+        <member name="E:EZUI.Widget.RClicked">
+            <summary>
+            Handles when the Widget has been right clicked
+            </summary>
+        </member>
+    </members>
+</doc>

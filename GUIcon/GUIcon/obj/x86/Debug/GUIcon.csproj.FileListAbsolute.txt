@@ -1,0 +1,8 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\obj\x86\Debug\GUIcon.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\bin\x86\Debug\GUIcon.dll
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\bin\x86\Debug\GUIcon.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\obj\x86\Debug\GUIcon.dll
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\obj\x86\Debug\GUIcon.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\bin\x86\Debug\Green Circle.png
+C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\GUIcon\GUIcon\bin\x86\Debug\GUIcon.XML

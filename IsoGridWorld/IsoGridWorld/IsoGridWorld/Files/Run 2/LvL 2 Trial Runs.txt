@@ -1,0 +1,33 @@
+Level: {0}
+Width: 10, Height 10
+Cheese Tile location: 8,6
+Number of runs: 27
+Average Step per trial: 212
+Tile: 5, 7; Length: 3420
+Tile: 1, 7; Length: 488
+Tile: 8, 4; Length: 286
+Tile: 1, 7; Length: 174
+Tile: 8, 6; Length: 0
+Tile: 7, 3; Length: 128
+Tile: 3, 7; Length: 36
+Tile: 3, 7; Length: 206
+Tile: 3, 4; Length: 193
+Tile: 6, 7; Length: 3
+Tile: 2, 7; Length: 11
+Tile: 4, 7; Length: 27
+Tile: 5, 3; Length: 46
+Tile: 4, 7; Length: 79
+Tile: 3, 1; Length: 116
+Tile: 3, 3; Length: 128
+Tile: 3, 1; Length: 76
+Tile: 3, 5; Length: 14
+Tile: 7, 8; Length: 71
+Tile: 3, 4; Length: 39
+Tile: 4, 3; Length: 49
+Tile: 8, 8; Length: 22
+Tile: 3, 5; Length: 20
+Tile: 6, 8; Length: 30
+Tile: 7, 8; Length: 13
+Tile: 6, 6; Length: 6
+Tile: 3, 6; Length: 46
+

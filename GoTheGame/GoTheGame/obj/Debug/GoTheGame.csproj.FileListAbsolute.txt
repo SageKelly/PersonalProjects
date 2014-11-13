@@ -1,0 +1,31 @@
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\Projects\MY PROJECTS\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+F:\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+F:\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+F:\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+F:\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+F:\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+E:\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+E:\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe.CodeAnalysisLog.xml
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe.lastcodeanalysissucceeded
+C:\Users\Kasha\Documents\Visual Studio 2008\PROJECTS 2008\MY PROJECTS 2008\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\GoTheGame.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\GoTheGame.pdb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\bin\Debug\GoTheGame.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\bin\Debug\GoTheGame.pdb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\GoTheGame\GoTheGame\obj\Debug\GoTheGame.csprojResolveAssemblyReference.cache

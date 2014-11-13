@@ -1,0 +1,14 @@
+﻿width
+10
+height
+10
+depth
+1
+(list of wall tile IDs: not collapsed walls)
+1,3,
+cheese tile ID
+5
+(relation table of the wall IDs to the collapsed wall IDs spelled out like so)
+1:2,3:4
+(a width X length table with numbers not exceeding of the loaded .xml file)
+(depth is expressed in separate tables of the same width and height)

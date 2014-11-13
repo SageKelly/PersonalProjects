@@ -1,0 +1,23 @@
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL -1.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL 0.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL 1.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL 2.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL 3.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\LvL 4.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Files\Test.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\XML Files\IsoStuffXML.xml
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\XML Files\SpaceScape.xml
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\XML Files\XMLtemplate.xml
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Font.xnb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Iso Dump.xnb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\IsomanANIM.xnb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Iso Arrow.xnb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Square Hit.xnb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\Iso Dump.png
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\Content\IsomanANIM.png
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\IsoGridWorld.exe
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\bin\x86\Debug\IsoGridWorld.pdb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\obj\x86\Debug\IsoGridWorld.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\obj\x86\Debug\IsoGridWorld.exe
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 3\IsoGridWorld\IsoGridWorld\IsoGridWorld\obj\x86\Debug\IsoGridWorld.pdb

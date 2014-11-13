@@ -1,0 +1,21 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Large Font.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Small Font.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Sudoku Solver.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Sudoku Solver.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 1.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 2.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Right Space.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Grid.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine H.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine V.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Space.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Wrong Space.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Single Circle.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Unique Square.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Try Space.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Check Mark.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Mark.xnb

@@ -1,0 +1,1 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku SolverContent\obj\x86\Debug\Sudoku SolverContent.contentprojResolveAssemblyReference.cache

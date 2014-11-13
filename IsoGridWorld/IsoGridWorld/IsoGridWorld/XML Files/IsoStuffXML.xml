@@ -1,0 +1,47 @@
+<project name="IsoDump" footprint_width="54">
+  <file directory="C:/Users/Kasha/Pictures/Pixel Art/Iso Stuff/Iso Dump.png">
+    <isopiece name="floor panel" id="1" srcx="0" srcy="0" srcheight="28"/>
+    <isopiece name="tall tower" id="2" srcx="54" srcy="0" srcheight="89"/>
+    <isopiece name="shrunk tower" id="3" srcx="108" srcy="0" srcheight="42"/>
+    <isopiece name="Deh Cheese" id="4" srcx="162" srcy="0" srcheight="54"/>
+    
+    <isopiece name="tech floor" id="5" srcx="0" srcy="89" srcheight="28"/>
+    <isopiece name="tech tower" id="6" srcx="54" srcy="89" srcheight="89"/>
+    <isopiece name="tech shrunk tower" id="7" srcx="108" srcy="89" srcheight="42"/>
+    <isopiece name="Tech Deh Cheese" id="8" srcx="162" srcy="89" srcheight="54"/>
+    
+    <isopiece name="Alley floor panel 1" id="9" srcx="0" srcy="178" srcheight="28"/>
+    <isopiece name="alley floor panel 2" id="10" srcx="0" srcy="206" srcheight="28"/>
+    <isopiece name="alley floor panel 3" id="11" srcx="0" srcy="234" srcheight="28"/>
+    <isopiece name="alley wall" id="12" srcx="54" srcy="179" srcheight="88"/>
+    <isopiece name="alley shrunk wall" id="13" srcx="108" srcy="179" srcheight="47"/>
+    <isopiece name="alley Deh Cheese" id="14" srcx="162" srcy="178" srcheight="54"/>
+    
+    <isopiece name="grass floor" id="15" srcx="0" srcy="267" srcheight="28"/>
+    <isopiece name="grass wall" id="16" srcx="54" srcy="267" srcheight="88"/>
+    <isopiece name="shrunk grass wall" id="17" srcx="108" srcy="266" srcheight="43"/>
+    <isopiece name="grassy Cheese" id="18" srcx="162" srcy="267" srcheight="54"/>
+    <!--<isopiece nashurme="medium_tower" srcx="108" srcy="0" srcheight="58"></isopiece>
+      <isopiece name="east_door" srcx="162" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="north_wall" srcx="216" srcy="0" srcheight="90"></isopiece>
+      <isopiece name="northeast_corner" srcx="270" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="east_wall" srcx="324" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="southeast_corner" srcx="378" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="south_wall" srcx="432" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="southwest_corner" srcx="486" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="Not sure" srcx="560" srcy="0" srcheight="80"></isopiece>
+      <isopiece name="I don't know" srcx="714" srcy="0" srcheight="80"></isopiece>-->
+    <!--<file name="IsoStuff" directory="C:/Users/Kasha/Pictures/Assorted Game Pics/Iso Stuff/IsoMan.png">
+  <footprint width="54" height="28" directory="C:/Users/Kasha/Pictures/Assorted Game Pics/Iso Stuff/IsoMan Footprints.png">
+    <isoanim framecount="1" startx="0" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="54" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="108" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="162" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="216" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="270" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="324" starty="0" fps="24" animaxis="y"></isoanim>
+    <isoanim framecount="1" startx="378" starty="0" fps="24" animaxis="y"></isoanim>
+  </footprint>
+</file>-->
+  </file>
+</project>

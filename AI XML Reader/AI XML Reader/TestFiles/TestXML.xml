@@ -1,0 +1,20 @@
+﻿<root>
+  <nodeR1 behavior="Idle" response="">
+    <nodeR11 behavior="" response="Use Computer"/>
+    <nodeR12 behavior="" response ="Patrol"/>
+  </nodeR1>
+  <nodeR2 behavior ="Incoming Projectile">
+    <nodeR21 behavior="" response="Evade"/>
+  </nodeR2>
+  <nodeR3 behavior="Combat" response="">
+    <nodeR31 behavior="Melee" response="">
+      <nodeR311 behavior="" response="Flee"/>
+      <nodeR312 behavior="" response="Attack"/>
+    </nodeR31>
+    <nodeR32 behavior="Ranged" response="">
+      <nodeR321 behavior="" response="Weapon 1"/>
+      <nodeR322 behavior="" response="Weapon 2"/>
+      <nodeR323 behavior="" response="Weapon 3"/>
+    </nodeR32>
+  </nodeR3>  
+</root>

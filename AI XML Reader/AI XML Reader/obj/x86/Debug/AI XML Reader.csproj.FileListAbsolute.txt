@@ -1,0 +1,16 @@
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\bin\Debug\AI XML Reader.exe
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\bin\Debug\AI XML Reader.pdb
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\obj\x86\Debug\AI XML Reader.exe
+C:\Users\Kasha\AppData\Local\Temporary Projects\AI XML Reader\obj\x86\Debug\AI XML Reader.pdb
+C:\Users\Kasha\documents\visual studio 2010\Projects\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.exe
+C:\Users\Kasha\documents\visual studio 2010\Projects\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.pdb
+C:\Users\Kasha\documents\visual studio 2010\Projects\AI XML Reader\AI XML Reader\bin\Debug\AI XML Reader.exe
+C:\Users\Kasha\documents\visual studio 2010\Projects\AI XML Reader\AI XML Reader\bin\Debug\AI XML Reader.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\Projects\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.csprojResolveAssemblyReference.cache
+C:\Users\Kasha\Desktop\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.exe
+C:\Users\Kasha\Desktop\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.pdb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.exe
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.pdb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\bin\Debug\AI XML Reader.exe
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\bin\Debug\AI XML Reader.pdb
+C:\Users\Kasha\Desktop\School Stuff\AI Stuff\Assign. 1\AI XML Reader\AI XML Reader\obj\x86\Debug\AI XML Reader.csprojResolveAssemblyReference.cache

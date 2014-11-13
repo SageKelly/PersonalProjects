@@ -1,0 +1,7 @@
+﻿//Fix the spritesheet so that walls and doors are on separate isopieces
+//Add footprints for the individual isopieces
+Implement layers for the spritesheets
+//Finish drawing the player sprites
+Get the player in game
+Check for collision between the player and the elements of the layer the player currently resides
+Check for moving between layers gradually and rigidly

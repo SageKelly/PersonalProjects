@@ -1,0 +1,14 @@
+Name: root; 
+	Name: nodeR1; behavior: Idle; response: 
+		Name: nodeR11; behavior: ; response: Use Computer
+		Name: nodeR12; behavior: ; response: Patrol
+	Name: nodeR2; behavior: Incoming Projectile
+		Name: nodeR21; behavior: ; response: Evade
+	Name: nodeR3; behavior: Combat; response: 
+		Name: nodeR31; behavior: Melee; response: 
+			Name: nodeR311; behavior: ; response: Flee
+			Name: nodeR312; behavior: ; response: Attack
+		Name: nodeR32; behavior: Ranged; response: 
+			Name: nodeR321; behavior: ; response: Weapon 1
+			Name: nodeR322; behavior: ; response: Weapon 2
+			Name: nodeR323; behavior: ; response: Weapon 3

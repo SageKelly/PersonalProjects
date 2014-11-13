@@ -1,0 +1,23 @@
+﻿<project name="Name of the project"
+         footprint_width="The numerical width of the footprint for the file. This will 
+         never change will be used to calculate the foot print 'center' for each isopiece">
+  <file directory="The directory of the file">
+    <isopiece name="name of the piece" id="some numerical value. It should increment over time and should NEVER skip a number"
+              srcx="x-loc on the file" srcy="y-loc on the file" srcheight="How high the piece is"/>
+    <isoanim framecount="how many frames" startx="the x-loc of the starting frame" starty="the y-loc of the starting frame"
+             start_height="how high the piece is" fps="frames per second"/>
+    <!--Animated isopieces-->
+  </file>
+</project>
+
+<!--↓ Example ↓
+1. Nothing can have an id of 0.
+<project name="Test Proj" footprint_width="54">
+  <file directory="C:/Users/Kasha/My Pictures/Pixel Art/IsoStuff/IsoDump.png">
+    <isopiece name="High Tower" id="0" srcx="0" srcy="0" srcheight="106"/>
+  </file>
+  <file directory="C:/Users/Kasha/My Pictures/Pixel Art/IsoStuff/IsoAnims.png">
+    <isoanim framecount="4" startx="0" starty="0" start_hieght="56" fps="15"/>
+  </file>
+</project>
+-->

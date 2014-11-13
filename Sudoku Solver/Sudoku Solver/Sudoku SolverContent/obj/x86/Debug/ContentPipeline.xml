@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>Large Font.spritefont</Source>
+      <Name>Large Font</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Large Font.xnb</Output>
+      <Time>2014-01-29T11:04:57.2021521-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Small Font.spritefont</Source>
+      <Name>Small Font</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Small Font.xnb</Output>
+      <Time>2014-01-29T11:08:34.3205706-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Grid.png</Source>
+      <Name>Grid</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Grid.xnb</Output>
+      <Time>2014-02-08T09:19:21.9878743-05:00</Time>
+    </Item>
+    <Item>
+      <Source>GridLine H.png</Source>
+      <Name>GridLine H</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine H.xnb</Output>
+      <Time>2014-02-08T09:19:22.0008751-05:00</Time>
+    </Item>
+    <Item>
+      <Source>GridLine V.png</Source>
+      <Name>GridLine V</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine V.xnb</Output>
+      <Time>2014-02-08T09:19:22.0058753-05:00</Time>
+    </Item>
+    <Item>
+      <Source>IDK Space.png</Source>
+      <Name>IDK Space</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Space.xnb</Output>
+      <Time>2014-02-08T09:19:22.0318768-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Right Space.png</Source>
+      <Name>Right Space</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Right Space.xnb</Output>
+      <Time>2014-02-08T09:19:22.0538781-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Single Circle.png</Source>
+      <Name>Single Circle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Single Circle.xnb</Output>
+      <Time>2014-02-08T09:19:22.0608785-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Try Space.png</Source>
+      <Name>Try Space</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Try Space.xnb</Output>
+      <Time>2014-02-08T09:19:22.0728792-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Unique Square.png</Source>
+      <Name>Unique Square</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Unique Square.xnb</Output>
+      <Time>2014-02-08T09:19:22.0738792-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Wrong Space.png</Source>
+      <Name>Wrong Space</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Wrong Space.xnb</Output>
+      <Time>2014-02-08T09:19:22.0748793-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Check Mark.png</Source>
+      <Name>Check Mark</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Check Mark.xnb</Output>
+      <Time>2014-02-22T15:46:09.8032702-05:00</Time>
+    </Item>
+    <Item>
+      <Source>IDK Mark.png</Source>
+      <Name>IDK Mark</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Mark.xnb</Output>
+      <Time>2014-02-26T12:11:42.1029262-05:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku SolverContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku SolverContent\obj\x86\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>c:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2010-08-23T13:41:18-04:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2013-01-27T22:14:24.2697162-05:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

@@ -1,0 +1,28 @@
+Level: LvL 7.txt
+Width: 21, Height 21
+Cheese Tile location: 10,10
+Number of runs: 22
+Average Step per trial: 260
+Tile: 13, 8; Length: 1193
+Tile: 6, 17; Length: 849
+Tile: 15, 4; Length: 375
+Tile: 13, 10; Length: 25
+Tile: 19, 13; Length: 312
+Tile: 9, 8; Length: 3
+Tile: 14, 18; Length: 310
+Tile: 13, 8; Length: 13
+Tile: 14, 3; Length: 205
+Tile: 8, 3; Length: 481
+Tile: 5, 17; Length: 136
+Tile: 11, 16; Length: 243
+Tile: 12, 17; Length: 323
+Tile: 14, 2; Length: 130
+Tile: 5, 16; Length: 235
+Tile: 5, 6; Length: 45
+Tile: 12, 3; Length: 65
+Tile: 18, 7; Length: 121
+Tile: 4, 13; Length: 217
+Tile: 9, 3; Length: 142
+Tile: 14, 3; Length: 159
+Tile: 17, 7; Length: 148
+

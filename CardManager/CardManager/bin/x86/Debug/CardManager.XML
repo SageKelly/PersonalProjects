@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CardManager</name>
+    </assembly>
+    <members>
+        <member name="F:One_of_Us.Card.HasRun">
+            <summary>
+            Denotes whether or not the card has been played
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Card.CP">
+            <summary>
+            The method registered to the card
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Card.Play(System.Object,System.Object)">
+            <summary>
+            Allows playing the effect of a player's card onto another player
+            </summary>
+            <param name="Sender">the object playing the card</param>
+            <param name="Receiver">the object receiving the effect of the played card</param>
+        </member>
+        <member name="P:One_of_Us.Card.Complete">
+            <summary>
+            Denotes whether or not the card has been fully played
+            </summary>
+        </member>
+        <member name="P:One_of_Us.Card.Cancelled">
+            <summary>
+            Denotes whether or not the card has been cancelled
+            </summary>
+        </member>
+        <member name="P:One_of_Us.Card.DeckFrequency">
+            <summary>
+            How percentage rate the card appears in the deck
+            </summary>
+        </member>
+        <member name="T:One_of_Us.Step">
+            <summary>
+            A singular task for a particular process
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Step.#ctor">
+            <summary>
+            Creates a basic step within a procedure
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Step.#ctor(One_of_Us.Step.MouseClickHandler)">
+            <summary>
+            Creates a basic step within a procedure
+            </summary>
+            <param name="MEH">A method to call for a mouse event</param>
+        </member>
+        <member name="M:One_of_Us.Step.#ctor(One_of_Us.Step.KeyboardEventHandler)">
+            <summary>
+            Creates a basic step within a procedure
+            </summary>
+            <param name="KEH">A method to call for the a keyboard event</param>
+        </member>
+        <member name="M:One_of_Us.Step.AttachStep(One_of_Us.Step)">
+            <summary>
+            Adds the next step to this object
+            </summary>
+            <param name="s">the next step</param>
+        </member>
+        <member name="T:One_of_Us.Process">
+            <summary>
+            Contains a list of steps a card must take to completion
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Process.#ctor(One_of_Us.Step)">
+            <summary>
+            Creates a process
+            </summary>
+            <param name="firstStep">The first step of the process</param>
+        </member>
+        <member name="E:One_of_Us.Process.ProcessCompletionEvent">
+            <summary>
+            Handles a process being completed
+            </summary>
+        </member>
+        <member name="E:One_of_Us.Process.ProcessCancellationEvent">
+            <summary>
+            Handles a process being cancelled
+            </summary>
+        </member>
+        <member name="E:One_of_Us.Process.PAEvent">
+            <summary>
+            Handles when a process has been added to this process
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.CardsInPlay">
+            <summary>
+            The name speaks for itself. It's a list of 
+            all the cards that have been played.
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.TemplateCards">
+            <summary>
+            The list of all possible cards in a deck
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.ShuffledDeck">
+            <summary>
+            The shuffled version of the deck.
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.Discard">
+            <summary>
+            The discard deck
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.Processes">
+            <summary>
+            A list of all the possible processes
+            within this deck
+            </summary>
+        </member>
+        <member name="F:One_of_Us.Deck.Steps">
+            <summary>
+            A list of all the possible steps
+            within this deck.
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Deck.SetupDeck">
+            <summary>
+            Populates and shuffles the game deck
+            </summary>
+        </member>
+        <member name="M:One_of_Us.Deck.Shuffle(System.Collections.Generic.List{One_of_Us.Card}@)">
+            <summary>
+            Shuffles the deck
+            </summary>
+            <param name="deck">The deck the shuffle</param>
+            <returns>a shuffled version of the deck</returns>
+        </member>
+        <member name="M:One_of_Us.Deck.Deal(System.Int32)">
+            <summary>
+            Deals a certain amount of cards
+            </summary>
+            <param name="amount">The amount of cards</param>
+            <returns>The dealt cards</returns>
+        </member>
+    </members>
+</doc>
