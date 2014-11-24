@@ -614,7 +614,7 @@ namespace TimeKeeper
             int left = Console.CursorLeft;
             int top = Console.CursorTop;
             string l1p1 = "", l1p2 = "", l2p1 = "", l2p2 = "", l3p1 = "", l3p2 = "";
-            Console.CursorTop = INSTRUCTIONS_TOP;
+            Console.SetCursorPosition(0, INSTRUCTIONS_TOP);
             Console.WriteLine("INSTRUCTIONS:");
             switch (ProgramState)
             {
@@ -743,8 +743,7 @@ namespace TimeKeeper
             //Cursor: 2,8   
             int left = Console.CursorLeft;
             int top = Console.CursorTop;
-            Console.CursorTop = STATUS_TOP;
-            Console.CursorLeft = 0;
+            Console.SetCursorPosition(0, STATUS_TOP);
             Console.Write("Status: ");
             switch (ProgramState)
             {
@@ -752,6 +751,7 @@ namespace TimeKeeper
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     break;
                 case States.Watch:
+                case States.Mark:
                     Console.ForegroundColor = ConsoleColor.Green;
                     break;
                 case States.Edit:
