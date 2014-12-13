@@ -1,0 +1,2 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation HelperContent\obj\x86\Debug\Animation HelperContent.contentprojResolveAssemblyReference.cache
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation HelperContent\obj\x86\Debug\Animation HelperContent.contentprojResolveAssemblyReference.cache

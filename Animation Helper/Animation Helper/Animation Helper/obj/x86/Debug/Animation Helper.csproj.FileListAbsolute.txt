@@ -1,0 +1,54 @@
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\HighlightBar.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Practice Head.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Content\Font.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Down Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Up Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Left Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Right Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\FolderBar.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Down Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\FolderBar.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\HighlightBar.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Left Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Practice Head.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Right Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Up Arrow.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Content\Font.xnb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.exe
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.pdb
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.exe.manifest
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.application
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.exe.manifest
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.application
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Selection Border.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\White BG.png
+C:\Users\Kasha\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.csprojResolveAssemblyReference.cache
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Down Arrow.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\FolderBar.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\HighlightBar.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Left Arrow.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Practice Head.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Right Arrow.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Selection Border.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\Up Arrow.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Assets\White BG.png
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Content\Font.xnb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.exe.manifest
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.application
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\bin\x86\Debug\Animation Helper.pdb
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.csprojResolveAssemblyReference.cache
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.exe.manifest
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.application
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.exe
+C:\Users\Ks\Documents\Visual Studio 2010\PROJECTS 2010\2010 C# Labs\Animation Helper\Animation Helper\Animation Helper\obj\x86\Debug\Animation Helper.pdb
