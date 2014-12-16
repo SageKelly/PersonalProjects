@@ -99,7 +99,8 @@ namespace Sudoku_Solver
         /// This listens to all the spaces related to the Square for 
         /// when they get a value. At that time, the Square will
         /// recalculate the Average Possibility Size, since it will
-        /// be different at that point.
+        /// be different at that point. This should only be called
+        /// when the Square object is instantiated.
         /// </summary>
         public void RegistertoSpaces()
         {

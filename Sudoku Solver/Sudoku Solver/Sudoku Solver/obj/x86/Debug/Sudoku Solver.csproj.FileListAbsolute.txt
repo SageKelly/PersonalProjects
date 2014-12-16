@@ -19,3 +19,24 @@ C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver
 C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Try Space.xnb
 C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Check Mark.xnb
 C:\Users\Kasha\Documents\Visual Studio 2010\Projects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Mark.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 1.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 2.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Large Font.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Small Font.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Grid.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine H.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\GridLine V.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Space.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Right Space.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Single Circle.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Try Space.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Unique Square.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Wrong Space.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Check Mark.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Mark.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Sudoku Solver.exe
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Sudoku Solver.pdb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.csprojResolveAssemblyReference.cache
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.exe
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.pdb

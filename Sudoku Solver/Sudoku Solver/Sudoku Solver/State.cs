@@ -176,7 +176,7 @@ namespace Sudoku_Solver
             SCRindex = 0;
             //Get all the spaces in a row
 
-            switch (UsedSpace.TableLocation.Y / 3)
+            switch (UsedSpace.TableLocation.X / 3)
             {
                 case 0:
                     Sq1 = Thinker.GameBoard.Squares[1, UsedSpace.TableLocation.Y / 3];

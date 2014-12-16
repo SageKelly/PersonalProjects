@@ -161,6 +161,7 @@ namespace Sudoku_Solver
             int lrow = Spaces.GetLength(0);
             int lcol = Spaces.GetLength(1);
 
+            //This rewrites the puzzle in tabular form
             for (int x = 0; x < lcol; x++)
             {
                 sw.Write(x == lcol - 1 ? "+-+\n" : "+-");
@@ -610,13 +611,13 @@ namespace Sudoku_Solver
 
         /// <summary>
         /// Performs the initial setup of possibilities for the 
-        /// table using a subtraction method. At the start, all
-        /// of the spaces have all 9 numbers as possibilities.
-        /// This removes the impossibilities.
+        /// table using a subtraction method. It removes the
+        /// impoossibilities from the possible possibilities
+        /// for each space
         /// </summary>
         private void CalculatePossibilities()
         {
-            //Numbers that should be removed form the current possibilities
+            //Numbers that should be removed from the current possibilities
             List<string> TBRNumbers = new List<string>();
             Square CurSquare;
             Space CurSpace;
@@ -649,7 +650,7 @@ namespace Sudoku_Solver
                             CurSpace = CurSquare.Spaces[SpCol, SpRow];
                             foreach (string num in TBRNumbers)
                             {
-                                for (int i = CurSpace.Possibilities.Count - 1; i > 0; i--)
+                                for (int i = CurSpace.Possibilities.Count - 1; i >= 0; i--)
                                 {
                                     if (CurSpace.Possibilities[i].Number == num)//If the number's a TBR number
                                         CurSpace.Possibilities.RemoveAt(i);//remove the possibility
@@ -672,7 +673,7 @@ namespace Sudoku_Solver
                                 for (int i = CurSpace.Possibilities.Count - 1; i >= 0; i--)
                                 {
                                     CurPossie = CurSpace.Possibilities[i];
-                                    if (num != "" && CurPossie.Number == num)
+                                    if ( CurPossie.Number == num)
                                         CurSpace.Possibilities.RemoveAt(i);
                                 }
                                 #region Old Code
@@ -688,7 +689,7 @@ namespace Sudoku_Solver
                                 for (int i = CurSpace.Possibilities.Count - 1; i >= 0; i--)
                                 {
                                     CurPossie = CurSpace.Possibilities[i];
-                                    if (num != "" && CurPossie.Number == num)
+                                    if (CurPossie.Number == num)
                                         CurSpace.Possibilities.RemoveAt(i);
                                 }
                                 #region Old Code

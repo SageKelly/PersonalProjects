@@ -97,6 +97,7 @@ namespace Sudoku_Solver
                 if (b_absolute)
                 {
                     SpaceAccuracy = SpaceAccuracyStates.Right;
+                    //Since you found the right answer, no need for any existing possibilities
                     if (Possibilities != null)
                         Possibilities.Clear();
                 }
@@ -165,7 +166,7 @@ namespace Sudoku_Solver
 
         /// <summary>
         /// Copies a list of Possibilities to another List and then
-        /// returns that list. Each entity the new list is
+        /// returns that list. Each entity in the new list is
         /// completely separate from the copied list.
         /// </summary>
         /// <returns>Return the copy of the Possibility list of this space</returns>

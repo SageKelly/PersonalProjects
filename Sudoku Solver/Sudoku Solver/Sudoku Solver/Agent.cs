@@ -151,7 +151,9 @@ namespace Sudoku_Solver
                 {
                     if (CheckForErrors())
                     {
+                        //Something's wrong with the initial setup.
                         Running = false;
+                        return;
                     }
                     IsTakingAGuess = !GlobalSearch();
                     GameBoard.Squares[2, 2].AveragedEvent += new AveragesCalculatedEventHandler(FindLowestAveragePossieSize);
@@ -163,6 +165,7 @@ namespace Sudoku_Solver
                     if (CheckForErrors())
                     {
                         IsTakingAGuess = true;
+                        //shouldn't it take a guess before an error is found?
                         ErrorFound = true;
                     }
                     else
@@ -299,14 +302,13 @@ namespace Sudoku_Solver
         private bool LocalSearch()
         {
             In = "In LocalSearch()...";
-            ///Using the affected spaces array from the
-            ///previous state, since they're going to be
-            ///the most relevant, look at those for more
-            ///options. However, only use their locations,
-            ///since their information belongs to them, and
-            ///are not directly linked to the ones within
-            ///the gameboard.
-            ///
+            /*
+             * Use the locations of the affected spaces
+             * found in the previous state, to look for
+             * singles and uniques. We're only using the
+             * locations because the data is not linked to
+             * the actual board.
+             */
             Space BSp;
 
             ///Each state has three arrays that need to be checked for
@@ -674,8 +676,8 @@ namespace Sudoku_Solver
         /// <returns>returns false if there are none, else it returns true.</returns>
         private bool CheckForErrors()
         {
-            ///If the space has no possibilities and a number has not been placed...
-            ///
+            //If the space has no possibilities and a number has not been placed...
+            
             List<Space> Singles = new List<Space>();
 
             foreach (Square sq in GameBoard.Squares)
