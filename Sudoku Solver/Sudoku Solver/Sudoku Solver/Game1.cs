@@ -88,7 +88,7 @@ namespace Sudoku_Solver
         /// </summary>
         protected override void Initialize()
         {
-            GameBoard = new Board(this, 44, 44, @"Puzzles\Puzzle 2.txt");
+            GameBoard = new Board(this, 44, 44, @"Puzzles\Puzzle 3.txt");
 
             wordarray = new string[9, 9];
             AI1 = new Agent(GameBoard);

@@ -104,11 +104,6 @@ namespace Sudoku_Solver
         string ChosenNumber;
 
         /// <summary>
-        /// Keeps track of how many times a guess has been made
-        /// </summary>
-        int Tries;
-
-        /// <summary>
         /// Tell me what method the Agent is in (for printing purposes)
         /// </summary>
         public string In;
@@ -116,11 +111,6 @@ namespace Sudoku_Solver
 
         public int Delay = 0;
         public bool Running = false;
-
-        /// <summary>
-        /// Used to show whether or not an error has been found
-        /// </summary>
-        private bool ErrorFound;
 
         #endregion
         public Agent(Board BoardInUse)
@@ -164,9 +154,9 @@ namespace Sudoku_Solver
                 {
                     if (CheckForErrors())
                     {
+                        Undo();
                         IsTakingAGuess = true;
                         //shouldn't it take a guess before an error is found?
-                        ErrorFound = true;
                     }
                     else
                     {
@@ -186,10 +176,7 @@ namespace Sudoku_Solver
                 }
                 if (IsTakingAGuess)
                 {
-                    if (ErrorFound)
-                        Undo();
                     Guess();
-                    ErrorFound = false;
                 }
                 Timer -= Timer;
             }
@@ -254,12 +241,12 @@ namespace Sudoku_Solver
             {
                 if (IsTrying)
                 {
-                    Try(SingleSpace, SingleSpace.Possibilities[0].Number);
+                    Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, true);
                     Act(SingleSpace, true);
                 }
                 else
                 {
-                    Learn(SingleSpace, SingleSpace.Possibilities[0].Number);
+                    Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false);
                     Act(SingleSpace, false);
                 }
                 Deadended = false;
@@ -275,12 +262,12 @@ namespace Sudoku_Solver
                     {
                         if (IsTrying)
                         {
-                            Try(UniqueSpace, UniqueSpace.Possibilities[0].Number, i);
-                            Act(UniqueSpace, true);
+                            Learn(UniqueSpace, UniqueSpace.Possibilities[0].Number, false, false, true, i);
+                            Act(UniqueSpace, false);
                         }
                         else
                         {
-                            Learn(UniqueSpace, UniqueSpace.Possibilities[0].Number);
+                            Learn(UniqueSpace, UniqueSpace.Possibilities[0].Number, false);
                             Act(UniqueSpace, false);
                         }
                         Deadended = false;
@@ -371,12 +358,12 @@ namespace Sudoku_Solver
                             SingleSpace = BSp;
                             if (IsTrying)
                             {
-                                Try(SingleSpace, SingleSpace.Possibilities[0].Number);
+                                Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, true);
                                 Act(SingleSpace, true);
                             }
                             else
                             {
-                                Learn(SingleSpace, SingleSpace.Possibilities[0].Number);
+                                Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false);
                                 Act(SingleSpace, false);
 
                             }
@@ -406,12 +393,12 @@ namespace Sudoku_Solver
                     //then you've found a unique number. Act on it.
                     if (IsTrying)
                     {
-                        Try(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number);
+                        Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number, false, true);
                         Act(UniqueSpace, true);
                     }
                     else
                     {
-                        Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number);
+                        Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number, false);
                         Act(UniqueSpace, false);
                     }
                     //Cleanup
@@ -483,7 +470,7 @@ namespace Sudoku_Solver
                             if (sp != null)
                             {
                                 GameBoard.Spaces[sp.TableLocation.X,
-                            sp.TableLocation.Y].SetNumber("", false);
+                                    sp.TableLocation.Y].SetNumber("", false);
 
                                 GameBoard.Spaces[sp.TableLocation.X,
                                     sp.TableLocation.Y].Possibilities.Clear();
@@ -494,12 +481,24 @@ namespace Sudoku_Solver
                         }
                     }
                     if (TryI == 0)
-                        CurrentState = TryStack[0];
+                        CurrentState = TryStack[TryI];
                     else
-                        CurrentState = TryStack[TryI - 1];
-                    TryStack.RemoveAt(TryI);
+                        CurrentState = TryStack[TryI];
                 } while (TryI >= 1 && !TryStack[TryI--].TryState);
-                //TODO: Find out why/how this while loop is out of range
+                //By this point the tryState is undone.
+                //Now, erase all of the states that were undone.
+
+                /*
+                 * Because of short-circuiting, TryI, as 0, will
+                 * exit the loop being 0. Being checked as x >= 1,
+                 * however, will exit being x - 1.
+                 * 
+                 * In other words, if TryI is anything other than
+                 * 0 when it's compared, it will leave referring
+                 * to the index BEFORE the trystate.
+                 */
+                int deleteIndex = TryStack.IndexOf(CurrentState);
+                TryStack.RemoveRange(deleteIndex + 1, TryStack.Count - deleteIndex + 1);
             }
         }
 
@@ -508,7 +507,6 @@ namespace Sudoku_Solver
         /// </summary>
         private void Guess()
         {
-            //TODO: Actually ADD the code that makes it choose another space for a guess
             In = "In Guess()...";
             #region Priority
             ///Priority:
@@ -531,17 +529,8 @@ namespace Sudoku_Solver
             ///it doesn't get erased until here, it should still
             ///have a value.
             ///
-            if (CurrentState.TryState)
+            if (CurrentState.TryState)//i.e. If you came back because your last guess didn't work...
             {
-                //Undo the space and all its possibilities
-                GameBoard.Spaces[CurrentState.UsedSpace.TableLocation.X,
-                    CurrentState.UsedSpace.TableLocation.Y].SetNumber("", false);
-
-                GameBoard.Spaces[CurrentState.UsedSpace.TableLocation.X,
-                    CurrentState.UsedSpace.TableLocation.Y].Possibilities.Clear();
-
-                GameBoard.Spaces[CurrentState.UsedSpace.TableLocation.X,
-                    CurrentState.UsedSpace.TableLocation.Y].Possibilities.AddRange(CurrentState.UsedSpace.CopyPossies());
                 int index = CurrentState.GuessIndex + 1;
 
                 //If there are more possibilities...
@@ -550,11 +539,27 @@ namespace Sudoku_Solver
                     //Remove this version of the state
                     TryStack.Remove(CurrentState);
                     //Try them immediately
-                    Try(CurrentState.UsedSpace, CurrentState.UsedSpace.Possibilities[index].Number, index);
+                    Learn(CurrentState.UsedSpace, CurrentState.UsedSpace.Possibilities[index].Number, true, true, true, index);
                     Act(GameBoard.Spaces[CurrentState.UsedSpace.TableLocation.X, CurrentState.UsedSpace.TableLocation.Y], true);
                 }
+                else
+                {
+                    /*
+                     * This is for when mutiple tries have been
+                     * made, and the most recent one has no
+                     * good choices. You must back-track to the
+                     * next-made choice.
+                     * 
+                     * Because the most recent TryState is
+                     * still on the stack, it must be removed,
+                     * or else Undo() won't work.
+                     */
+                    TryStack.Remove(CurrentState);
+                    Undo();
+                    Guess();
+                }
             }
-            else
+            else//i.e. This is your first time guessing
             {
                 SmallestSpace = SmallestSquare.Spaces[0, 0];
                 for (int row = 0; row < 3; row++)
@@ -564,20 +569,20 @@ namespace Sudoku_Solver
                         if (SmallestSpace.IsAbsolute)
                         {
                             SmallestSpace = SmallestSquare.Spaces[col, row];
-                            continue;
                         }
-                        if (SmallestSquare.Spaces[col, row].Possibilities.Count < SmallestSpace.Possibilities.Count &&
-                            SmallestSquare.Spaces[col, row].IsAbsolute)
+                        else if (SmallestSquare.Spaces[col, row].Possibilities.Count < SmallestSpace.Possibilities.Count &&
+                          !SmallestSquare.Spaces[col, row].IsAbsolute)
                             SmallestSpace = SmallestSquare.Spaces[col, row];
                     }
                 }
                 //Give it a shot
                 if (SmallestSpace.Possibilities.Count != 0)
                 {
-                    Try(SmallestSpace, SmallestSpace.Possibilities[0].Number);
+                    Learn(SmallestSpace, SmallestSpace.Possibilities[0].Number, true, true);
                     Act(SmallestSpace, true);
                 }
-
+                //TODO: Find out why it's missing a unique as a choice before it starts guessing
+                //TODO: Find a wway to keep smallest space from choosing the same square constantly
             }
             IsTakingAGuess = false;
             //Cleanup
@@ -593,25 +598,18 @@ namespace Sudoku_Solver
         /// </summary>
         /// <param name="sp">the Space in question</param>
         /// <param name="ChosenNumber">The number chosen for the Space</param>
-        private void Learn(Space sp, string ChosenNumber)
+        /// <param name="isGuess">Is this a state wherein the AI is guessing?</param>
+        /// <param name="trying">Is this AI in the trying state?</param>
+        /// <param name="addToStack">Will the AI add a new state to the TryStack?</param>
+        /// <param name="GuessIndex">If guessing, what is the guess number?</param>
+        private void Learn(Space sp, string ChosenNumber, bool isGuess, bool trying = false, bool addToStack = true, int GuessIndex = 0)
         {
-            States.Add(new State(this, sp, ChosenNumber, false, States.Count, CurrentState));
-            CurrentState = States[States.Count - 1];
-            RecentState = States[States.Count - 1];
-        }
-
-        /// <summary>
-        /// Tries the number within the space and adds
-        /// it to the try stack Current State is
-        /// updated to this state
-        /// </summary>
-        /// <param name="sp">The space to remember</param>
-        /// <param name="ChosenNumber">The chosen number</param>
-        /// <param name="GuessIndex">The index that holds the chosen number</param>
-        private void Try(Space sp, string ChosenNumber, int GuessIndex = 0)
-        {
-            States.Add(new State(this, sp, ChosenNumber, true, States.Count, CurrentState, GuessIndex));
-            TryStack.Add(States[States.Count - 1]);
+            if (addToStack)
+            {
+                States.Add(new State(this, sp, ChosenNumber, isGuess, States.Count, CurrentState, GuessIndex));
+                if (trying)
+                    TryStack.Add(States[States.Count - 1]);
+            }
             CurrentState = States[States.Count - 1];
             RecentState = States[States.Count - 1];
         }
@@ -630,7 +628,6 @@ namespace Sudoku_Solver
             else
             {
                 ChosenSpace.SetNumber(CurrentState.ChosenNumber, false);
-                Tries++;
             }
             ChosenSpace.Possibilities.Clear();
         }
@@ -678,32 +675,18 @@ namespace Sudoku_Solver
         {
             //If the space has no possibilities and a number has not been placed...
             
-            List<Space> Singles = new List<Space>();
-
             foreach (Square sq in GameBoard.Squares)
             {
                 for (int row = 0; row < 3; row++)
                 {
                     for (int col = 0; col < 3; col++)
                     {
-                        if (sq.Spaces[col, row].Possibilities.Count == 1)
+                        if (sq.Spaces[col, row].Possibilities.Count == 0 && sq.Spaces[col,row].ChosenNumber=="")
                         {
-                            Singles.Add(sq.Spaces[col, row]);
+                            return true;
                         }
                     }
                 }
-
-                foreach (Space sp in Singles)
-                {
-                    for (int i = 0; i < Singles.Count; i++)
-                    {
-                        //If two singles have the same remaining possiblity...
-                        if (Singles[i] != sp &&
-                            sp.Possibilities[0].Number == Singles[i].Possibilities[0].Number)
-                            return true;//We got a problem.
-                    }
-                }
-                Singles.Clear();
             }
 
             return false;

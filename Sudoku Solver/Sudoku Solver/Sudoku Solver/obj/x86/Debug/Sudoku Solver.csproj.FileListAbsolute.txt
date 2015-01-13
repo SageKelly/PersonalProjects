@@ -40,3 +40,5 @@ C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\o
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.exe
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.pdb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 3.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 4.txt
