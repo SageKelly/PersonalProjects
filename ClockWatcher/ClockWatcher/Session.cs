@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace ClockWatcher
             DependencyProperty.Register("totalTime", typeof(TimeSpan), typeof(Session),
             new PropertyMetadata(TimeSpan.Zero));
 
-        public List<TimeEntry> timeEntries { get; private set; }
+        public ObservableCollection<TimeEntry> timeEntries { get; private set; }
         public TimeEntry currentTimeEntry { get; private set; }
         public DateTime creationDate { get; private set; }
         public TimeSpan totalTime
@@ -47,14 +48,14 @@ namespace ClockWatcher
 
         public Session()
         {
-            timeEntries = new List<TimeEntry>();
+            timeEntries = new ObservableCollection<TimeEntry>();
             creationDate = DateTime.Now;
             name = DateTime.Now.ToString();
         }
 
-        public void addEntry(DateTime timeIn)
+        public void addEntry(DateTime timeIn, ObservableCollection<commentEntry> commentLibrary)
         {
-            timeEntries.Add(new TimeEntry());
+            timeEntries.Add(new TimeEntry(commentLibrary));
             currentTimeEntry = timeEntries.Last();
             currentTimeEntry.timeIn = timeIn;
             currentTimeEntry.delete += delete;

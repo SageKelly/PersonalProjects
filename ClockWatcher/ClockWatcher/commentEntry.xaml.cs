@@ -24,8 +24,14 @@ namespace ClockWatcher
             DependencyProperty.Register("comment", typeof(string),
             typeof(commentEntry), new PropertyMetadata(""));
 
+        public static readonly DependencyProperty isFilteringProperty =
+            DependencyProperty.Register("isFiltering", typeof(bool),
+            typeof(commentEntry), new PropertyMetadata(false));
+
         public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(commentEntry));
+
+
 
         private TransformGroup animatedTransform;
         private ScaleTransform animatedScale;
@@ -36,11 +42,23 @@ namespace ClockWatcher
         {
             get
             {
-                return (string)GetValue(commentProperty);
+                return (string)GetValue(commentEntry.commentProperty);
             }
             set
             {
-                SetValue(commentProperty, value);
+                SetValue(commentEntry.commentProperty, value);
+            }
+        }
+
+        public bool isFiltering
+        {
+            get
+            {
+                return (bool)GetValue(isFilteringProperty);
+            }
+            set
+            {
+                SetValue(isFilteringProperty, value);
             }
         }
 
@@ -66,31 +84,37 @@ namespace ClockWatcher
             this.RenderTransform = animatedTransform;
             scaleAnim.Completed += animationScale_Completed;
         }
-
-        void animationScale_Completed(object sender, EventArgs e)
-        {
-            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
-            RaiseEvent(newDeleteEvent);
-        }
-
         public commentEntry(string comment)
             : this()
         {
             this.comment = comment;
         }
 
+        #region Methods
+        #region Event Methods
+        void animationScale_Completed(object sender, EventArgs e)
+        {
+            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
+            RaiseEvent(newDeleteEvent);
+        }
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            deleteAnimation();
+        }
+        #endregion
+
+        #region Local Methods
         private void deleteAnimation()
         {
             scaleAnim.To = 0;
             scaleAnim.Duration = new Duration(TimeSpan.Parse("0:0:.25"));
             animatedScale.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnim);
             animatedScale.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnim);
+            this.BeginAnimation(FrameworkElement.HeightProperty, scaleAnim);
         }
+        #endregion
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            deleteAnimation();
-        }
 
+        #endregion
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -23,52 +25,48 @@ namespace ClockWatcher
     {
         private static string defaultComment = "Type Comment Here";
 
+        #region Dependency Properties
+        public static readonly DependencyProperty alarmExpandedProperty =
+            DependencyProperty.Register("alarmExpanded", typeof(bool),
+            typeof(TimeEntry), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnAlarmExpandedChanged)));
+        public static readonly DependencyProperty controlHeightProperty = DependencyProperty.Register("controlHeight", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
+        public static readonly DependencyProperty controlWidthProperty = DependencyProperty.Register("controlWidth", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
+        public static readonly DependencyProperty commentProperty = DependencyProperty.Register("comment", typeof(string), typeof(TimeEntry),
+                new FrameworkPropertyMetadata(defaultComment));
+        public static readonly DependencyProperty detailsExpandedProperty =
+            DependencyProperty.Register("detailsExpanded", typeof(bool), typeof(TimeEntry),
+            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnDetailsExpanded)));
         public static readonly DependencyProperty timeInProperty = DependencyProperty.Register("timeIn", typeof(DateTime), typeof(TimeEntry),
                 new FrameworkPropertyMetadata(DateTime.Now));
         public static readonly DependencyProperty timeOutProperty = DependencyProperty.Register("timeOut", typeof(DateTime), typeof(TimeEntry),
                 new FrameworkPropertyMetadata(DateTime.Now));
         public static readonly DependencyProperty timeSpentProperty = DependencyProperty.Register("timeSpent", typeof(TimeSpan), typeof(TimeEntry),
                 new FrameworkPropertyMetadata(TimeSpan.Zero));
-        public static readonly DependencyProperty commentProperty = DependencyProperty.Register("comment", typeof(string), typeof(TimeEntry),
-                new FrameworkPropertyMetadata(defaultComment));
+        public static readonly DependencyProperty selectedProperty = DependencyProperty.Register("isSelected", typeof(bool),
+            typeof(TimeEntry), new PropertyMetadata(false));
+
         public static readonly DependencyPropertyKey subCommentsPropertyKey = DependencyProperty.RegisterReadOnly("subComments", typeof(List<string>),
             typeof(TimeEntry),
                 new FrameworkPropertyMetadata(new List<string>()));
         public static readonly DependencyProperty subCommentsProperty = subCommentsPropertyKey.DependencyProperty;
+        #endregion
 
-        public static readonly DependencyProperty controlWidthProperty = DependencyProperty.Register("controlWidth", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
-
-        public static readonly DependencyProperty controlHeightProperty = DependencyProperty.Register("controlHeight", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
-
-        public static readonly DependencyProperty detailsExpandedProperty =
-            DependencyProperty.Register("detailsExpanded", typeof(bool), typeof(TimeEntry),
-            new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnDetailsExpanded)));
-
-        public static readonly DependencyProperty alarmExpandedProperty =
-            DependencyProperty.Register("alarmExpanded", typeof(bool),
-            typeof(TimeEntry), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnAlarmExpandedChanged)));
-
+        #region Routed Events
         public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete", RoutingStrategy.Bubble,
             typeof(RoutedEventHandler), typeof(TimeEntry));
+        public static readonly RoutedEvent newCommentEvent = EventManager.RegisterRoutedEvent("newComment", RoutingStrategy.Direct,
+            typeof(RoutedEventHandler), typeof(TimeEntry));
+        #endregion
 
         private TransformGroup animatedTransform;
         private ScaleTransform animatedScale;
 
         private DoubleAnimation deleteDoubleAnimation;
 
-        #region Properties
-        public bool detailsExpanded
-        {
-            get
-            {
-                return (bool)GetValue(detailsExpandedProperty);
-            }
-            set
-            {
-                SetValue(detailsExpandedProperty, value);
-            }
-        }
+        private ObservableCollection<commentEntry> commentLibrary;
 
+        #region Properties
+        #region Dependency Properties
         public bool alarmExpanded
         {
             get
@@ -80,19 +78,72 @@ namespace ClockWatcher
                 SetValue(alarmExpandedProperty, value);
             }
         }
-
-        public event RoutedEventHandler delete
+        public double controlHeight
         {
-            add
+            get
             {
-                AddHandler(deleteEvent, value);
+                return (double)GetValue(controlHeightProperty);
             }
-            remove
+            set
             {
-                RemoveHandler(deleteEvent, value);
+                SetValue(controlHeightProperty, value);
             }
         }
-
+        public double controlWidth
+        {
+            get
+            {
+                return (double)GetValue(controlWidthProperty);
+            }
+            set
+            {
+                SetValue(controlWidthProperty, value);
+            }
+        }
+        public string comment
+        {
+            get
+            {
+                return (string)GetValue(TimeEntry.commentProperty);
+            }
+            set
+            {
+                SetValue(TimeEntry.commentProperty, value);
+            }
+        }
+        public bool detailsExpanded
+        {
+            get
+            {
+                return (bool)GetValue(detailsExpandedProperty);
+            }
+            set
+            {
+                SetValue(detailsExpandedProperty, value);
+            }
+        }
+        public bool isSelected
+        {
+            get
+            {
+                return (bool)GetValue(selectedProperty);
+            }
+            set
+            {
+                SetValue(selectedProperty, value);
+            }
+        }
+        public List<string> subComments
+        {
+            get
+            {
+                return (List<string>)GetValue(TimeEntry.subCommentsProperty);
+            }
+            set
+            {
+                SetValue(TimeEntry.subCommentsProperty, value);
+            }
+        }
         public DateTime timeIn
         {
             get
@@ -126,115 +177,134 @@ namespace ClockWatcher
                 SetValue(TimeEntry.timeSpentProperty, value);
             }
         }
-        public string comment
+        #endregion
+
+        #region Routed Event Properties
+        public event RoutedEventHandler delete
         {
-            get
+            add
             {
-                return (string)GetValue(TimeEntry.commentProperty);
+                AddHandler(deleteEvent, value);
             }
-            set
+            remove
             {
-                SetValue(TimeEntry.commentProperty, value);
+                RemoveHandler(deleteEvent, value);
             }
         }
-        public List<string> subComments
+        public event RoutedEventHandler newComment
         {
-            get
+            add
             {
-                return (List<string>)GetValue(TimeEntry.subCommentsProperty);
+                AddHandler(newCommentEvent, value);
             }
-            set
+            remove
             {
-                SetValue(TimeEntry.subCommentsProperty, value);
+                RemoveHandler(newCommentEvent, value);
             }
         }
-        public double controlWidth
-        {
-            get
-            {
-                return (double)GetValue(controlWidthProperty);
-            }
-            set
-            {
-                SetValue(controlWidthProperty, value);
-            }
-        }
-        public double controlHeight
-        {
-            get
-            {
-                return (double)GetValue(controlHeightProperty);
-            }
-            set
-            {
-                SetValue(controlHeightProperty, value);
-            }
-        }
+        #endregion
         #endregion
 
         static TimeEntry() { }
 
-        public TimeEntry()
+        private TimeEntry()
         {
-            timeIn = DateTime.Now;
-            timeSpent = timeOut - timeIn;
-            this.InitializeComponent();
             setUpRenderTransform();
             setUpAnimationVariables();
+            commentLibrary = new ObservableCollection<commentEntry>();
+            DataContext = this;
+            this.InitializeComponent();
             deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
         }
 
-        private void setUpRenderTransform()
+        public TimeEntry(ObservableCollection<commentEntry> commentList)
+            : this()
         {
-            animatedTransform = new TransformGroup();
-            animatedScale = new ScaleTransform();
-            animatedTransform.Children.Add(animatedScale);
-
-            this.RenderTransform = animatedTransform;
+            commentLibrary = commentList;
         }
 
-        private void setUpAnimationVariables()
+        #region Methods
+        #region Event Methods
+        private void commentBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            deleteDoubleAnimation = new DoubleAnimation();
-            deleteDoubleAnimation.To = 0;
-            deleteDoubleAnimation.Duration = new Duration(TimeSpan.Parse("0:0:.25"));
+            SolidColorBrush foregroundBrush = new SolidColorBrush((Color)Resources["blackCommentColor"]);
+            commentBox.Foreground = foregroundBrush;
+            if (commentBox.Text == defaultComment)
+                commentBox.Text = "";
         }
-
+        private void commentBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            SolidColorBrush foregroundBrush = new SolidColorBrush((Color)Resources["grayCommentColor"]);
+            commentBox.Foreground = foregroundBrush;
+        }
         private void commentBox_SourceUpdated(object sender, DataTransferEventArgs e)
         {
             comment = (sender as TextBox).Text;
         }
-
-        #region delete event methods
-        private void raiseDeleteEvent()
+        private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
-            RaiseEvent(newDeleteEvent);
+            comment = commentBox.Text;
+            TextBox sentinel = sender as TextBox;
+            if (commentLibrary.Count > 0 && sentinel.Text != "")
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(commentLibrary);
+                view.Filter =
+                    null;
+                /*
+                (o) =>
+                {
+                    //filter out all entries that neither start with nor contain the sentinel's comment
+                    return (o as commentEntry).comment.Contains(sentinel.Text) ||
+                        !(o as commentEntry).comment.StartsWith(sentinel.Text);
+                };
+                */
+                if (!view.IsEmpty && !intelPopup.IsOpen)
+                {
+                    //kill the popup
+                    intelPopup.Placement = PlacementMode.Left;
+                    intelPopup.PlacementTarget = sentinel;
+                    intelPopup.IsOpen = true;
+                }
+                else if (view.IsEmpty)
+                {
+                    intelPopup.IsOpen = false;
+                }
+            }
+            else if (intelPopup != null && intelPopup.IsOpen)
+            {
+                intelPopup.IsOpen = false;
+            }
         }
-
+        private void commentConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            RoutedEventArgs newCommentEventArgs = new RoutedEventArgs(newCommentEvent, this);
+            RaiseEvent(newCommentEventArgs);
+        }
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             deleteAnimation();
         }
-
-        void deleteDoubleAnimation_Completed(object sender, EventArgs e)
+        private void deleteDoubleAnimation_Completed(object sender, EventArgs e)
         {
             raiseDeleteEvent();
         }
-
-        private void deleteAnimation()
+        private void detailsButton_Click(object sender, RoutedEventArgs e)
         {
-            animatedScale.BeginAnimation(ScaleTransform.ScaleXProperty, deleteDoubleAnimation);
-            animatedScale.BeginAnimation(ScaleTransform.ScaleYProperty, deleteDoubleAnimation);
-            this.BeginAnimation(FrameworkElement.HeightProperty, deleteDoubleAnimation);
+            detailsExpanded = !detailsExpanded;
         }
-        #endregion
-
-        private void commentConfirmButton_Click(object sender, RoutedEventArgs e)
+        private void intelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            comment = commentBox.Text;
-        }
 
+        }
+        private static void OnAlarmExpandedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TimeEntry sentinel = d as TimeEntry;
+
+            if (sentinel.alarmExpanded)
+            {
+                sentinel.detailsExpanded = false;
+            }
+        }
         private static void OnDetailsExpanded(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             TimeEntry sentinel = d as TimeEntry;
@@ -244,28 +314,78 @@ namespace ClockWatcher
                 sentinel.alarmExpanded = false;
             }
         }
-
-        private static void OnAlarmExpandedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void UserControl_KeyDown(object sender, KeyEventArgs kea)
         {
-            TimeEntry sentinel = d as TimeEntry;
-
-            if (sentinel.alarmExpanded)
+            if (kea.Key == Key.Enter)
             {
-                sentinel.detailsExpanded = false;
+                if (commentBox.IsFocused)
+                {
+                    if (commentBox.Text != defaultComment && commentBox.Text != "")
+                    {
+                        this.Focus();
+                        RoutedEventArgs newCommentEventArgs = new RoutedEventArgs(newCommentEvent, this);
+                        RaiseEvent(newCommentEventArgs);
+                    }
+                }
             }
-
         }
+        #endregion
 
+        #region Class Methods
+        /// <summary>
+        /// Clears the comment's context
+        /// </summary>
+        public void ClearComment()
+        {
+            comment = string.Empty;
+        }
+        /// <summary>
+        /// Determines whether or not the TimeEntry's comment contains the default text
+        /// </summary>
+        /// <returns>returns true if it does, else it returns false</returns>
         public bool commentDefault()
         {
             if (comment == defaultComment)
                 return true;
             return false;
         }
-
-        private void detailsButton_Click(object sender, RoutedEventArgs e)
+        private void deleteAnimation()
         {
-            detailsExpanded = !detailsExpanded;
+            animatedScale.BeginAnimation(ScaleTransform.ScaleXProperty, deleteDoubleAnimation);
+            animatedScale.BeginAnimation(ScaleTransform.ScaleYProperty, deleteDoubleAnimation);
+            this.BeginAnimation(FrameworkElement.HeightProperty, deleteDoubleAnimation);
         }
+        /// <summary>
+        /// Adds the timeOut data for the TimeEntry
+        /// </summary>
+        public void finalizeTimeEntry()
+        {
+            timeOut = DateTime.Now;
+            timeOutBlock.Text = timeOut.TimeOfDay.ToString();
+        }
+        private void raiseDeleteEvent()
+        {
+            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
+            RaiseEvent(newDeleteEvent);
+        }
+        private void setUpAnimationVariables()
+        {
+            deleteDoubleAnimation = new DoubleAnimation();
+            deleteDoubleAnimation.To = 0;
+            deleteDoubleAnimation.Duration = new Duration(TimeSpan.Parse("0:0:.25"));
+        }
+        private void setUpRenderTransform()
+        {
+            animatedTransform = new TransformGroup();
+            animatedScale = new ScaleTransform();
+            animatedTransform.Children.Add(animatedScale);
+
+            this.RenderTransform = animatedTransform;
+        }
+        #endregion
+        #endregion
+
+
+
     }
 }
