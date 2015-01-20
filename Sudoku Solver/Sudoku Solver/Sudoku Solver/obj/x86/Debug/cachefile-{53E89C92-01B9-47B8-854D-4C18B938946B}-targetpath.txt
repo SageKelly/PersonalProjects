@@ -11,3 +11,4 @@ Content\Unique Square.xnb
 Content\Wrong Space.xnb
 Content\Check Mark.xnb
 Content\IDK Mark.xnb
+Content\Arrow.xnb

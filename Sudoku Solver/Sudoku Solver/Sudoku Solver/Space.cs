@@ -41,12 +41,9 @@ namespace Sudoku_Solver
                 string prevNum = s_number;
                 s_number = value;
 
-                if ((prevNum == "" && s_number != "") || prevNum != "" && s_number == "")
+                if ((prevNum == "" && s_number != "") && !b_absolute)
                 {
-                    //the value was changed
-                    OnPlaced();
-                    if (!b_absolute)
-                        SpaceAccuracy = SpaceAccuracyStates.Try;
+                    SpaceAccuracy = SpaceAccuracyStates.Try;
                 }
                 if (s_number == "")
                 {
@@ -73,16 +70,6 @@ namespace Sudoku_Solver
         /// The current state of Accuracy for the space
         /// </summary>
         public SpaceAccuracyStates SpaceAccuracy;
-
-        /// <summary>
-        /// Will trigger when an absolute number is found.
-        /// </summary>
-        public event PlacedNumberEventHandler AbsoluteNumberFound;
-
-        /// <summary>
-        /// Trigger whenever a number is placed.
-        /// </summary>
-        public event PlacedNumberEventHandler NumberPlaced;
 
         //Dictates that this number cannot be changed
         public bool IsAbsolute
@@ -193,17 +180,11 @@ namespace Sudoku_Solver
             IsAbsolute = Absolute;
         }
 
-        private void OnPlaced()
-        {
-            if (NumberPlaced != null)
-                NumberPlaced(this);
-        }
-
         /// <summary>
         /// Checks to see if this space has a unique number possibility
         /// </summary>
         /// <returns>Returns true if it has one, else false</returns>
-        public bool ShowUnique()
+        public bool HasUnique()
         {
             foreach (Possibility SpP in Possibilities)
             {

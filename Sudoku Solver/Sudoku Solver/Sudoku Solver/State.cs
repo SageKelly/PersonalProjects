@@ -74,7 +74,7 @@ namespace Sudoku_Solver
         /// original state, with the IntialTry being a flag,
         /// indicating where the try phase started.
         /// </summary>
-        public bool TryState;
+        public bool GuessState;
 
         /// <summary>
         /// Creates a state for the particular Agent
@@ -82,17 +82,17 @@ namespace Sudoku_Solver
         /// <param name="thinker">The Agent</param>
         /// <param name="CurrentSpace">Space to which the chosen number belongs</param>
         /// <param name="ChosenNumber">The number placed in the Space</param>
-        /// <param name="Try">Whether or not the Agent was trying out a number or declaring an absolute</param>
+        /// <param name="IsGuess">Whether or not the Agent was trying out a number or declaring an absolute</param>
         ///<param name="id">The State's ID</param>
         ///<param name="CurrentState">The State's previous state</param>
         ///<param name="guessIndex">If guessing, this will hold the index of the possibility being used on this State.</param>
-        public State(Agent thinker, Space CurrentSpace, string ChosenNumber, bool Try, int id, State CurrentState, int guessIndex = 0)
+        public State(Agent thinker, Space CurrentSpace, string ChosenNumber, bool IsGuess, int id, State CurrentState, int guessIndex = 0)
         {
             Thinker = thinker;
             UsedSpace = new Space(CurrentSpace.TableLocation, CurrentSpace.Possibilities,
                 CurrentSpace.IsAbsolute, CurrentSpace.ChosenNumber);
             this.ChosenNumber = ChosenNumber;
-            TryState = Try;
+            GuessState = IsGuess;
             ID = id;
             PreviousState = CurrentState;
             GuessIndex = guessIndex;
@@ -213,6 +213,16 @@ namespace Sudoku_Solver
                     SCRindex++;
                 }
             }
+        }
+
+        /// <summary>
+        /// Prints out the internals of the State object
+        /// </summary>
+        /// <returns>return everything...just, everything</returns>
+        public override string ToString()
+        {
+
+            return "";
         }
     }
 }

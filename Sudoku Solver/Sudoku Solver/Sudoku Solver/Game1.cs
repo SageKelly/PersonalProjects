@@ -31,6 +31,8 @@ namespace Sudoku_Solver
         KeyboardState KBState, PrevKBState = Keyboard.GetState();
         bool InteractiveMode;
 
+        string puzzleName = "Puzzle 6";
+
         string[,] wordarray;
         Vector2 MaxWordDistance;
         Vector2 BoardOffset;
@@ -69,8 +71,6 @@ namespace Sudoku_Solver
         const int SCRN_HEIGHT_960 = 960;
         const int SCRN_HEIGHT_1024 = 1024;
 
-        Agent AI1;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -88,11 +88,10 @@ namespace Sudoku_Solver
         /// </summary>
         protected override void Initialize()
         {
-            GameBoard = new Board(this, 44, 44, @"Puzzles\Puzzle 3.txt");
+            GameBoard = new Board(this, 44, 44, @"Puzzles\" + puzzleName + ".txt");
+            this.Components.Add(GameBoard);
 
             wordarray = new string[9, 9];
-            AI1 = new Agent(GameBoard);
-            AI1.Delay = 500;
             #region Test Code
             /*
             for (int SqRow = 0; SqRow < 3; SqRow++)
@@ -111,8 +110,8 @@ namespace Sudoku_Solver
             }
             */
             #endregion
-            this.Components.Add(GameBoard);
             base.Initialize();
+            GameBoard.Thinker.Delay = 1000;
         }
 
         /// <summary>
@@ -153,22 +152,27 @@ namespace Sudoku_Solver
                 this.Exit();
             if (KBState.IsKeyDown(Keys.Escape) && PrevKBState.IsKeyUp(Keys.Escape))
                 this.Exit();
-
+            
             if (KBState.IsKeyDown(Keys.Down) && PrevKBState.IsKeyUp(Keys.Down))
             {
-                AI1.Delay += 100;
+                GameBoard.Thinker.Delay -= 100;
             }
 
             if (KBState.IsKeyDown(Keys.Up) && PrevKBState.IsKeyUp(Keys.Up))
             {
-                AI1.Delay -= 100;
+                GameBoard.Thinker.Delay += 100;
             }
 
             if (KBState.IsKeyDown(Keys.Space) && PrevKBState.IsKeyUp(Keys.Space))
             {
-                AI1.Running = !AI1.Running;
+                GameBoard.Thinker.Running = !GameBoard.Thinker.Running;
             }
-            AI1.Update(gameTime);
+
+            if (KBState.IsKeyDown(Keys.F) && PrevKBState.IsKeyUp(Keys.F))
+            {
+                GameBoard.Thinker.ForceAct = true;
+            }
+            GameBoard.Thinker.Update(gameTime);
 
             base.Update(gameTime);
             PrevKBState = KBState;
@@ -184,14 +188,13 @@ namespace Sudoku_Solver
 
             base.Draw(gameTime);
             spriteBatch.Begin();
-            spriteBatch.DrawString(MouseFont, "AI's Ticker Speed: " + AI1.Delay, new Vector2(0, 480), Color.Black);
-            spriteBatch.DrawString(MouseFont, "AI Running: " + AI1.Running, new Vector2(0, 500), Color.Black);
-            if (AI1.CurrentState != null)
+            spriteBatch.DrawString(MouseFont, "AI's Ticker Speed: " + GameBoard.Thinker.Delay, new Vector2(0, 480), Color.Black);
+            spriteBatch.DrawString(MouseFont, "AI Running: " + GameBoard.Thinker.Running, new Vector2(0, 500), Color.Black);
+            if (GameBoard.Thinker.CurrentState != null)
             {
-                spriteBatch.DrawString(MouseFont, "AI's Current State Space: [" + AI1.CurrentState.UsedSpace.TableLocation.X +
-                    "," + AI1.CurrentState.UsedSpace.TableLocation.Y + "]", new Vector2(0, 520), Color.Black);
+                spriteBatch.DrawString(MouseFont, "AI's Current State Space: [" + GameBoard.Thinker.CurrentState.UsedSpace.TableLocation.X +
+                    "," + GameBoard.Thinker.CurrentState.UsedSpace.TableLocation.Y + "]", new Vector2(0, 520), Color.Black);
             }
-            spriteBatch.DrawString(MouseFont, AI1.In, new Vector2(0, 540), Color.Black);
             #region Test Code
             /*spriteBatch.DrawString(MouseFont, "(" + Mouse.GetState().X + ", " + Mouse.GetState().Y + ")",
                 new Vector2(Mouse.GetState().X + 10, Mouse.GetState().Y), Color.Black);*/

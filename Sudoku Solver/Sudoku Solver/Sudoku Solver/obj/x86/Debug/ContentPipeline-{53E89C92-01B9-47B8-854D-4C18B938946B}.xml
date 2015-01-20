@@ -89,7 +89,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Unique Square.xnb</Output>
-      <Time>2014-02-08T09:19:22.0738792-05:00</Time>
+      <Time>2015-01-19T12:09:36.3547256-05:00</Time>
     </Item>
     <Item>
       <Source>Wrong Space.png</Source>
@@ -116,7 +116,16 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\IDK Mark.xnb</Output>
-      <Time>2014-02-26T12:11:42.1029262-05:00</Time>
+      <Time>2015-01-19T12:08:58.4881092-05:00</Time>
+    </Item>
+    <Item>
+      <Source>Arrow.png</Source>
+      <Name>Arrow</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Arrow.xnb</Output>
+      <Time>2015-01-19T16:51:57.3022378-05:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

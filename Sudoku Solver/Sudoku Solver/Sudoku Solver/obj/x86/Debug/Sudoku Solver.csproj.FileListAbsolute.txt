@@ -42,3 +42,6 @@ C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\o
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\obj\x86\Debug\Sudoku Solver.pdb
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 3.txt
 C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 4.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Content\Arrow.xnb
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 5.txt
+C:\PersonalProjects\PersonalProjects\Sudoku Solver\Sudoku Solver\Sudoku Solver\bin\x86\Debug\Puzzles\Puzzle 6.txt

@@ -9,7 +9,7 @@ namespace Sudoku_Solver
     /// <summary>
     /// Handles whenever the averages are updated;
     /// </summary>
-    public delegate void AveragesCalculatedEventHandler();
+    public delegate void AveragesCalculatedEventHandler(Square sender);
 
     /// <summary>
     /// Represents a section/sector of the Sudoku puzzle board
@@ -44,6 +44,12 @@ namespace Sudoku_Solver
         public event AveragesCalculatedEventHandler AveragedEvent;
 
         /// <summary>
+        /// Denotes when all possible guesses
+        /// have been tried for this square
+        /// </summary>
+        public bool OutOfGuesses;
+
+        /// <summary>
         /// A collection of spaces
         /// </summary>
         public Square(Location location)
@@ -52,6 +58,7 @@ namespace Sudoku_Solver
             TableLocation = location;
             IsComplete = false;
             AveragePossibilitySize = 0;
+            OutOfGuesses = false;
         }
 
         /// <summary>
@@ -62,7 +69,6 @@ namespace Sudoku_Solver
         private void CalculateAveragePossieSize(Space sp)
         {
             CalculateAveragePossieSize();
-            OnAveraged();
         }
 
 
@@ -83,7 +89,7 @@ namespace Sudoku_Solver
                         ///For Trying purposes (see Agent) this MUST
                         ///check the possie size, for an absent possie
                         ///count does not signify an absolute space.
-                        if (Spaces[col, row].Possibilities.Count != 0)
+                        if (Spaces[col, row].Possibilities.Count > 1 && !Spaces[col, row].HasUnique())
                         {
                             SpaceCount++;
                             AveragePossibilitySize += Spaces[col, row].Possibilities.Count;
@@ -92,35 +98,14 @@ namespace Sudoku_Solver
                 }
                 if (SpaceCount != 0)
                     AveragePossibilitySize /= SpaceCount;
-            }
-        }
-
-        /// <summary>
-        /// This listens to all the spaces related to the Square for 
-        /// when they get a value. At that time, the Square will
-        /// recalculate the Average Possibility Size, since it will
-        /// be different at that point. This should only be called
-        /// when the Square object is instantiated.
-        /// </summary>
-        public void RegistertoSpaces()
-        {
-            for (int row = 0; row < 3; row++)
-            {
-                for (int col = 0; col < 3; col++)
-                {
-                    if (!Spaces[col, row].IsAbsolute)//If it's not already given...
-                    {
-                        //Listen to it's NumberPlace event
-                        Spaces[col, row].NumberPlaced += new PlacedNumberEventHandler(CalculateAveragePossieSize);
-                    }
-                }
+                OnAveraged();
             }
         }
 
         private void OnAveraged()
         {
             if (AveragedEvent != null)
-                AveragedEvent();
+                AveragedEvent(this);
         }
     }
 }

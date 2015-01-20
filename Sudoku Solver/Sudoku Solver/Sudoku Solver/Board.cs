@@ -47,7 +47,7 @@ namespace Sudoku_Solver
         /// A huge list of Texture2Ds the Board personally uses
         /// </summary>
         private Texture2D t2d_wrong_bg, t2d_right_bg, t2d_try_bg, t2d_idk_bg, t2d_check_mark,
-            t2d_grid, t2d_hgl, t2d_vgl, t2d_single_circle, t2d_unique_square, t2d_IDK_mark;
+            t2d_grid, t2d_hgl, t2d_vgl, t2d_single_circle, t2d_unique_square, t2d_IDK_mark, t2d_arrow;
 
         /// <summary>
         /// Holds all the different types of colors the spaces can be.
@@ -62,7 +62,8 @@ namespace Sudoku_Solver
         /// personally uses.
         /// </summary>
         private Vector2 v2_grid_size, v2_grid_pos, v2_space_offest, v2_space_size, v2_text_spacing, v2_grid_offset,
-            v2_square_offset, v2_cumu_sum, v2_gl_offset, v2_max_word_distance, v2_index_distance, v2_letter_distance, v2_word_draw_pos;
+            v2_square_offset, v2_cumu_sum, v2_gl_offset, v2_max_word_distance, v2_index_distance, v2_letter_distance,
+            v2_word_draw_pos, v2_check_mark_width, v2_arrow_width;
 
         /// <summary>
         /// A small list of SpriteFont the Board personally uses 
@@ -101,8 +102,17 @@ namespace Sudoku_Solver
         public Space[,] Spaces;
 
         public Square[,] Squares;
+        /// <summary>
+        /// Keeps a list of the squares organized
+        /// in the lowest average possibility size
+        /// to the highest
+        /// </summary>
+        public List<Square> PossieSizeSorted;
 
         public Vector2 BoardPosition;
+
+        //This AI
+        public Agent Thinker { get; set; }
 
         public event BoardCompletionEventHandler BoardComplete;
         #endregion
@@ -139,21 +149,40 @@ namespace Sudoku_Solver
             v2_gl_offset = Vector2.Zero;
             BoardPosition = Vector2.Zero;
             v2_word_draw_pos = Vector2.Zero;
+            v2_check_mark_width = Vector2.Zero;
+            v2_arrow_width = Vector2.Zero;
 
             ///Creation of the board happens in 7 steps
-            ///STEP 1/9: Instantiate the boards
+            ///STEP 1/10: Instantiate the boards
             Spaces = new Space[9, 9];
             Squares = new Square[3, 3];
             ColoredSpaces = new Texture2D[4];
+            PossieSizeSorted = new List<Square>();
+            /*
+             * SEE SECOND BOARD CONSTRUCTOR FOR THE 
+             * CONTINUATION OF THE STEPS.
+            */
         }
 
+        /// <summary>
+        /// A collection of Squares
+        /// </summary>
+        /// <param name="game">The game in which this will be used</param>
+        /// <param name="BigFontFileDir">The full path for the  the large-text spritefont file</param>
+        /// <param name="SmallFontFileDir">The full path for the small-text spritefont file</param>
+        /// <param name="FontColor">The color in which both spritefonts will be drawn</param>
+        /// <param name="rightBGColor">The color which will be used for the right numbers</param>
+        /// <param name="wrongBGColor">The color which will be used for the wrong numbers</param>
+        /// <param name="IDKBGColor">The color which will be used for the inconclusive numbers</param>
+        /// <param name="SpaceWidth">The width of the number space</param>
+        /// <param name="SpaceHeight">The height of the number space</param>
         public Board(Game game, int SpaceWidth, int SpaceHeight, string puzzleFileName)
             : this(game, SpaceWidth, SpaceHeight)
         //Since this inherits from the the previous constructor STEP 1 is always done
         {
             str_puzz_filename = puzzleFileName;
 
-            //STEP 2/9: Read the numbers from the file into the board
+            //STEP 2/10: Read the numbers from the file into the board
             PuzzleReader.MakePuzzle(str_puzz_filename, this);
             ///At this point, the array now has all it's given numbers in
 
@@ -184,13 +213,40 @@ namespace Sudoku_Solver
                 }
             }
             sw.Close();
-            //STEP 3/9: Make the Square mapping array
+            //STEP 3/10: Make the Square mapping array and register the possielist to the square's averaged event
             for (int row = 0; row < Squares.GetLength(1); row++)
             {
                 for (int col = 0; col < Squares.GetLength(0); col++)
                 {
                     Squares[col, row] = new Square(new Location(col, row));
+                    Squares[col, row].AveragedEvent += InsertIntoPossie;
                 }
+            }
+        }
+
+        void InsertIntoPossie(Square sender)
+        {
+            if (PossieSizeSorted.Count != 0)
+            {
+                PossieSizeSorted.Remove(sender);
+
+                for (int i = 0; i < PossieSizeSorted.Count; i++)
+                {
+                    if (sender.AveragePossibilitySize < PossieSizeSorted[i].AveragePossibilitySize)
+                    {
+                        PossieSizeSorted.Insert(i, sender);
+                        return;
+                    }
+                    else if (i == PossieSizeSorted.Count - 1)
+                    {
+                        PossieSizeSorted.Add(sender);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                PossieSizeSorted.Add(sender);
             }
         }
         #endregion
@@ -211,19 +267,8 @@ namespace Sudoku_Solver
             pixel.SetData(colordata);
             #endregion
 
-            ///STEP 4/9: Have the Board class subscribe to when 
-            ///a number has been placed. This way the board
-            ///automatically updates itself, and the Agent has
-            ///to only worry about making the right choices.
-            for (int row = 0; row < Spaces.GetLength(1); row++)
-            {
-                for (int col = 0; col < Spaces.GetLength(0); col++)
-                {
-                    Spaces[col, row].NumberPlaced += new PlacedNumberEventHandler(UpdatePossibilities);
-                }
-            }
 
-            ///STEP 5/9: Map the Square table to the Space Table
+            ///STEP 4/10: Map the Square table to the Space Table
             for (int SqRow = 0; SqRow < 3; SqRow++)
             {
                 for (int SpRow = 0; SpRow < 3; SpRow++)
@@ -238,24 +283,27 @@ namespace Sudoku_Solver
                 }
             }
 
-            ///Step 6/9: Calculate the starting possibilities
+            ///Step 5/10: Calculate the starting possibilities
             CalculatePossibilities();
 
-            ///Step 7/9: Register CheckBoard to each space in the board.
-            ///This will check to see if there are no more possiblities
-            ///anywhere on the board. At that point the board is complete.
-            foreach (Space sp in Spaces)
-            {
-                sp.NumberPlaced += new PlacedNumberEventHandler(CheckBoard);
-            }
 
-            ///STEP 8/9 & 9/9: Have each square register to their respective
+            ///STEP 7/10 & 8/10: Have each square register to their respective
             ///spaces and find the averages for the Agent to use later
             foreach (Square Sq in Squares)
             {
-                Sq.RegistertoSpaces();
                 Sq.CalculateAveragePossieSize();
             }
+            Thinker = new Agent(this, PossieSizeSorted);
+            ///STEP 9/10: Have the Board class subscribe to when 
+            ///a number has been placed. This way the board
+            ///automatically updates itself, and the Agent has
+            ///to only worry about making the right choices.
+            Thinker.AgentActed += UpdateSquares;
+
+            ///Step 10/10: Register CheckBoard to the agent acting.
+            ///This will check to see if there are no more possiblities
+            ///anywhere on the board. At that point the board is complete.
+                Thinker.AgentActed += CheckBoard;
         }
 
         protected override void LoadContent()
@@ -274,6 +322,7 @@ namespace Sudoku_Solver
             t2d_unique_square = game.Content.Load<Texture2D>("Unique Square");
             t2d_check_mark = game.Content.Load<Texture2D>("Check Mark");
             t2d_IDK_mark = game.Content.Load<Texture2D>("IDK Mark");
+            t2d_arrow = game.Content.Load<Texture2D>("Arrow");
 
             ColoredSpaces[SpaceAccuracyStates.Right.GetHashCode()] = t2d_right_bg;
             ColoredSpaces[SpaceAccuracyStates.Wrong.GetHashCode()] = t2d_wrong_bg;
@@ -281,8 +330,10 @@ namespace Sudoku_Solver
             ColoredSpaces[SpaceAccuracyStates.IDK.GetHashCode()] = t2d_idk_bg;
 
             v2_max_word_distance = sf_10_num_font.MeasureString("[0, 0] [0, 0]: 1,2,3,4,5,6,7,8,9");
-            v2_index_distance.X = sf_10_num_font.MeasureString("[0, 0] [0, 0]: ").X;
+            v2_index_distance.X = sf_10_num_font.MeasureString("[0, 0] [0, 0]: ").X + 1;
             v2_letter_distance.X = sf_10_num_font.MeasureString("0,").X;
+            v2_check_mark_width.X = t2d_check_mark.Width;
+            v2_arrow_width.X = t2d_arrow.Width;
         }
 
         public override void Update(GameTime gameTime)
@@ -420,6 +471,14 @@ namespace Sudoku_Solver
                         //It's a tried square, so nothing's concrete.
                         spriteBatch.Draw(t2d_IDK_mark, v2_word_draw_pos + v2_index_distance, Color.White);
                     }
+                    if (sp.ChosenNumber != "" && Thinker.RecentState != null &&
+                        Thinker.RecentState.UsedSpace.TableLocation.X == sp.TableLocation.X &&
+                        Thinker.RecentState.UsedSpace.TableLocation.Y == sp.TableLocation.Y)
+                    {
+                        spriteBatch.Draw(t2d_arrow, v2_word_draw_pos + v2_index_distance + v2_check_mark_width, Color.White);
+                        spriteBatch.DrawString(sf_10_num_font, Thinker.RecentState.ChosenNumber,
+                            v2_word_draw_pos + v2_index_distance + v2_check_mark_width + v2_arrow_width, Color.Black);
+                    }
                     //Draw the Singles
                     v2_word_draw_pos.X -= 3;
                     if (sp.Possibilities.Count == 1)
@@ -453,7 +512,7 @@ namespace Sudoku_Solver
         /// </summary>
         /// <param name="sp">There's no need to do anything with
         /// it. It's just to use the delegate.</param>
-        private void CheckBoard(Space space)
+        private void CheckBoard(Agent thinker, Space space)
         {
             int AbsoluteCounter = 0;
             foreach (Square sq in Squares)
@@ -487,12 +546,14 @@ namespace Sudoku_Solver
         /// Updates the possibilities related the last spaced used. 
         /// Its like CalculatePossibilities, but more focused on 
         /// the Squares/Rows/Columns that really matter.
+        /// It also updates the appropriate Squares' average
+        /// possibility sizes.
         /// </summary>
         /// <param name="LastUsedSpace">The last space used...yep.</param>
-        public void UpdatePossibilities(Space LastUsedSpace)
+        public void UpdateSquares(Agent thinker, Space LastUsedSpace)
         {
             Square Sq = Squares[LastUsedSpace.TableLocation.X / 3, LastUsedSpace.TableLocation.Y / 3];
-
+            Sq.CalculateAveragePossieSize();
             ///Update the Square to which space belongs first.
             UpdateSquare(Sq, LastUsedSpace);
 
@@ -503,14 +564,20 @@ namespace Sudoku_Solver
                 case 0://The next two spaces within the row within the square
                     UpdateSquare(Squares[1, Sq.TableLocation.Y], LastUsedSpace);
                     UpdateSquare(Squares[2, Sq.TableLocation.Y], LastUsedSpace);
+                    Squares[1, Sq.TableLocation.Y].CalculateAveragePossieSize();
+                    Squares[2, Sq.TableLocation.Y].CalculateAveragePossieSize();
                     break;
                 case 1://The first last two spaces within the row
                     UpdateSquare(Squares[0, Sq.TableLocation.Y], LastUsedSpace);
                     UpdateSquare(Squares[2, Sq.TableLocation.Y], LastUsedSpace);
+                    Squares[0, Sq.TableLocation.Y].CalculateAveragePossieSize();
+                    Squares[2, Sq.TableLocation.Y].CalculateAveragePossieSize();
                     break;
                 case 2://The first two spaces
                     UpdateSquare(Squares[0, Sq.TableLocation.Y], LastUsedSpace);
                     UpdateSquare(Squares[1, Sq.TableLocation.Y], LastUsedSpace);
+                    Squares[0, Sq.TableLocation.Y].CalculateAveragePossieSize();
+                    Squares[1, Sq.TableLocation.Y].CalculateAveragePossieSize();
                     break;
             }
             switch (Sq.TableLocation.Y)
@@ -519,14 +586,20 @@ namespace Sudoku_Solver
                 case 0:
                     UpdateSquare(Squares[Sq.TableLocation.X, 1], LastUsedSpace);
                     UpdateSquare(Squares[Sq.TableLocation.X, 2], LastUsedSpace);
+                    Squares[Sq.TableLocation.X, 1].CalculateAveragePossieSize();
+                    Squares[Sq.TableLocation.X, 2].CalculateAveragePossieSize();
                     break;
                 case 1:
                     UpdateSquare(Squares[Sq.TableLocation.X, 0], LastUsedSpace);
                     UpdateSquare(Squares[Sq.TableLocation.X, 2], LastUsedSpace);
+                    Squares[Sq.TableLocation.X, 0].CalculateAveragePossieSize();
+                    Squares[Sq.TableLocation.X, 2].CalculateAveragePossieSize();
                     break;
                 case 2:
                     UpdateSquare(Squares[Sq.TableLocation.X, 0], LastUsedSpace);
                     UpdateSquare(Squares[Sq.TableLocation.X, 1], LastUsedSpace);
+                    Squares[Sq.TableLocation.X, 0].CalculateAveragePossieSize();
+                    Squares[Sq.TableLocation.X, 1].CalculateAveragePossieSize();
                     break;
             }
 
@@ -548,21 +621,19 @@ namespace Sudoku_Solver
                 if (loc.X < square.TableLocation.X || loc.X > square.TableLocation.X)
                 {
                     //lock the row and update
-                    for (int SpRow = 0; SpRow < 3; SpRow++)
+                    for (int SpCol = 0; SpCol < 3; SpCol++)//We run through the columns faster than the rows
                     {
-                        for (int SpCol = 0; SpCol < 3; SpCol++)//We run through the columns faster than the rows
+                        Space sp = square.Spaces[SpCol, LastUsedSpace.TableLocation.Y % 3];
+                        if (!sp.IsAbsolute)
                         {
-                            Space sp = square.Spaces[SpCol, LastUsedSpace.TableLocation.Y % 3];
-                            if (!sp.IsAbsolute)
+                            //Run through all the possibilities for that space backwards (for deletion purposes)
+                            for (int p_index = sp.Possibilities.Count - 1; p_index >= 0; p_index--)
                             {
-                                //Run through all the possibilities for that space backwards (for deletion purposes)
-                                for (int p_index = sp.Possibilities.Count - 1; p_index >= 0; p_index--)
-                                {
-                                    //If that's the number to be deleted...
-                                    if (sp.Possibilities[p_index].Number == LastUsedSpace.ChosenNumber)
-                                        sp.Possibilities.RemoveAt(p_index);//delete it
-                                }
+                                //If that's the number to be deleted...
+                                if (sp.Possibilities[p_index].Number == LastUsedSpace.ChosenNumber)
+                                    sp.Possibilities.RemoveAt(p_index);//delete it
                             }
+
                         }
                     }
                 }
@@ -570,20 +641,17 @@ namespace Sudoku_Solver
                 else if (loc.Y < square.TableLocation.Y || loc.Y > square.TableLocation.Y)
                 {
                     //lock the column and update
-                    for (int SpCol = 0; SpCol < 3; SpCol++)
+                    for (int SpRow = 0; SpRow < 3; SpRow++)//This time we run through the ROWS faster than the columns
                     {
-                        for (int SpRow = 0; SpRow < 3; SpRow++)//This time we run through the ROWS faster than the columns
+                        Space sp = square.Spaces[LastUsedSpace.TableLocation.X % 3, SpRow];
+                        if (!sp.IsAbsolute)
                         {
-                            Space sp = square.Spaces[LastUsedSpace.TableLocation.X % 3, SpRow];
-                            if (!sp.IsAbsolute)
+                            //Run through all the possibilities for that space backwards (for deletion purposes)
+                            for (int p_index = sp.Possibilities.Count - 1; p_index >= 0; p_index--)
                             {
-                                //Run through all the possibilities for that space backwards (for deletion purposes)
-                                for (int p_index = sp.Possibilities.Count - 1; p_index >= 0; p_index--)
-                                {
-                                    //If that's the number to be deleted...
-                                    if (sp.Possibilities[p_index].Number == LastUsedSpace.ChosenNumber)
-                                        sp.Possibilities.RemoveAt(p_index);//delete it
-                                }
+                                //If that's the number to be deleted...
+                                if (sp.Possibilities[p_index].Number == LastUsedSpace.ChosenNumber)
+                                    sp.Possibilities.RemoveAt(p_index);//delete it
                             }
                         }
                     }
@@ -673,7 +741,7 @@ namespace Sudoku_Solver
                                 for (int i = CurSpace.Possibilities.Count - 1; i >= 0; i--)
                                 {
                                     CurPossie = CurSpace.Possibilities[i];
-                                    if ( CurPossie.Number == num)
+                                    if (CurPossie.Number == num)
                                         CurSpace.Possibilities.RemoveAt(i);
                                 }
                                 #region Old Code
@@ -729,13 +797,6 @@ namespace Sudoku_Solver
                 {
                     CurSpace = sq.Spaces[SpCol, SpRow];
 
-                    /*
-                    if (CurSpace.Possibilities.Count == 1)//if there's only one possibility for this space...
-                    {
-                        continue;//skip the rest
-                    }
-                    */
-
                     if (CurSpace.Possibilities.Count == 0)//If there are no possibilities (i.e. the number was given)
                         continue;
                     else if (SeenNumbers.Count == 0 && NewNumbers.Count == 0)//If nothing's been seen yet
@@ -765,29 +826,24 @@ namespace Sudoku_Solver
                         }
                         else //i.e. no numbers have already been seen
                         {
-                            for (int n_index = NewNumbers.Count - 1; n_index >= 0; n_index--)
-                            {
-                                if (CurPossie.Number == NewNumbers[n_index].Number)//If it's in the new numbers...
-                                {
-                                    //It's been seen: it's no longer new
-                                    NewNumbers.RemoveAt(n_index);
-                                    if (CurSpace.Possibilities.Count == 1)
-                                        SeenNumbers.Add(new Possibility(CurSpace.Possibilities[0].Number,CurSpace.Possibilities[0].IsUnique));
-                                    else
-                                    SeenNumbers.Add(CurPossie);
-                                }
-                            }
+                            isNew = true;
                         }
                         if (isNew)
                         {
+                            if (NewNumbers.Count == 0)
+                            {
+                                if (CurSpace.Possibilities.Count == 1)
+                                    NewNumbers.Add(new Possibility(CurSpace.Possibilities[0].Number, CurSpace.Possibilities[0].IsUnique));
+                                else
+                                    NewNumbers.Add(CurPossie);
+                                continue;
+                            }
                             for (int n_index = NewNumbers.Count - 1; n_index >= 0; n_index--)
                             {
                                 if (CurPossie.Number == NewNumbers[n_index].Number)//If it's in the new numbers...
                                 {
                                     //It's been seen: it's no longer new
                                     NewNumbers.RemoveAt(n_index);
-                                    if (CurSpace.Possibilities.Count == 1)
-                                        SeenNumbers.Add(new Possibility(CurSpace.Possibilities[0].Number, CurSpace.Possibilities[0].IsUnique));
                                     SeenNumbers.Add(CurPossie);
                                     break;
                                 }
@@ -797,9 +853,11 @@ namespace Sudoku_Solver
                                     //then it's definitely new
                                     if (CurSpace.Possibilities.Count == 1)
                                         NewNumbers.Add(new Possibility(CurSpace.Possibilities[0].Number, CurSpace.Possibilities[0].IsUnique));
-                                    NewNumbers.Add(CurPossie);
+                                    else
+                                        NewNumbers.Add(CurPossie);
                                 }
                             }
+
                         }
                     }
                 }

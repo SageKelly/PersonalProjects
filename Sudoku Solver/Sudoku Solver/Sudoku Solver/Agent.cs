@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Sudoku_Solver
 {
+    public delegate void AgentActedHandler(Agent sender, Space space);
     /// <summary>
     /// Represents the thinker
     /// </summary>
@@ -21,14 +22,9 @@ namespace Sudoku_Solver
         List<State> TryStack;
 
         /// <summary>
-        /// A list of the tried spaces that failed to work
-        /// </summary>
-        List<State> TriedSpaces;
-
-        /// <summary>
         /// Holds the most recent state.
         /// </summary>
-        State RecentState;
+        public State RecentState { get; private set; }
 
         /// <summary>
         /// Holds the current state. This may or may not be the
@@ -55,11 +51,6 @@ namespace Sudoku_Solver
         /// Holds the location of the Space with only one possibility
         /// </summary>
         Space SingleSpace;
-
-        /// <summary>
-        /// Holds the space in which the number decision will be made
-        /// </summary>
-        Space ChosenSpace;
 
         /// <summary>
         /// Holds the location of the Space with a unique possibility
@@ -99,43 +90,47 @@ namespace Sudoku_Solver
         public bool FirstTime;
 
         /// <summary>
-        /// Holds the number decision for ChosenSpace
+        /// Used to make the AI start thinking and acting
+        /// as opposed to waiting for the time interval
+        /// to pass.
         /// </summary>
-        string ChosenNumber;
+        public bool ForceAct;
 
-        /// <summary>
-        /// Tell me what method the Agent is in (for printing purposes)
-        /// </summary>
-        public string In;
         TimeSpan Timer;
+        /// <summary>
+        /// Keeps a list of the squares organized
+        /// in the lowest average possibility size
+        /// to the highest
+        /// </summary>
+        List<Square> PossieSizeSorted;
+
+        public event AgentActedHandler AgentActed;
 
         public int Delay = 0;
         public bool Running = false;
 
         #endregion
-        public Agent(Board BoardInUse)
+        public Agent(Board BoardInUse, List<Square> PossieList)
         {
             GameBoard = BoardInUse;
 
             States = new List<State>();
             TryStack = new List<State>();
+            PossieSizeSorted = PossieList;
             RecentState = null;
             CurrentState = null;
             FirstTime = true;
-            IsTrying = Deadended = Backtracking = IsTakingAGuess = false;
-            ChosenNumber = "";
+            IsTrying = Deadended = Backtracking = IsTakingAGuess = ForceAct = false;
             GameBoard.BoardComplete += new BoardCompletionEventHandler(FinishBoard);
             Timer = TimeSpan.Zero;
-            In = "";
         }
 
         public void Update(GameTime gameTime)
         {
-            In = "In Update()...";
             //TODO: Find out why some of guesses end up with green squares instead of blue squares
 
             Timer += gameTime.ElapsedGameTime;
-            if (Timer.TotalMilliseconds >= Delay && Running)
+            if ((Timer.TotalMilliseconds >= Delay && Running) || ForceAct)
             {
                 if (FirstTime)
                 {
@@ -145,8 +140,12 @@ namespace Sudoku_Solver
                         Running = false;
                         return;
                     }
+                    FindLowestAveragePossieSize(null);
                     IsTakingAGuess = !GlobalSearch();
-                    GameBoard.Squares[2, 2].AveragedEvent += new AveragesCalculatedEventHandler(FindLowestAveragePossieSize);
+                    foreach (Square s in GameBoard.Squares)
+                    {
+                        s.AveragedEvent += new AveragesCalculatedEventHandler(FindLowestAveragePossieSize);
+                    }
                     //^This is the last Square that's updated. So once this one has finished we can check all of them.
                     FirstTime = false;
                 }
@@ -179,6 +178,7 @@ namespace Sudoku_Solver
                     Guess();
                 }
                 Timer -= Timer;
+                ForceAct = false;
             }
         }
 
@@ -191,64 +191,36 @@ namespace Sudoku_Solver
         /// </summary>
         private bool GlobalSearch()
         {
-            In = "In GlobalSearch()...";
-            SmallestSquare = GameBoard.Squares[0, 0];
-            Square CurSquare;
-            Space CurSpace;
-            SmallestSpace = GameBoard.Spaces[0, 0];
-            //Searches for singles
-            for (int SqRow = 0; SqRow < 3; SqRow++)
+            /*
+             * Run through each square sorted in descending
+             * order of average possie size and find a
+             * single or unique space....
+             */
+            foreach (Square s in PossieSizeSorted)
             {
-                for (int SqCol = 0; SqCol < 3; SqCol++)
+                foreach (Space Ss in s.Spaces)
                 {
-                    CurSquare = GameBoard.Squares[SqCol, SqRow];
-                    if (CurSquare.IsComplete)//If every space is absolute
-                        continue;
-                    for (int SpRow = 0; SpRow < 3; SpRow++)
+                    if (Ss.Possibilities.Count == 1)
                     {
-                        for (int SpCol = 0; SpCol < 3; SpCol++)
-                        {
-                            CurSpace = CurSquare.Spaces[SpCol, SpRow];
-
-                            if (CurSpace.IsAbsolute)
-                                continue;
-                            if (SmallestSpace.Possibilities.Count == 1)
-                                SmallestSpace = CurSpace;
-
-                            else if (CurSpace.Possibilities.Count == 1)
-                                SingleSpace = CurSpace;
-                            for (int p_index = 0; p_index < CurSpace.Possibilities.Count; p_index++)
-                            {
-                                if (CurSpace.Possibilities[p_index].IsUnique)
-                                    UniqueSpace = CurSpace;
-                                break;
-                                ///Thanks to some code in the Board class, a
-                                ///UniqueSpace will never be equal to the
-                                ///SingleSpace.
-                            }
-                            //Keep track of the square with the smallest average possibility size
-                            if (CurSquare.AveragePossibilitySize < SmallestSquare.AveragePossibilitySize)
-                                SmallestSquare = CurSquare;
-
-                            //Keep track of Space with the smallest Possibility Size
-                            if (CurSpace.Possibilities.Count > 1 && CurSpace.Possibilities.Count < SmallestSpace.Possibilities.Count)
-                                SmallestSpace = CurSpace;
-                        }
+                        SingleSpace = Ss;
+                        break;
+                    }
+                    else if (Ss.HasUnique())
+                    {
+                        UniqueSpace = Ss;
+                        break;
                     }
                 }
+                if (SingleSpace != null || UniqueSpace != null)
+                    break;
             }
+            //---------------------------------------------------------------------------------------
+            //Then, act on it.
             if (SingleSpace != null)
             {
-                if (IsTrying)
-                {
-                    Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, true);
-                    Act(SingleSpace, true);
-                }
-                else
-                {
-                    Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false);
-                    Act(SingleSpace, false);
-                }
+                Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, IsTrying);
+                Act(SingleSpace, IsTrying);
+
                 Deadended = false;
                 SingleSpace = null;
                 UniqueSpace = null;
@@ -260,16 +232,9 @@ namespace Sudoku_Solver
                 {
                     if (UniqueSpace.Possibilities[i].IsUnique)
                     {
-                        if (IsTrying)
-                        {
-                            Learn(UniqueSpace, UniqueSpace.Possibilities[0].Number, false, false, true, i);
-                            Act(UniqueSpace, false);
-                        }
-                        else
-                        {
-                            Learn(UniqueSpace, UniqueSpace.Possibilities[0].Number, false);
-                            Act(UniqueSpace, false);
-                        }
+                        Learn(UniqueSpace, UniqueSpace.Possibilities[i].Number, false, IsTrying);
+                        Act(UniqueSpace, IsTrying);
+
                         Deadended = false;
                         SingleSpace = null;
                         UniqueSpace = null;
@@ -288,7 +253,6 @@ namespace Sudoku_Solver
         /// <returns>Returns true if a single or unique is found and learned. Else returns false.</returns>
         private bool LocalSearch()
         {
-            In = "In LocalSearch()...";
             /*
              * Use the locations of the affected spaces
              * found in the previous state, to look for
@@ -310,9 +274,6 @@ namespace Sudoku_Solver
             ///
 
             Space[] SpaceArraySwitch;
-            ///Reoresents the first time a space with this possie
-            ///property has been found
-            bool FirstFind = true;
 
             int UniqueIndex = 0;
             ///Check to see if there are any Squares on the board
@@ -356,17 +317,10 @@ namespace Sudoku_Solver
                         if (BSp.Possibilities.Count == 1)//If it's a single
                         {
                             SingleSpace = BSp;
-                            if (IsTrying)
-                            {
-                                Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, true);
-                                Act(SingleSpace, true);
-                            }
-                            else
-                            {
-                                Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false);
-                                Act(SingleSpace, false);
 
-                            }
+                            Learn(SingleSpace, SingleSpace.Possibilities[0].Number, false, IsTrying);
+                            Act(SingleSpace, IsTrying);
+
                             //Cleanup
                             SingleSpace = null;
                             UniqueSpace = null;
@@ -378,33 +332,23 @@ namespace Sudoku_Solver
                             //Check for a unique number
                             for (int p_index = 0; p_index < BSp.Possibilities.Count; p_index++)
                             {
-                                if (BSp.Possibilities[p_index].IsUnique && FirstFind)
+                                if (BSp.Possibilities[p_index].IsUnique)
                                 {
                                     UniqueSpace = BSp;
                                     UniqueIndex = p_index;
-                                    FirstFind = false;
+
+                                    //then you've found a unique number. Act on it.
+                                    Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number, false, IsTrying);
+                                    Act(UniqueSpace, IsTrying);
+
+                                    //Cleanup
+                                    SingleSpace = null;
+                                    UniqueSpace = null;
+                                    return true;
                                 }
                             }
                         }
                     }
-                }
-                if (UniqueSpace != null)
-                {
-                    //then you've found a unique number. Act on it.
-                    if (IsTrying)
-                    {
-                        Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number, false, true);
-                        Act(UniqueSpace, true);
-                    }
-                    else
-                    {
-                        Learn(UniqueSpace, UniqueSpace.Possibilities[UniqueIndex].Number, false);
-                        Act(UniqueSpace, false);
-                    }
-                    //Cleanup
-                    SingleSpace = null;
-                    UniqueSpace = null;
-                    return true;
                 }
             }
             return false;//something trickier must be done
@@ -418,7 +362,6 @@ namespace Sudoku_Solver
         /// </summary>
         private void Undo()
         {
-            In = "In Undo()...";
             ///we backtrack through states to hopefully find a better
             ///solution. While we haven't reached a state where we started
             ///trying or while the current state isn't the very first one...
@@ -480,11 +423,8 @@ namespace Sudoku_Solver
                             }
                         }
                     }
-                    if (TryI == 0)
-                        CurrentState = TryStack[TryI];
-                    else
-                        CurrentState = TryStack[TryI];
-                } while (TryI >= 1 && !TryStack[TryI--].TryState);
+                    CurrentState = TryStack[TryI];
+                } while (TryI >= 1 && !TryStack[TryI--].GuessState);
                 //By this point the tryState is undone.
                 //Now, erase all of the states that were undone.
 
@@ -498,7 +438,7 @@ namespace Sudoku_Solver
                  * to the index BEFORE the trystate.
                  */
                 int deleteIndex = TryStack.IndexOf(CurrentState);
-                TryStack.RemoveRange(deleteIndex + 1, TryStack.Count - deleteIndex + 1);
+                TryStack.RemoveRange(deleteIndex + 1, TryStack.Count - (deleteIndex + 1));
             }
         }
 
@@ -507,7 +447,6 @@ namespace Sudoku_Solver
         /// </summary>
         private void Guess()
         {
-            In = "In Guess()...";
             #region Priority
             ///Priority:
             ///1. Singles
@@ -529,7 +468,7 @@ namespace Sudoku_Solver
             ///it doesn't get erased until here, it should still
             ///have a value.
             ///
-            if (CurrentState.TryState)//i.e. If you came back because your last guess didn't work...
+            if (CurrentState.GuessState)//i.e. If you came back because your last guess didn't work...
             {
                 int index = CurrentState.GuessIndex + 1;
 
@@ -554,41 +493,57 @@ namespace Sudoku_Solver
                      * still on the stack, it must be removed,
                      * or else Undo() won't work.
                      */
+                    GameBoard.Squares[CurrentState.SquareLocation.X, CurrentState.SquareLocation.Y].OutOfGuesses = true;
                     TryStack.Remove(CurrentState);
                     Undo();
-                    Guess();
+                    FindAvailableGuess();
                 }
             }
             else//i.e. This is your first time guessing
             {
-                SmallestSpace = SmallestSquare.Spaces[0, 0];
-                for (int row = 0; row < 3; row++)
+                if (SmallestSquare.OutOfGuesses)
                 {
-                    for (int col = 0; col < 3; col++)
-                    {
-                        if (SmallestSpace.IsAbsolute)
-                        {
-                            SmallestSpace = SmallestSquare.Spaces[col, row];
-                        }
-                        else if (SmallestSquare.Spaces[col, row].Possibilities.Count < SmallestSpace.Possibilities.Count &&
-                          !SmallestSquare.Spaces[col, row].IsAbsolute)
-                            SmallestSpace = SmallestSquare.Spaces[col, row];
-                    }
+                    FindAvailableGuess();
                 }
-                //Give it a shot
-                if (SmallestSpace.Possibilities.Count != 0)
-                {
-                    Learn(SmallestSpace, SmallestSpace.Possibilities[0].Number, true, true);
-                    Act(SmallestSpace, true);
-                }
-                //TODO: Find out why it's missing a unique as a choice before it starts guessing
+                Learn(SmallestSpace, SmallestSpace.Possibilities[0].Number, true, true);
+                Act(SmallestSpace, true);
                 //TODO: Find a wway to keep smallest space from choosing the same square constantly
             }
             IsTakingAGuess = false;
             //Cleanup
             UniqueSpace = null;
             SingleSpace = null;
-            ChosenNumber = "";
+        }
+
+        /// <summary>
+        /// Runs through the PossieSizeSorted list to find
+        /// a square that still has untried guesses
+        /// </summary>
+        private void FindAvailableGuess()
+        {
+            int index = 0/*PossieSizeSorted.IndexOf(SmallestSquare)*/;
+            while (index < PossieSizeSorted.Count - 1 &&
+               (PossieSizeSorted[index].AveragePossibilitySize == 0.0 ||
+                PossieSizeSorted[index].OutOfGuesses ||
+                PossieSizeSorted[index] == SmallestSquare))
+            { index++; }
+            SmallestSquare = PossieSizeSorted[index];
+
+            foreach (Space s in SmallestSquare.Spaces)
+            {
+                if (s.Possibilities.Count < SmallestSpace.Possibilities.Count && s.Possibilities.Count > 0)
+                {
+                    SmallestSpace = s;
+                }
+                else if (s.Possibilities.Count > SmallestSpace.Possibilities.Count && s.HasUnique())
+                {
+                    SmallestSpace = s;
+                }
+                else if (SmallestSpace.Possibilities.Count == 0)
+                {
+                    SmallestSpace = s;
+                }
+            }
         }
 
         /// <summary>
@@ -601,7 +556,7 @@ namespace Sudoku_Solver
         /// <param name="isGuess">Is this a state wherein the AI is guessing?</param>
         /// <param name="trying">Is this AI in the trying state?</param>
         /// <param name="addToStack">Will the AI add a new state to the TryStack?</param>
-        /// <param name="GuessIndex">If guessing, what is the guess number?</param>
+        /// <param name="GuessIndex">If guessing, what is the guessing number's possibility index?</param>
         private void Learn(Space sp, string ChosenNumber, bool isGuess, bool trying = false, bool addToStack = true, int GuessIndex = 0)
         {
             if (addToStack)
@@ -623,45 +578,43 @@ namespace Sudoku_Solver
         /// <param name="IsATry">Dictates whether or not this action is a try</param>
         private void Act(Space ChosenSpace, bool IsATry)
         {
-            if (!IsATry)
-                ChosenSpace.SetNumber(CurrentState.ChosenNumber, true);
-            else
-            {
-                ChosenSpace.SetNumber(CurrentState.ChosenNumber, false);
-            }
+            ChosenSpace.SetNumber(CurrentState.ChosenNumber, !IsATry);
             ChosenSpace.Possibilities.Clear();
+            if (AgentActed != null)
+                AgentActed(this, ChosenSpace);
         }
 
         /// <summary>
         /// Finds the Square with the lowest Average possibility size and smallestSpace
         /// </summary>
-        private void FindLowestAveragePossieSize()
+        private void FindLowestAveragePossieSize(Square sender)
         {
-            In = "In FindLowestAveragePossieSize()...";
-            SmallestSquare = GameBoard.Squares[0, 0];
-            for (int row = 0; row < 3; row++)
+            int iswitch = 0;
+            if (PossieSizeSorted.Count > 0)
             {
-                for (int col = 0; col < 3; col++)
+                while (iswitch < PossieSizeSorted.Count - 1 &&
+                    (PossieSizeSorted[iswitch] == SmallestSquare || PossieSizeSorted[iswitch].AveragePossibilitySize == 0.0))
+                { iswitch++; }
+                /*
+                 * In some cases, this will make it intentionally
+                 * choose a worse square, but will prevent it
+                 * from constantly choosing the same square.
+                */
+                SmallestSquare = PossieSizeSorted[iswitch];
+                SmallestSpace = SmallestSquare.Spaces[0, 0];
+                foreach (Space s in SmallestSquare.Spaces)
                 {
-                    if (GameBoard.Squares[col, row].AveragePossibilitySize < SmallestSquare.AveragePossibilitySize &&
-                        !GameBoard.Squares[col, row].IsComplete)
-                        SmallestSquare = GameBoard.Squares[col, row];
-                }
-            }
-            SmallestSpace = SmallestSquare.Spaces[0, 0];
-            Space CurSpace;
-            for (int row = 0; row < 3; row++)
-            {
-                for (int col = 0; col < 3; col++)
-                {
-                    CurSpace = SmallestSquare.Spaces[col, row];
-                    if (SmallestSpace.Possibilities.Count <= 1 && CurSpace.Possibilities.Count > 1)
+                    if (s.Possibilities.Count < SmallestSpace.Possibilities.Count && s.Possibilities.Count > 0)
                     {
-                        SmallestSpace = CurSpace;
+                        SmallestSpace = s;
                     }
-                    else if (CurSpace.Possibilities.Count < SmallestSpace.Possibilities.Count)
+                    else if (s.Possibilities.Count > SmallestSpace.Possibilities.Count && s.HasUnique())
                     {
-                        SmallestSpace = CurSpace;
+                        SmallestSpace = s;
+                    }
+                    else if (SmallestSpace.Possibilities.Count == 0)
+                    {
+                        SmallestSpace = s;
                     }
                 }
             }
@@ -674,14 +627,14 @@ namespace Sudoku_Solver
         private bool CheckForErrors()
         {
             //If the space has no possibilities and a number has not been placed...
-            
+
             foreach (Square sq in GameBoard.Squares)
             {
                 for (int row = 0; row < 3; row++)
                 {
                     for (int col = 0; col < 3; col++)
                     {
-                        if (sq.Spaces[col, row].Possibilities.Count == 0 && sq.Spaces[col,row].ChosenNumber=="")
+                        if (sq.Spaces[col, row].Possibilities.Count == 0 && sq.Spaces[col, row].ChosenNumber == "")
                         {
                             return true;
                         }
@@ -697,12 +650,11 @@ namespace Sudoku_Solver
         /// </summary>
         private void FinishBoard()
         {
-            In = "In FinishBoard()...";
             for (int i = TryStack.Count - 1; i >= 0; i--)
             {
                 Space sp = GameBoard.Spaces[TryStack[i].UsedSpace.TableLocation.X,
                     TryStack[i].UsedSpace.TableLocation.Y];
-                Act(sp, false);
+                sp.IsAbsolute = true;
                 TryStack.RemoveAt(i);
             }
             Running = false;
