@@ -31,7 +31,7 @@ namespace Sudoku_Solver
         KeyboardState KBState, PrevKBState = Keyboard.GetState();
         bool InteractiveMode;
 
-        string puzzleName = "Puzzle 6";
+        string puzzleName = "Puzzle 3";
 
         string[,] wordarray;
         Vector2 MaxWordDistance;
