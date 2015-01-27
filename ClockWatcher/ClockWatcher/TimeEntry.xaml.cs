@@ -65,6 +65,20 @@ namespace ClockWatcher
 
         private ObservableCollection<commentEntry> commentLibrary;
 
+        /// <summary>
+        /// Signifies to select event methods whether a
+        /// TextChangedEvent came from either the GotFocus
+        /// method handler or actually from the TextChanged method
+        /// handler
+        /// </summary>
+        private bool _fromGotFocus;
+
+        public delegate void textChangedEventHandler(object sender, TextChangedEventArgs tcea);
+        public delegate void enterPressEventHandler(object sender, KeyEventArgs kea);
+
+        public event enterPressEventHandler enterPressEvent;
+        public event textChangedEventHandler textChangedEvent;
+
         #region Properties
         #region Dependency Properties
         public bool alarmExpanded
@@ -231,6 +245,7 @@ namespace ClockWatcher
             commentBox.Foreground = foregroundBrush;
             if (commentBox.Text == defaultComment)
                 commentBox.Text = "";
+            _fromGotFocus = true;
         }
         private void commentBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -243,38 +258,13 @@ namespace ClockWatcher
         }
         private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            comment = commentBox.Text;
-            TextBox sentinel = sender as TextBox;
-            if (commentLibrary.Count > 0 && sentinel.Text != "")
+            comment = (sender as TextBox).Text;
+            _fromGotFocus = true;
+            if(textChangedEvent!=null)
             {
-                ICollectionView view = CollectionViewSource.GetDefaultView(commentLibrary);
-                view.Filter =
-                    null;
-                /*
-                (o) =>
-                {
-                    //filter out all entries that neither start with nor contain the sentinel's comment
-                    return (o as commentEntry).comment.Contains(sentinel.Text) ||
-                        !(o as commentEntry).comment.StartsWith(sentinel.Text);
-                };
-                */
-                if (!view.IsEmpty && !intelPopup.IsOpen)
-                {
-                    //kill the popup
-                    intelPopup.Placement = PlacementMode.Left;
-                    intelPopup.PlacementTarget = sentinel;
-                    intelPopup.IsOpen = true;
-                }
-                else if (view.IsEmpty)
-                {
-                    intelPopup.IsOpen = false;
-                }
+                textChangedEvent(sender, e);
             }
-            else if (intelPopup != null && intelPopup.IsOpen)
-            {
-                intelPopup.IsOpen = false;
-            }
-        }
+        }        
         private void commentConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             RoutedEventArgs newCommentEventArgs = new RoutedEventArgs(newCommentEvent, this);
@@ -291,10 +281,6 @@ namespace ClockWatcher
         private void detailsButton_Click(object sender, RoutedEventArgs e)
         {
             detailsExpanded = !detailsExpanded;
-        }
-        private void intelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
         }
         private static void OnAlarmExpandedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -383,6 +369,7 @@ namespace ClockWatcher
             this.RenderTransform = animatedTransform;
         }
         #endregion
+
         #endregion
 
 

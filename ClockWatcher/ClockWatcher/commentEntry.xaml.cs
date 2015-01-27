@@ -24,6 +24,7 @@ namespace ClockWatcher
             DependencyProperty.Register("comment", typeof(string),
             typeof(commentEntry), new PropertyMetadata(""));
 
+
         public static readonly DependencyProperty isFilteringProperty =
             DependencyProperty.Register("isFiltering", typeof(bool),
             typeof(commentEntry), new PropertyMetadata(false));

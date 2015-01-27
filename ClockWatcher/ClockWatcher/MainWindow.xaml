@@ -74,7 +74,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button x:Name="entryAdderButton" Content="Add New Entry" Grid.Row="0" VerticalAlignment="Top" Padding="{DynamicResource labelPadding}" Click="entryAdder_Click" FontSize="{DynamicResource fontSize}"/>
+
                 <Border x:Name="fillterScrollBorder" Grid.Row="1" BorderThickness="1">
                     <Border.BorderBrush>
                         <SolidColorBrush Color="{DynamicResource borderColor}"/>
@@ -102,7 +102,10 @@
                     <SolidColorBrush Color="{DynamicResource borderColor}"/>
                 </Border.BorderBrush>
                 <DockPanel x:Name="sessionDock">
-                    <TextBox x:Name="sessionNameBox" Text="{Binding currentSession.name, ElementName=clockWatcherWindow}" DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{DynamicResource fontSize}"/>
+                    <StackPanel x:Name="topDockStack" Orientation="Horizontal" DockPanel.Dock="Top" >
+                        <TextBox x:Name="sessionNameBox" Text="{Binding currentSession.name, ElementName=clockWatcherWindow}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{DynamicResource fontSize}"/>
+                        <Button x:Name="entryAdderButton" Content="+" Grid.Row="0" VerticalAlignment="Top" Padding="{DynamicResource labelPadding}" Click="entryAdder_Click" FontSize="{DynamicResource fontSize}"/>
+                    </StackPanel>
                     <ScrollViewer x:Name="timeEntryList" BorderThickness="2,0" DockPanel.Dock="Top">
                         <ScrollViewer.BorderBrush>
                             <SolidColorBrush Color="{DynamicResource borderColor}"/>
@@ -114,6 +117,17 @@
                     </ScrollViewer>
                 </DockPanel>
             </Border>
+            <Popup x:Name="intelPopup" PopupAnimation="Fade" AllowsTransparency="True">
+                <Grid x:Name="popupGrid" Background="#FFE5E5E5" Height="100" HorizontalAlignment="Left">
+                    <Border x:Name="intelBorder" BorderThickness="3">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource borderColor}"/>
+                        </Border.BorderBrush>
+                        <ListBox x:Name="intelListBox" Height="100" ScrollViewer.VerticalScrollBarVisibility="Visible" DisplayMemberPath="comment"
+                             SelectionChanged="intelListBox_SelectionChanged"/>
+                    </Border>
+                </Grid>
+            </Popup>
         </Grid>
     </DockPanel>
 </Window>

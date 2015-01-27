@@ -34,24 +34,27 @@ namespace ClockWatcher
             DependencyProperty.Register("currentSession", typeof(Session),
             typeof(MainWindow), new FrameworkPropertyMetadata(null));
 
-        List<Session> Sessions;
+        private List<Session> Sessions;
 
-        Stopwatch timer;
-        Timer clockWatch;
+        private Stopwatch timer;
+        private Timer clockWatch;
+
+        private Binding binding;
 
         /// <summary>
         /// Holds a list of all comments made within the session
         /// </summary>
-        ObservableCollection<commentEntry> commentLibrary;
+        private ObservableCollection<commentEntry> commentLibrary;
         /// <summary>
         /// Represents, during selection mode, which TimeEntry is currently selected.
         /// </summary>
-        TimeEntry currentSelectedEntry;
+        private TimeEntry currentSelectedEntry;
 
-        int selectionIndex;
+        private int selectionIndex;
         public string defaultComment { get; private set; }
 
         private bool _isWatching, _filterSelected, _isSelecting;
+        private TextBox _currentTextbox;
 
         #region Properties
         public Session currentSession
@@ -194,11 +197,19 @@ namespace ClockWatcher
                     {
                         if (commentAddingBox.Text != defaultComment && commentAddingBox.Text != "")
                             addNewComment(commentAddingBox.Text);
+
+                    }
+                    if (_currentTextbox != null && !_currentTextbox.IsFocused)
+                    {
+                        intelPopup.IsOpen = false;
                     }
                     if (_isSelecting)
                     {
 
                     }
+                    break;
+                case Key.Escape:
+                    this.Close();
                     break;
                 case Key.Space:
                     if (!_isSelecting)
@@ -247,6 +258,46 @@ namespace ClockWatcher
                     break;
             }
         }
+        private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _currentTextbox = sender as TextBox;
+
+            binding = new Binding();
+            binding.Source = commentLibrary;
+            intelListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(commentLibrary);
+            view.Filter =
+                //null;
+            (o) =>
+            {
+                //filter out all entries that neither start with nor contain the sentinel's comment
+                if (_currentTextbox.Text == string.Empty)
+                {
+                    return (o as commentEntry).comment != string.Empty;
+                }
+                else
+                {
+                    return (o as commentEntry).comment.Contains(_currentTextbox.Text);
+                }
+            };
+            /*
+            */
+
+            intelPopup.Placement = PlacementMode.Left;
+            intelPopup.PlacementTarget = currentSession.currentTimeEntry;
+            intelPopup.IsOpen = true;
+
+        }
+        private void intelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox temp = sender as ListBox;
+            if (temp.SelectedItem != null)
+                _currentTextbox.Text = ((commentEntry)temp.SelectedItem).comment;
+
+            temp.SelectedItem = null;
+            intelPopup.IsOpen = false;
+        }
         private void commentAddingBox_LostFocus(object sender, RoutedEventArgs e)
         {
             commentAddingBox.Text = defaultComment;
@@ -263,6 +314,7 @@ namespace ClockWatcher
         {
             commentEntry newEntry = new commentEntry(comment);
             newEntry.delete += entry_delete;
+            
             commentLibrary.Add(newEntry);
             commentStack.Children.Add(newEntry);
         }
@@ -278,6 +330,7 @@ namespace ClockWatcher
             //Subscribe to the assorted events
             currentSession.currentTimeEntry.delete += currentTimeEntry_delete;
             currentSession.currentTimeEntry.newComment += currentTimeEntry_newComment;
+            currentSession.currentTimeEntry.textChangedEvent += commentBox_TextChanged;
             timer.Reset();
             isWatching = true;
         }

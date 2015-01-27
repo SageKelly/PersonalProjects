@@ -239,7 +239,7 @@
                         <StackPanel x:Name="innerCommentStack">
                             <TextBox x:Name="commentBox" TextWrapping="Wrap" VerticalAlignment="Top" Padding="{StaticResource labelPadding}"
                                      BorderThickness="0" SourceUpdated="commentBox_SourceUpdated" MinWidth="117.51" Text="{Binding  comment,
-                                Mode=TwoWay,ElementName=UserControl}" GotFocus="commentBox_GotFocus" LostFocus="commentBox_LostFocus"
+                                Mode=OneWay,ElementName=UserControl}" GotFocus="commentBox_GotFocus" LostFocus="commentBox_LostFocus"
                                      TextChanged="commentBox_TextChanged">
                                 <TextBox.Foreground>
                                     <SolidColorBrush Color="{StaticResource grayCommentColor}"/>
@@ -295,16 +295,5 @@
                 </StackPanel>
             </ScrollViewer>
         </Border>
-        <Popup x:Name="intelPopup" PopupAnimation="Fade" AllowsTransparency="True" StaysOpen="False">
-            <Grid x:Name="popupGrid" Background="#FFE5E5E5" Height="100" HorizontalAlignment="Left">
-                <Border x:Name="intelBorder" BorderThickness="3">
-                    <Border.BorderBrush>
-                        <SolidColorBrush Color="{StaticResource borderColor}"/>
-                    </Border.BorderBrush>
-                    <ListBox x:Name="intelListBox" Height="100" ScrollViewer.VerticalScrollBarVisibility="Visible"
-                             ItemsSource="{Binding Source=commentLibrary}" SelectionChanged="intelListBox_SelectionChanged"/>
-                </Border>
-            </Grid>
-        </Popup>
     </Grid>
 </UserControl>
