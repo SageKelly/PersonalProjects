@@ -60,6 +60,7 @@
       <DependentUpon>commentEntry.xaml</DependentUpon>
     </Compile>
     <Compile Include="Session.cs" />
+    <Compile Include="SessionManager.cs" />
     <Compile Include="TimeEntry.xaml.cs">
       <DependentUpon>TimeEntry.xaml</DependentUpon>
     </Compile>

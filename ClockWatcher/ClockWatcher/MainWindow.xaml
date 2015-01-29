@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:ClockWatcher" xmlns:System="clr-namespace:System;assembly=mscorlib"
         x:Name="clockWatcherWindow"
         x:Class="ClockWatcher.MainWindow"
-        Title="MainWindow" Height="554" Width="949"
+        Title="Clock Watcher" Height="554" Width="949"
     KeyDown="KeysDown" Focusable="True">
     <Window.Resources>
         <UserControl x:Key="timeEntry"/>
@@ -34,9 +34,9 @@
     <DockPanel x:Name="mainDock" Grid.ColumnSpan="3">
         <StackPanel x:Name="mainStack" DockPanel.Dock="Top" Orientation="Horizontal">
             <Border x:Name="programStartBorder" BorderThickness="{DynamicResource borderDim}" BorderBrush="Black">
-                <TextBlock x:Name="programStartBlock" Text="{Binding strStartTime, ElementName=clockWatcherWindow, StringFormat=ProgramStarted: \{0\}}" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}"/>
+                <TextBlock x:Name="programStartBlock" Text="{Binding Path=strStartTime,  StringFormat=ProgramStarted: \{0\}}" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}"/>
             </Border>
-            <TextBlock x:Name="totalTimeLabel" Text="{Binding currentSession.totalTime, ElementName=clockWatcherWindow, StringFormat=Total Time: \{0\}}" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}"/>
+            <TextBlock x:Name="totalTimeLabel" Text="{Binding Path=currentSession.totalTime, StringFormat=Total Time: \{0\}}" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}"/>
             <Border x:Name="totalTimeBorder" BorderThickness="{DynamicResource borderDim}" BorderBrush="Black">
                 <TextBlock x:Name="totalTimeBlock" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}"/>
             </Border>
@@ -44,7 +44,7 @@
         <Grid x:Name="mainGrid" DockPanel.Dock="Top" Focusable="True">
             <Grid.ColumnDefinitions>
                 <!--{Binding Width,ElementName=sessionDock}-->
-                <ColumnDefinition Width="250*"/>
+                <ColumnDefinition Width="250"/>
                 <ColumnDefinition MinWidth="400.0"/>
                 <ColumnDefinition Width="296*"/>
             </Grid.ColumnDefinitions>
@@ -53,14 +53,26 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <ScrollViewer x:Name="commentScrollView" Grid.Row="0">
-                    <StackPanel x:Name="commentStack"  HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <StackPanel x:Name="commentAddingStack"  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <TextBox x:Name="commentAddingBox" Text="" GotFocus="commentAddingBox_GotFocus" LostFocus="commentAddingBox_LostFocus" FontSize="{DynamicResource fontSize}"/>
-                            <Button x:Name="commentAddingButton" Content="Add" Click="commentAddButton_Click" FontSize="{DynamicResource fontSize}"/>
-                        </StackPanel>
+                <DockPanel x:Name="commentDock" Panel.ZIndex="1">
+                    <DockPanel.Background>
+                        <SolidColorBrush Color="{DynamicResource buttonColorBackground}"/>
+                    </DockPanel.Background>
+                    <Label x:Name="commentBankLabel" DockPanel.Dock="Top" Content="Comment Bank / Filter By..." FontSize="16" Padding="{DynamicResource labelPadding}">
+                        <Label.Background>
+                            <SolidColorBrush Color="{DynamicResource buttonColorBackground}"/>
+                        </Label.Background>
+                    </Label>
+                    <StackPanel x:Name="commentAddingStack" DockPanel.Dock="Top"  Orientation="Horizontal" VerticalAlignment="Top">
+                        <TextBox x:Name="commentAddingBox" Text="" GotFocus="commentAddingBox_GotFocus" LostFocus="commentAddingBox_LostFocus" FontSize="{DynamicResource fontSize}"/>
+                        <Button x:Name="commentAddingButton" Content="Add" Click="commentAddButton_Click" FontSize="{DynamicResource fontSize}"/>
                     </StackPanel>
-                </ScrollViewer>
+                    <ScrollViewer x:Name="commentScrollView"  HorizontalScrollBarVisibility="Visible" Grid.Row="0">
+                        <ScrollViewer.Background>
+                            <SolidColorBrush Color="{DynamicResource gridSplitterColor}"/>
+                        </ScrollViewer.Background>
+                        <StackPanel x:Name="commentStack" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </ScrollViewer>
+                </DockPanel>
                 <StackPanel x:Name="buttonStack1" Grid.Row="1">
                     <Button Style="{DynamicResource buttonStyle}" Content="View Other Sessions" FontSize="{DynamicResource fontSize}"/>
                     <Button Style="{DynamicResource buttonStyle}" Content="CombineTimes" FontSize="{DynamicResource fontSize}"/>
@@ -74,28 +86,6 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-
-                <Border x:Name="fillterScrollBorder" Grid.Row="1" BorderThickness="1">
-                    <Border.BorderBrush>
-                        <SolidColorBrush Color="{DynamicResource borderColor}"/>
-                    </Border.BorderBrush>
-                    <DockPanel x:Name="filterScrollDock">
-                        <Label x:Name="filterLabel" Content="Filter by..." DockPanel.Dock="Top" BorderThickness="0,0,0,1" Padding="{DynamicResource labelPadding}" FontSize="{DynamicResource fontSize}">
-                            <Label.Background>
-                                <SolidColorBrush Color="{DynamicResource buttonColorBackground}"/>
-                            </Label.Background>
-                            <Label.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource gridSplitterColor}"/>
-                            </Label.BorderBrush>
-                        </Label>
-                        <ScrollViewer x:Name="filterScroll">
-                            <ScrollViewer.Background>
-                                <SolidColorBrush Color="{DynamicResource gridSplitterColor}"/>
-                            </ScrollViewer.Background>
-                            <StackPanel x:Name="filterStack"/>
-                        </ScrollViewer>
-                    </DockPanel>
-                </Border>
             </Grid>
             <Border x:Name="sessionBorder" BorderThickness="3" Grid.Column="1">
                 <Border.BorderBrush>
@@ -103,10 +93,10 @@
                 </Border.BorderBrush>
                 <DockPanel x:Name="sessionDock">
                     <StackPanel x:Name="topDockStack" Orientation="Horizontal" DockPanel.Dock="Top" >
-                        <TextBox x:Name="sessionNameBox" Text="{Binding currentSession.name, ElementName=clockWatcherWindow}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{DynamicResource fontSize}"/>
+                        <TextBox x:Name="sessionNameBox" Text="{Binding Path=currentSession.name}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="{DynamicResource fontSize}"/>
                         <Button x:Name="entryAdderButton" Content="+" Grid.Row="0" VerticalAlignment="Top" Padding="{DynamicResource labelPadding}" Click="entryAdder_Click" FontSize="{DynamicResource fontSize}"/>
                     </StackPanel>
-                    <ScrollViewer x:Name="timeEntryList" BorderThickness="2,0" DockPanel.Dock="Top">
+                    <ScrollViewer x:Name="timeEntryList" BorderThickness="2,0" HorizontalScrollBarVisibility="Visible"  DockPanel.Dock="Top">
                         <ScrollViewer.BorderBrush>
                             <SolidColorBrush Color="{DynamicResource borderColor}"/>
                         </ScrollViewer.BorderBrush>

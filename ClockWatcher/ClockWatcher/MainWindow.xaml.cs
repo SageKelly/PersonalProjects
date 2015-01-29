@@ -17,34 +17,18 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace ClockWatcher
 {
-    [Serializable]
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static readonly DependencyProperty startTimeProperty =
-            DependencyProperty.Register("strStartTime", typeof(string),
-            typeof(MainWindow), new FrameworkPropertyMetadata(DateTime.Now.ToString()));
+        private const string SESSION_FILENAME = "SessionFiles.xml";
 
-        public static readonly DependencyProperty currentSessionProperty =
-            DependencyProperty.Register("currentSession", typeof(Session),
-            typeof(MainWindow), new FrameworkPropertyMetadata(null));
-
-        private List<Session> Sessions;
-
-        private Stopwatch timer;
-        private Timer clockWatch;
-
-        private Binding binding;
-
-        /// <summary>
-        /// Holds a list of all comments made within the session
-        /// </summary>
-        private ObservableCollection<commentEntry> commentLibrary;
         /// <summary>
         /// Represents, during selection mode, which TimeEntry is currently selected.
         /// </summary>
@@ -53,141 +37,160 @@ namespace ClockWatcher
         private int selectionIndex;
         public string defaultComment { get; private set; }
 
-        private bool _isWatching, _filterSelected, _isSelecting;
+        private bool _isSelecting;
+        private Binding binding;
         private TextBox _currentTextbox;
 
+        public SessionManager SM { get; private set; }
+
         #region Properties
-        public Session currentSession
-        {
-            get
-            {
-                return (Session)GetValue(currentSessionProperty);
-            }
-            set
-            {
-                SetValue(currentSessionProperty, value);
-            }
-        }
-        public bool isWatching
-        {
-            get
-            {
-                return _isWatching;
-            }
-            private set
-            {
-                _isWatching = value;
-                if (!_isWatching)
-                {
-                    timer.Stop();
-                    clockWatch.Stop();
-                }
-                else
-                {
-                    timer.Start();
-                    clockWatch.Start();
-                }
-            }
-        }
-        private bool filterSelected
-        {
-            get
-            {
-                return _filterSelected;
-            }
-            set
-            {
-                _filterSelected = value;
-                if (_filterSelected)
-                {
-                    filterTimeEntriesByComment();
-                }
-            }
-        }
-        public string strStartTime
-        {
-            get
-            {
-                return (string)GetValue(MainWindow.startTimeProperty);
-            }
-            set
-            {
-                SetValue(MainWindow.startTimeProperty, value);
-            }
-        }
-        public DateTime dtStartTime { get; private set; }
         #endregion
 
         public MainWindow()
         {
             InitializeComponent();
-            Sessions = new List<Session>();
-            Sessions.Add(new Session());
-            currentSession = Sessions[0];
-            timer = new Stopwatch();
-            clockWatch = new Timer(1000);//one minute
-            clockWatch.Elapsed += clockWatch_Elapsed;
-            DataContext = currentSession;
-            commentLibrary = new ObservableCollection<commentEntry>();
+            SM = new SessionManager();
+            SM.newAddedCommentEvent += currentTimeEntry_newComment;
+            SM.timeEntryDeletedEvent += currentTimeEntry_delete;
+            SM.commentEntryDeletedEvent += entry_delete;
+            //Deserialize();
             defaultComment = "Add New Comment";
             commentAddingBox.Text = defaultComment;
-            _filterSelected = false;
-            _isWatching = false;
             _isSelecting = false;
-            dtStartTime = DateTime.Now;
-            SetUpListBoxBinding();
+            //this.Closed += MainWindow_Closed;
+            DataContext = SM;
         }
+
 
         #region Methods
         #region Event Methods
+        /// <summary>
+        /// Registered to MainWindow.commentAddingButton.Click Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void commentAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (commentAddingBox.Text != defaultComment && commentAddingBox.Text != "")
             {
-                addNewComment(commentAddingBox.Text);
+                SM.newCommentEntry(commentAddingBox.Text);
             }
         }
-        void currentTimeEntry_delete(object sender, RoutedEventArgs e)
-        {
-            if (scrollStack.Children.Count > 0 &&
-                (sender as TimeEntry).Equals(
-                scrollStack.Children[scrollStack.Children.Count - 1]))
-            {
-                isWatching = false;
-                timer.Reset();
-            }
-            scrollStack.Children.Remove(sender as TimeEntry);
-            calculateTotalTime();
-        }
-        void currentTimeEntry_newComment(object sender, RoutedEventArgs e)
-        {
-            TimeEntry sentinel = sender as TimeEntry;
-            foreach (commentEntry ce in commentLibrary)
-            {
-                if (ce.comment == sentinel.comment)
-                    return;
-            }
-            //If you made it this far, then none of them matched
-            addNewComment(sentinel.comment);
-        }
-        void clockWatch_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            /*
-            Dispatcher.Invoke((Action)(() =>
-                {
-                    updateTimeSpent();
-                }));
-            */
-            Dispatcher.Invoke(updateTimeSpent);
-        }
-        private void entryAdder_Click(object sender, RoutedEventArgs e)
-        {
-            addNewTime();
-        }
+        /// <summary>
+        /// Registered to MainWindow.commentAddingBox.GotFocus Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void commentAddingBox_GotFocus(object sender, RoutedEventArgs e)
         {
             (sender as TextBox).Text = "";
         }
+        /// <summary>
+        /// Registered to MainWindow.commentAddingBox.LostFocus Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void commentAddingBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            commentAddingBox.Text = defaultComment;
+        }
+        /// <summary>
+        /// Registered to TimeEntry.textChangedEvent Event
+        /// (see entryAdder_Click())
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void commentBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _currentTextbox = sender as TextBox;
+
+            binding = new Binding();
+            binding.Source = SM.commentLibrary;
+            intelListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
+
+            ICollectionView view = CollectionViewSource.GetDefaultView(SM.commentLibrary);
+            view.Filter =
+                //null;
+            (o) =>
+            {
+                //filter out all entries that neither start with nor contain the sentinel's comment
+                if (_currentTextbox.Text == string.Empty)
+                {
+                    return (o as commentEntry).comment != string.Empty;
+                }
+                else
+                {
+                    return (o as commentEntry).comment.Contains(_currentTextbox.Text);
+                }
+            };
+            /*
+            */
+            if (_currentTextbox.IsFocused)
+            {
+                intelPopup.Placement = PlacementMode.Left;
+                intelPopup.PlacementTarget = _currentTextbox;
+                intelPopup.IsOpen = true;
+            }
+        }
+        /// <summary>
+        /// Registered to SessionManager.timeEntryDeletedEvent Event
+        /// </summary>
+        /// <param name="deletionIndex"></param>
+        public void currentTimeEntry_delete(int deletionIndex)
+        {
+            if (scrollStack.Children.Count > deletionIndex &&
+                (scrollStack.Children[deletionIndex] as TimeEntry).entryID == deletionIndex)
+                scrollStack.Children.RemoveAt(deletionIndex);
+        }
+        /// <summary>
+        /// Registered to SessionManager.newAddedCommentEvent Event
+        /// </summary>
+        /// <param name="comment">the string comment</param>
+        private void currentTimeEntry_newComment(commentEntry newEntry)
+        {
+            commentStack.Children.Add(newEntry);
+        }
+        /// <summary>
+        /// Registered to SessionManager.commentEntryDeletedEvent Event
+        /// </summary>
+        /// <param name="deletionIndex"></param>
+        private void entry_delete(int deletionIndex)
+        {
+            if (commentStack.Children.Count > deletionIndex&&
+                (scrollStack.Children[deletionIndex] as commentEntry).entryID == deletionIndex)
+                commentStack.Children.RemoveAt(deletionIndex);
+        }
+        /// <summary>
+        /// Registered to MainWindow.entryadderButton.Click Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void entryAdder_Click(object sender, RoutedEventArgs e)
+        {
+            TimeEntry newEntry = SM.addNewTimeEntry();
+            //Subscribe to the assorted events
+            newEntry.textChangedEvent += commentBox_TextChanged;
+            scrollStack.Children.Add(newEntry);
+        }
+        /// <summary>
+        /// Registered to MainWindow.intelPopup.intelListBox.SelectionChanged Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void intelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox temp = sender as ListBox;
+            if (temp.SelectedItem != null)
+                _currentTextbox.Text = ((commentEntry)temp.SelectedItem).comment;
+
+            temp.SelectedItem = null;
+            intelPopup.IsOpen = false;
+        }
+        /// <summary>
+        /// Registered to MainWindow.KeysDown Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="kea"></param>
         private void KeysDown(object sender, KeyEventArgs kea)
         {
             switch (kea.Key)
@@ -195,9 +198,10 @@ namespace ClockWatcher
                 case Key.Enter:
                     if (commentAddingBox.IsFocused)
                     {
+                        //adds a comment Entry to the comment library
                         if (commentAddingBox.Text != defaultComment && commentAddingBox.Text != "")
-                            addNewComment(commentAddingBox.Text);
-
+                            SM.newCommentEntry(commentAddingBox.Text);
+                        this.Focus();
                     }
                     if (_currentTextbox != null && !_currentTextbox.IsFocused)
                     {
@@ -214,7 +218,7 @@ namespace ClockWatcher
                 case Key.Space:
                     if (!_isSelecting)
                     {
-                        addNewTime();
+                        entryAdder_Click(null, null);
                     }
                     break;
                 /*
@@ -238,11 +242,11 @@ namespace ClockWatcher
                     if (_isSelecting)
                     {
                         if (selectionIndex == 0)
-                            selectionIndex = currentSession.timeEntries.Count - 1;
+                            selectionIndex = SM.currentSession.timeEntries.Count - 1;
                         else
                             selectionIndex--;
                         currentSelectedEntry.isSelected = false;
-                        currentSelectedEntry = currentSession.timeEntries[selectionIndex];
+                        currentSelectedEntry = SM.currentSession.timeEntries[selectionIndex];
                         currentSelectedEntry.isSelected = true;
                         //currentSelectedEntry.Focus();//this works for forcing scroll
                     }
@@ -250,117 +254,36 @@ namespace ClockWatcher
                 case Key.Down:
                     if (_isSelecting)
                     {
-                        selectionIndex = (selectionIndex + 1) % currentSession.timeEntries.Count;
+                        selectionIndex = (selectionIndex + 1) % SM.currentSession.timeEntries.Count;
                         currentSelectedEntry.isSelected = false;
-                        currentSelectedEntry = currentSession.timeEntries[selectionIndex];
+                        currentSelectedEntry = SM.currentSession.timeEntries[selectionIndex];
                         currentSelectedEntry.isSelected = true;
                     }
                     break;
             }
         }
-        private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
+        /// <summary>
+        /// Registered to MainWindow.Closed Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainWindow_Closed(object sender, EventArgs e)
         {
-            _currentTextbox = sender as TextBox;
-
-            binding = new Binding();
-            binding.Source = commentLibrary;
-            intelListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
-
-            ICollectionView view = CollectionViewSource.GetDefaultView(commentLibrary);
-            view.Filter =
-                //null;
-            (o) =>
-            {
-                //filter out all entries that neither start with nor contain the sentinel's comment
-                if (_currentTextbox.Text == string.Empty)
-                {
-                    return (o as commentEntry).comment != string.Empty;
-                }
-                else
-                {
-                    return (o as commentEntry).comment.Contains(_currentTextbox.Text);
-                }
-            };
-            /*
-            */
-
-            intelPopup.Placement = PlacementMode.Left;
-            intelPopup.PlacementTarget = currentSession.currentTimeEntry;
-            intelPopup.IsOpen = true;
-
-        }
-        private void intelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ListBox temp = sender as ListBox;
-            if (temp.SelectedItem != null)
-                _currentTextbox.Text = ((commentEntry)temp.SelectedItem).comment;
-
-            temp.SelectedItem = null;
-            intelPopup.IsOpen = false;
-        }
-        private void commentAddingBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            commentAddingBox.Text = defaultComment;
-        }
-        void entry_delete(object sender, RoutedEventArgs e)
-        {
-            commentLibrary.Remove((sender as commentEntry));
-            commentStack.Children.Remove((sender as commentEntry));
+            //Serialize the object
+            XmlSerializer XMLS = new XmlSerializer(typeof(SessionManager));
+            StreamWriter sw = new StreamWriter(SESSION_FILENAME);
+            XMLS.Serialize(sw, SM);
+            sw.Close();
         }
         #endregion
 
         #region Class Methods
-        private void addNewComment(string comment)
+        private void Deserialize()
         {
-            commentEntry newEntry = new commentEntry(comment);
-            newEntry.delete += entry_delete;
-            
-            commentLibrary.Add(newEntry);
-            commentStack.Children.Add(newEntry);
-        }
-        private void addNewTime()
-        {
-            if (currentSession != null && currentSession.currentTimeEntry != null)
-            {
-                isWatching = false;
-                currentSession.currentTimeEntry.finalizeTimeEntry();
-            }
-            currentSession.addEntry(DateTime.Now, commentLibrary);
-            scrollStack.Children.Add(currentSession.currentTimeEntry);
-            //Subscribe to the assorted events
-            currentSession.currentTimeEntry.delete += currentTimeEntry_delete;
-            currentSession.currentTimeEntry.newComment += currentTimeEntry_newComment;
-            currentSession.currentTimeEntry.textChangedEvent += commentBox_TextChanged;
-            timer.Reset();
-            isWatching = true;
-        }
+            XmlSerializer XMLS = new XmlSerializer(typeof(SessionManager));
+            FileStream fs = new FileStream(SESSION_FILENAME, FileMode.Open);
+            SM = (SessionManager)XMLS.Deserialize(fs);
 
-        private void calculateTotalTime()
-        {
-            currentSession.totalTime = TimeSpan.Zero;
-            foreach (TimeEntry te in currentSession.timeEntries)
-            {
-                currentSession.totalTime += te.timeSpent;
-            }
-        }
-        private void filterTimeEntriesByComment()
-        {
-            throw new NotImplementedException();
-        }
-        private void SetUpListBoxBinding()
-        {
-        }
-        private void updateTimeSpent()
-        {
-            if (currentSession != null)
-            {
-                //update the timespent variable of the current timeEntry
-                if (currentSession.currentTimeEntry != null)
-                {
-                    currentSession.currentTimeEntry.timeSpent = timer.Elapsed;
-                    calculateTotalTime();
-                }
-            }
         }
         #endregion
 

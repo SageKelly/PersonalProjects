@@ -53,9 +53,9 @@ namespace ClockWatcher
             name = DateTime.Now.ToString();
         }
 
-        public void addEntry(DateTime timeIn, ObservableCollection<commentEntry> commentLibrary)
+        public void addEntry(DateTime timeIn)
         {
-            timeEntries.Add(new TimeEntry(commentLibrary));
+            timeEntries.Add(new TimeEntry(timeEntries.Count));
             currentTimeEntry = timeEntries.Last();
             currentTimeEntry.timeIn = timeIn;
             currentTimeEntry.delete += delete;

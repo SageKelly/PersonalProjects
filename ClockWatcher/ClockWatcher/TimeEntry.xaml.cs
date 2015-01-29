@@ -29,8 +29,10 @@ namespace ClockWatcher
         public static readonly DependencyProperty alarmExpandedProperty =
             DependencyProperty.Register("alarmExpanded", typeof(bool),
             typeof(TimeEntry), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnAlarmExpandedChanged)));
-        public static readonly DependencyProperty controlHeightProperty = DependencyProperty.Register("controlHeight", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
-        public static readonly DependencyProperty controlWidthProperty = DependencyProperty.Register("controlWidth", typeof(double), typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
+        public static readonly DependencyProperty controlHeightProperty = DependencyProperty.Register("controlHeight", typeof(double),
+            typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
+        public static readonly DependencyProperty controlWidthProperty = DependencyProperty.Register("controlWidth", typeof(double),
+            typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
         public static readonly DependencyProperty commentProperty = DependencyProperty.Register("comment", typeof(string), typeof(TimeEntry),
                 new FrameworkPropertyMetadata(defaultComment));
         public static readonly DependencyProperty detailsExpandedProperty =
@@ -52,9 +54,7 @@ namespace ClockWatcher
         #endregion
 
         #region Routed Events
-        public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete", RoutingStrategy.Bubble,
-            typeof(RoutedEventHandler), typeof(TimeEntry));
-        public static readonly RoutedEvent newCommentEvent = EventManager.RegisterRoutedEvent("newComment", RoutingStrategy.Direct,
+        public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete", RoutingStrategy.Direct,
             typeof(RoutedEventHandler), typeof(TimeEntry));
         #endregion
 
@@ -63,22 +63,21 @@ namespace ClockWatcher
 
         private DoubleAnimation deleteDoubleAnimation;
 
-        private ObservableCollection<commentEntry> commentLibrary;
-
-        /// <summary>
-        /// Signifies to select event methods whether a
-        /// TextChangedEvent came from either the GotFocus
-        /// method handler or actually from the TextChanged method
-        /// handler
-        /// </summary>
-        private bool _fromGotFocus;
-
         public delegate void textChangedEventHandler(object sender, TextChangedEventArgs tcea);
         public delegate void enterPressEventHandler(object sender, KeyEventArgs kea);
+        public delegate void newCommentEventHandler(string comment);
 
         public event enterPressEventHandler enterPressEvent;
         public event textChangedEventHandler textChangedEvent;
+        public event newCommentEventHandler newCommentEvent;
 
+        /// <summary>
+        /// This will be used along with isCollapsed to ensure
+        /// this entry was marked as collapsed/uncollapsed by
+        /// a commentEntry being checked.
+        /// </summary>
+        private bool _isMarkedForView,_isCollapsed;
+        private int _entryID;
         #region Properties
         #region Dependency Properties
         public bool alarmExpanded
@@ -136,6 +135,39 @@ namespace ClockWatcher
                 SetValue(detailsExpandedProperty, value);
             }
         }
+        public int entryID
+        {
+            get
+            {
+                return _entryID;
+            }
+            private set
+            {
+                _entryID = value;
+            }
+        }
+        public bool isCollapsed
+        {
+            get
+            {
+                return _isCollapsed;
+            }
+            set
+            {
+                _isCollapsed = value;
+            }
+        }
+        public bool isMarkedForView
+        {
+            get
+            {
+                return _isMarkedForView;
+            }
+            set
+            {
+                _isMarkedForView = value;
+            }
+        }
         public bool isSelected
         {
             get
@@ -191,6 +223,7 @@ namespace ClockWatcher
                 SetValue(TimeEntry.timeSpentProperty, value);
             }
         }
+
         #endregion
 
         #region Routed Event Properties
@@ -205,36 +238,19 @@ namespace ClockWatcher
                 RemoveHandler(deleteEvent, value);
             }
         }
-        public event RoutedEventHandler newComment
-        {
-            add
-            {
-                AddHandler(newCommentEvent, value);
-            }
-            remove
-            {
-                RemoveHandler(newCommentEvent, value);
-            }
-        }
         #endregion
         #endregion
 
         static TimeEntry() { }
 
-        private TimeEntry()
+        public TimeEntry(int id)
         {
             setUpRenderTransform();
             setUpAnimationVariables();
-            commentLibrary = new ObservableCollection<commentEntry>();
             DataContext = this;
             this.InitializeComponent();
             deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
-        }
-
-        public TimeEntry(ObservableCollection<commentEntry> commentList)
-            : this()
-        {
-            commentLibrary = commentList;
+            entryID = id;
         }
 
         #region Methods
@@ -245,7 +261,6 @@ namespace ClockWatcher
             commentBox.Foreground = foregroundBrush;
             if (commentBox.Text == defaultComment)
                 commentBox.Text = "";
-            _fromGotFocus = true;
         }
         private void commentBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -259,16 +274,15 @@ namespace ClockWatcher
         private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             comment = (sender as TextBox).Text;
-            _fromGotFocus = true;
-            if(textChangedEvent!=null)
+            if (textChangedEvent != null)
             {
                 textChangedEvent(sender, e);
             }
-        }        
+        }
         private void commentConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            RoutedEventArgs newCommentEventArgs = new RoutedEventArgs(newCommentEvent, this);
-            RaiseEvent(newCommentEventArgs);
+            if (newCommentEvent != null)
+                newCommentEvent(comment);
         }
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
@@ -276,7 +290,8 @@ namespace ClockWatcher
         }
         private void deleteDoubleAnimation_Completed(object sender, EventArgs e)
         {
-            raiseDeleteEvent();
+            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
+            RaiseEvent(newDeleteEvent);
         }
         private void detailsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -309,8 +324,8 @@ namespace ClockWatcher
                     if (commentBox.Text != defaultComment && commentBox.Text != "")
                     {
                         this.Focus();
-                        RoutedEventArgs newCommentEventArgs = new RoutedEventArgs(newCommentEvent, this);
-                        RaiseEvent(newCommentEventArgs);
+                        if (newCommentEvent != null)
+                            newCommentEvent(commentBox.Text);
                     }
                 }
             }
@@ -348,11 +363,6 @@ namespace ClockWatcher
         {
             timeOut = DateTime.Now;
             timeOutBlock.Text = timeOut.TimeOfDay.ToString();
-        }
-        private void raiseDeleteEvent()
-        {
-            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
-            RaiseEvent(newDeleteEvent);
         }
         private void setUpAnimationVariables()
         {

@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 
 namespace ClockWatcher
 {
+    [Serializable]
     /// <summary>
     /// Interaction logic for commentEntry.xaml
     /// </summary>
@@ -32,12 +33,15 @@ namespace ClockWatcher
         public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(commentEntry));
 
-
+        public delegate void checkedEventHandler(object sender, RoutedEventArgs rea);
+        public event checkedEventHandler checkedEvent;
 
         private TransformGroup animatedTransform;
         private ScaleTransform animatedScale;
 
         private DoubleAnimation scaleAnim;
+        private int _entryID;
+        private bool _isChecked;
 
         public string comment
         {
@@ -48,6 +52,30 @@ namespace ClockWatcher
             set
             {
                 SetValue(commentEntry.commentProperty, value);
+            }
+        }
+        public int entryID
+        {
+            get
+            {
+                return _entryID;
+            }
+            private set
+            {
+                _entryID = value;
+            }
+        }
+        public bool isChecked
+        {
+            get
+            {
+                return _isChecked;
+            }
+            set
+            {
+                _isChecked = value;
+                if (checkedEvent != null)
+                    checkedEvent(this, new RoutedEventArgs());
             }
         }
 
@@ -85,25 +113,14 @@ namespace ClockWatcher
             this.RenderTransform = animatedTransform;
             scaleAnim.Completed += animationScale_Completed;
         }
-        public commentEntry(string comment)
+        public commentEntry(int id, string comment)
             : this()
         {
+            entryID = id;
             this.comment = comment;
         }
 
         #region Methods
-        #region Event Methods
-        void animationScale_Completed(object sender, EventArgs e)
-        {
-            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
-            RaiseEvent(newDeleteEvent);
-        }
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            deleteAnimation();
-        }
-        #endregion
-
         #region Local Methods
         private void deleteAnimation()
         {
@@ -116,6 +133,22 @@ namespace ClockWatcher
         #endregion
 
 
+
+        #region Event Methods
+        void animationScale_Completed(object sender, EventArgs e)
+        {
+            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
+            RaiseEvent(newDeleteEvent);
+        }
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            deleteAnimation();
+        }
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            isChecked = (bool)commentCheck.IsChecked;
+        }
+        #endregion
         #endregion
     }
 }
