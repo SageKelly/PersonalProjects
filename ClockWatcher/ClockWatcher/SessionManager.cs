@@ -64,7 +64,7 @@ namespace ClockWatcher
         private DateTime _dtStartTime;
         #region Properties
 
-        public ObservableCollection<commentEntry> commentLibrary { get; private set; }
+        public List<commentEntry> commentLibrary { get; private set; }
         public Session currentSession
         {
             get
@@ -95,7 +95,7 @@ namespace ClockWatcher
             _timer = new Timer(1000);//one second
             _timer.Elapsed += clockWatch_Elapsed;
 
-            commentLibrary = new ObservableCollection<commentEntry>();
+            commentLibrary = new List<commentEntry>();
 
             _dtStartTime = DateTime.Now;
 
@@ -151,7 +151,7 @@ namespace ClockWatcher
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void timeEntry_delete(object sender, RoutedEventArgs e)
+        public void timeEntry_delete(object sender)
         {
             TimeEntry sentinel = sender as TimeEntry;
             if (currentSession.timeEntries.Count > 0 && sentinel.entryID > currentSession.timeEntries.Last().entryID)
@@ -253,7 +253,7 @@ namespace ClockWatcher
         }
         #endregion
         #region Class Methods
-        public TimeEntry addNewTimeEntry()
+        public void addNewTimeEntry()
         {
             if (currentSession != null && currentSession.currentTimeEntry != null)
             {
@@ -263,9 +263,9 @@ namespace ClockWatcher
             currentSession.addEntry(DateTime.Now);
             _clockWatch.Reset();
             isWatching = true;
-            currentSession.currentTimeEntry.delete += timeEntry_delete;
+            currentSession.currentTimeEntry.deleteEvent += timeEntry_delete;
             currentSession.currentTimeEntry.newCommentEvent += newCommentEntry;
-            return currentSession.currentTimeEntry;
+            //return currentSession.currentTimeEntry;
         }
         public void calculateTotalTime()
         {

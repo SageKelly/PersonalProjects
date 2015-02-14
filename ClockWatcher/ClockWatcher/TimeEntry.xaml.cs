@@ -52,21 +52,18 @@ namespace ClockWatcher
                 new FrameworkPropertyMetadata(new List<string>()));
         public static readonly DependencyProperty subCommentsProperty = subCommentsPropertyKey.DependencyProperty;
         #endregion
-
-        #region Routed Events
-        public static readonly RoutedEvent deleteEvent = EventManager.RegisterRoutedEvent("delete", RoutingStrategy.Direct,
-            typeof(RoutedEventHandler), typeof(TimeEntry));
-        #endregion
-
+        
         private TransformGroup animatedTransform;
         private ScaleTransform animatedScale;
 
         private DoubleAnimation deleteDoubleAnimation;
 
+        public delegate void deleteEventHandler(object sender);
         public delegate void textChangedEventHandler(object sender, TextChangedEventArgs tcea);
         public delegate void enterPressEventHandler(object sender, KeyEventArgs kea);
         public delegate void newCommentEventHandler(string comment);
 
+        public event deleteEventHandler deleteEvent;
         public event enterPressEventHandler enterPressEvent;
         public event textChangedEventHandler textChangedEvent;
         public event newCommentEventHandler newCommentEvent;
@@ -225,20 +222,6 @@ namespace ClockWatcher
         }
 
         #endregion
-
-        #region Routed Event Properties
-        public event RoutedEventHandler delete
-        {
-            add
-            {
-                AddHandler(deleteEvent, value);
-            }
-            remove
-            {
-                RemoveHandler(deleteEvent, value);
-            }
-        }
-        #endregion
         #endregion
 
         static TimeEntry() { }
@@ -290,8 +273,8 @@ namespace ClockWatcher
         }
         private void deleteDoubleAnimation_Completed(object sender, EventArgs e)
         {
-            RoutedEventArgs newDeleteEvent = new RoutedEventArgs(deleteEvent, this);
-            RaiseEvent(newDeleteEvent);
+            if (deleteEvent != null)
+                deleteEvent(this);
         }
         private void detailsButton_Click(object sender, RoutedEventArgs e)
         {

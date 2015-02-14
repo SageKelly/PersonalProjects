@@ -157,7 +157,7 @@ namespace ClockWatcher
         private void entry_delete(int deletionIndex)
         {
             if (commentStack.Children.Count > deletionIndex&&
-                (scrollStack.Children[deletionIndex] as commentEntry).entryID == deletionIndex)
+                (commentStack.Children[deletionIndex] as commentEntry).entryID == deletionIndex)
                 commentStack.Children.RemoveAt(deletionIndex);
         }
         /// <summary>
@@ -167,10 +167,10 @@ namespace ClockWatcher
         /// <param name="e"></param>
         private void entryAdder_Click(object sender, RoutedEventArgs e)
         {
-            TimeEntry newEntry = SM.addNewTimeEntry();
+            SM.addNewTimeEntry();
             //Subscribe to the assorted events
-            newEntry.textChangedEvent += commentBox_TextChanged;
-            scrollStack.Children.Add(newEntry);
+            SM.currentSession.currentTimeEntry.textChangedEvent += commentBox_TextChanged;
+            scrollStack.Children.Add(SM.currentSession.currentTimeEntry);
         }
         /// <summary>
         /// Registered to MainWindow.intelPopup.intelListBox.SelectionChanged Event
