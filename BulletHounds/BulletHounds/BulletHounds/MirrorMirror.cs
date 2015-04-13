@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BulletHounds
 {
-    class Image
+    public class MirrorMirror:Player
     {
     }
 }
