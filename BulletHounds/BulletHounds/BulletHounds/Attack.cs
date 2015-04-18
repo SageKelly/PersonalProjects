@@ -8,7 +8,7 @@ using PicAnimator;
 
 namespace BulletHounds
 {
-    public class Attack : Game
+    public class Attack
     {
         /*
          Currently, the Attack-to-FrameData scheme is a little unintuitive.
@@ -18,7 +18,14 @@ namespace BulletHounds
          * 
          * In short, have an animation in the Attack class as well.
          */
-        Vector2 position, velocity, acceleration;
+        /// <summary>
+        /// Defines the firing spot for the attack.
+        /// </summary>
+        public Vector2 fireSpot { get; private set; }
+        /// <summary>
+        /// the delay before the attack can be used again
+        /// </summary>
+        public int cooldown { get; set; }
         Bullet bullet;
         /// <summary>
         /// The initial setup of the bullets
@@ -39,11 +46,14 @@ namespace BulletHounds
         /// </summary>
         /// <param name="sendToList">The list that the bullets will be sent
         /// to to be updated at each cycle</param>
-        public Attack(List<Bullet> sendToList, Bullet b)
+        /// <param name="b">the type of bullet used in the attack</param>
+        /// <param name="firingSpot">the point around where to centralize the attack</param>
+        public Attack(List<Bullet> sendToList, Bullet b,Vector2 firingSpot)
         {
             SendToList = sendToList;
             AssignedToFrame = false;
             bullet = b;
+            fireSpot = firingSpot;
         }
 
         /// <summary>
@@ -55,7 +65,6 @@ namespace BulletHounds
         /// a means of staggering bullets to fit particular formations or to create
         /// a blast after a certain animation has run</param>
         public Attack(List<Bullet> sendToList, List<Bullet> setupBullets)
-            : this(sendToList)
         {
             SetupBullets = setupBullets;
             AssignedToFrame = true;
@@ -77,16 +86,7 @@ namespace BulletHounds
         /// <param name="bullet">The particular bullet</param>
         private void PushToList(Bullet bullet)
         {
-            SendToList.Add(new Bullet(bullet.BulletImage, bullet.Position, bullet.Velocity, bullet.Acceleration));
-        }
-
-        /// <summary>
-        /// A means of adding Timedbullets to the list
-        /// </summary>
-        /// <param name="TB">The timed bullet formatted to the intial firing position</param>
-        public void AddTimedBullet(Bullet TB)
-        {
-            SetupBullets.Add(TB);
+            SendToList.Add(bullet.CopyBullet());
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace BulletHounds
         /// frame to fire off when that frame is active
         /// </summary>
         /// <param name="FD">The particular trigger frame</param>
-        public void AttackToFrame(Frame FD)
+        public void AttachToFrame(Frame FD)
         {
             FD.ActivatedFrame+= new HappeningEvent(PushToList);
         }
@@ -111,23 +111,27 @@ namespace BulletHounds
             }
         }
 
+        /// <summary>
+        /// Adds another bullet to the attack
+        /// </summary>
+        /// <param name="b">the bullet to add</param>
+        public void AddBullet(Bullet b)
+        {
+            SetupBullets.Add(b);
+        }
+
         private void UpdateBullets(GameTime gameTime)
         {
             bool isReady;
             //AttackAnimation.IsAnimating = true;
             foreach (Bullet B in SetupBullets)
             {
-                isReady = TB.Countdown(gameTime.ElapsedGameTime.Milliseconds);
+                isReady = B.Countdown(gameTime.ElapsedGameTime.Milliseconds);
                 if (isReady)
                 {
-                    PushToList(TB.bullet);
+                    PushToList(B.CopyBullet());
                 }
             }
-        }
-        protected override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            UpdateBullets(gameTime);
-        }
+        }        
     }
 }

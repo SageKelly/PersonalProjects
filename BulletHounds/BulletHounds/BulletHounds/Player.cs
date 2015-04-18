@@ -8,18 +8,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace BulletHounds
 {
-    public class Player : DrawableGameComponent, IInput
+    public abstract class Player : DrawableGameComponent, IInput
     {
         private delegate void BulletUpdateEventHandler(GameTime gt);
 
 
         public Vector2 position;
-        public Animator image;
         public List<Attack> attacks;
-        public Attack chosenAttack;
-        public Dictionary<string, Mover> playerAnims;
-        public List<Effect> effects;
-        public Animator playerAnimations;
+        protected List<Bullet> bullets;
+        public List<Bullet> firedBullets;
+        public int chosenAttack;
+        public Dictionary<string, Mover> movers;
+        public Animator animationSet;
         protected Game game;
 
 
@@ -34,7 +34,7 @@ namespace BulletHounds
 
         public PlayerIndex pIndex { get; private set; }
 
-        Dictionary<GamePadButtons, Action<GameTime>> IInput.gamePadDictionary { get; private set; }
+        protected Dictionary<Buttons, Action<GameTime>> gamePadDictionary { get; private set; }
         #endregion
 
         public Player(Game g)
@@ -42,6 +42,9 @@ namespace BulletHounds
         {
             game = g;
             position = Vector2.Zero;
+            bullets = new List<Bullet>();
+            attacks = new List<Attack>();
+            animationSet = new Animator(game, Vector2.Zero);
         }
 
         public Player(Game g, PlayerIndex player_index)
@@ -55,7 +58,7 @@ namespace BulletHounds
         public override void Initialize()
         {
             base.Initialize();
-            playerAnimations = new Animator(game, Vector2.Zero);
+            animationSet = new Animator(game, Vector2.Zero);
         }
 
         public override void Update(GameTime gameTime)
@@ -70,10 +73,7 @@ namespace BulletHounds
             prevGamePadState = gamePadState;
         }
 
-        public void HandleControls(GameTime gameTime)
-        {
-
-        }
+        public abstract void HandleControls(GameTime gameTime);
 
         public override void Draw(GameTime gameTime)
         {
@@ -81,23 +81,32 @@ namespace BulletHounds
         }
         #endregion
 
-        protected virtual void SetupAttacks()
+        protected abstract void SetupBullets();
+
+        protected abstract void SetupAttacks();
+
+        protected abstract void SetupAnimations();
+
+        protected virtual void SetupGamePad()
         {
-
+            gamePadDictionary.Add(Buttons.A, null);
+            gamePadDictionary.Add(Buttons.B, null);
+            gamePadDictionary.Add(Buttons.X, null);
+            gamePadDictionary.Add(Buttons.Y, null);
+            gamePadDictionary.Add(Buttons.DPadUp, null);
+            gamePadDictionary.Add(Buttons.DPadDown, null);
+            gamePadDictionary.Add(Buttons.DPadLeft, null);
+            gamePadDictionary.Add(Buttons.DPadRight, null);
+            gamePadDictionary.Add(Buttons.LeftShoulder, null);
+            gamePadDictionary.Add(Buttons.RightShoulder, null);
+            gamePadDictionary.Add(Buttons.LeftTrigger, null);
+            gamePadDictionary.Add(Buttons.RightTrigger, null);
+            gamePadDictionary.Add(Buttons.Start, null);
         }
-
-        protected virtual void SetupAnimations()
-        {
-
-        }
-
-
 
         public virtual void Attack()
         {
-            chosenAttack.Shoot();
+            attacks[chosenAttack].Shoot();
         }
-
-
     }
 }

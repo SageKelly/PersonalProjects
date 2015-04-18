@@ -19,6 +19,14 @@ namespace BulletHounds
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        KeyboardState keystate;
+
+        Rectangle source;
+        Vector2 position;
+        Texture2D image;
+
+        List<Vector2> positions;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -34,7 +42,10 @@ namespace BulletHounds
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            source = new Rectangle(0, 80, 14, 5);
+            position = new Vector2(graphics.PreferredBackBufferWidth / 2, graphics.PreferredBackBufferHeight / 8);
+            positions = new List<Vector2>();
+            positions.Add(position);
             base.Initialize();
         }
 
@@ -46,7 +57,7 @@ namespace BulletHounds
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            image = Content.Load<Texture2D>("Infini-Ballistic");
             // TODO: use this.Content to load your game content here
         }
 
@@ -69,6 +80,7 @@ namespace BulletHounds
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+            keystate = Keyboard.GetState();
 
             // TODO: Add your update logic here
 
@@ -82,6 +94,11 @@ namespace BulletHounds
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(image, position, source, Color.White);
+            spriteBatch.Draw(image, positions[0], source, Color.Aquamarine);
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
 

@@ -79,6 +79,7 @@
     <Compile Include="Attack.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Effect.cs" />
+    <Compile Include="ElementInteraction.cs" />
     <Compile Include="IInput.cs" />
     <Compile Include="Image2D.cs" />
     <Compile Include="MirrorMirror.cs" />
