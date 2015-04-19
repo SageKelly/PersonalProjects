@@ -8,9 +8,9 @@ using PicAnimator;
 
 namespace BulletHounds
 {
-    public class Bullet : DrawableGameComponent
+    public class Bullet
     {
-        private Game game;
+        #region VARIABLES
         public Image2D bulletImage;
 
         public enum BulletTypes
@@ -32,8 +32,8 @@ namespace BulletHounds
         #region Motion Variables
         public Vector2 staticPos;
         public Vector2 position, baseVelocity, deltaVelocity, maxVelocity, acceleration;
-        public float rotation;
-        public float scale;
+        public float baseRotation, rotation;
+        public float baseScale;
         /// <summary>
         /// The bullet's update method
         /// </summary>
@@ -58,19 +58,35 @@ namespace BulletHounds
         /// Denotes an animation has been set, and
         /// this should use that instead of the image
         /// </summary>
-        private bool b_is_animated;
+        public bool isAnimated { get; private set; }
         #endregion
 
         public Dictionary<BulletTypes, Effect> bulletEffects;
 
         #region Collision Variables
         public delegate void GrazingDelegate(ref Bullet thisOne, ref Bullet other);
+        private GrazingDelegate grazing_action;
         /// <summary>
         /// Used for bullets with grazing effects. The
         /// first paramenter is the sender, while the
         /// second is the recipient.
         /// </summary>
-        public GrazingDelegate grazingAction { get; private set; }
+        public GrazingDelegate grazingAction
+        {
+            get
+            {
+                return grazing_action;
+            }
+            private set
+            {
+                grazing_action = value;
+                if (grazing_action != null)
+                {
+                    grazingSet = true;
+                }
+                else grazingSet = false;
+            }
+        }
         /// <summary>
         /// The hitbounds used for bullets with grazing effects
         /// </summary>
@@ -78,23 +94,39 @@ namespace BulletHounds
         /// <summary>
         /// Denotes whether or not grazing has been set up
         /// </summary>
-        private bool b_grazing_set;
+        public bool grazingSet { get; private set; }
         /// <summary>
         /// Denotes whether or not this bullet has been grazed.
         /// </summary>
         public bool isGrazed;
 
         public delegate bool HitDelegate(ref Bullet thisOne);
+        private HitDelegate hit_action;
         /// <summary>
         /// The method that will activate after the
         /// bullet is hit. Must return whether or not
         /// the bullet is active.
         /// </summary>
-        public HitDelegate hitAction;
+        public HitDelegate hitAction
+        {
+            get
+            {
+                return hit_action;
+            }
+            set
+            {
+                hit_action = value;
+                if (hit_action != null)
+                {
+                    hitActionSet = true;
+                }
+                else hitActionSet = false;
+            }
+        }
         /// <summary>
         /// Denotes a hit action has been set;
         /// </summary>
-        private bool b_hit_action_set;
+        public bool hitActionSet { get; private set; }
         /// <summary>
         /// Denotes whether or not the bullet has been hit
         /// </summary>
@@ -103,7 +135,10 @@ namespace BulletHounds
         /// The bullet's main hitbounds
         /// </summary>
         public Rectangle hitbounds;
-
+        /// <summary>
+        /// Denotes whether or not the bullet's hitbounds should be checked
+        /// </summary>
+        public bool checkCollision;
         /// <summary>
         /// The point on the bullet where ricochetting won't occur
         /// </summary>
@@ -164,7 +199,7 @@ namespace BulletHounds
         /// <summary>
         /// Denotes a delay has been set
         /// </summary>
-        private bool delaySet;
+        public bool delaySet { get; private set; }
         #endregion
 
         /// <summary>
@@ -177,22 +212,20 @@ namespace BulletHounds
         public PlayerIndex bulletID { get; private set; }
 
         SpriteBatch spriteBatch;
+        #endregion
 
         #region Constructors
-        private Bullet(Game game)
-            : base(game)
+        private Bullet()
         {
-            this.game = game;
             bulletImage = new Image2D();
             position = Vector2.Zero;
             baseVelocity = Vector2.Zero;
             maxVelocity = Vector2.Zero;
             acceleration = Vector2.Zero;
-            rotation = 0.0f;
+            baseRotation = 0.0f;
             hitbounds = Rectangle.Empty;
-            bulletAnimator = new Animator(game, position);
             isActive = true;
-            scale = 1.0f;
+            baseScale = 1.0f;
         }
 
         /// <summary>
@@ -206,11 +239,10 @@ namespace BulletHounds
         /// <param name="bullet_health">How much health the bullet has</param>
         /// <param name="updateMethod">The method to update the bullet's position</param>
         /// <param name="rot">the bullet's intial rotation</param>
-        public Bullet(Game game, Image2D image, PlayerIndex id, float rot = 0)
-            : this(game)
+        public Bullet(Image2D image, PlayerIndex id, float rot = 0)
         {
             bulletImage = image;
-            rotation = rot;
+            baseRotation = rot;
             bulletID = id;
         }
 
@@ -231,7 +263,7 @@ namespace BulletHounds
             curMover = intialMover;
 
             if (bullet_animator != null)
-                b_is_animated = true;
+                isAnimated = true;
 
             position = bulletPosition;
             bulletAnimator.Position = position;
@@ -277,7 +309,7 @@ namespace BulletHounds
         {
             this.hitbounds = hitbounds;
             this.hitAction = hitmethod;
-            b_hit_action_set = true;
+            hitActionSet = true;
         }
 
         /// <summary>
@@ -293,31 +325,20 @@ namespace BulletHounds
 
         #endregion
 
-        public void UpdateBullet(GameTime gameTime, ref Bullet other)
+        public void Update(GameTime gameTime, ref Bullet other)
         {
-            if (!isActive && delaySet)
-            {
-                isActive = Countdown(gameTime.ElapsedGameTime.Milliseconds);
-            }
-            if (isActive)
-            {
-                if (b_is_animated)
-                    bulletAnimator.PlayAnimation(curMover, bulletImage.spriteEf);
-                //updateAction(this);
-                //Update HitBounds
-                hitbounds.Offset((int)position.X, (int)position.Y);
 
-                /*
-                if (b_hit_action_set && isHit)
-                {
-                    hit(this);
-                }
-                if (b_grazing_set && isGrazed)
-                {
-                    grazing(ref this, ref other);
-                }
-                */
+            /*
+            if (b_hit_action_set && isHit)
+            {
+                hit(this);
             }
+            if (b_grazing_set && isGrazed)
+            {
+                grazing(ref this, ref other);
+            }
+            */
+
         }
 
         /// <summary>
@@ -335,7 +356,7 @@ namespace BulletHounds
 
         public Bullet CopyBullet()
         {
-            Bullet temp = new Bullet(game, bulletImage, this.bulletID, rotation);
+            Bullet temp = new Bullet(bulletImage, this.bulletID, baseRotation);
             temp.acceleration = acceleration;
             temp.baseVelocity = baseVelocity;
             temp.bulletEffects = bulletEffects;
@@ -348,15 +369,14 @@ namespace BulletHounds
             temp.grazingHitbounds = grazingHitbounds;
             temp.health = health;
             temp.hitAction = hitAction;
-            temp.b_hit_action_set = b_hit_action_set;
             temp.hitbounds = hitbounds;
-            temp.b_is_animated = b_is_animated;
+            temp.isAnimated = isAnimated;
             temp.isComplexDraw = isComplexDraw;
             temp.lifetimeCounter = lifetimeCounter;
             temp.maxVelocity = maxVelocity;
             temp.staticPos = staticPos;
             temp.ricochetZeroPoint = ricochetZeroPoint;
-            temp.scale = scale;
+            temp.baseScale = baseScale;
             temp.SetupAnimation(bulletAnimator, curMover, position);
             temp.updateAction = updateAction;
             return temp;
@@ -364,7 +384,7 @@ namespace BulletHounds
 
         public Bullet CopyBullet(Vector2 pos, int countdown = 0, float rotation = 0)
         {
-            Bullet temp = new Bullet(game, bulletImage, this.bulletID, rotation);
+            Bullet temp = new Bullet(bulletImage, this.bulletID, rotation);
             temp.acceleration = acceleration;
             temp.baseVelocity = baseVelocity;
             temp.bulletEffects = bulletEffects;
@@ -377,15 +397,15 @@ namespace BulletHounds
             temp.grazingHitbounds = grazingHitbounds;
             temp.health = health;
             temp.hitAction = hitAction;
-            temp.b_hit_action_set = b_hit_action_set;
+            temp.hitActionSet = hitActionSet;
             temp.hitbounds = hitbounds;
-            temp.b_is_animated = b_is_animated;
+            temp.isAnimated = isAnimated;
             temp.isComplexDraw = isComplexDraw;
             temp.lifetimeCounter = lifetimeCounter;
             temp.maxVelocity = maxVelocity;
             temp.staticPos = staticPos;
             temp.ricochetZeroPoint = ricochetZeroPoint;
-            temp.scale = scale;
+            temp.baseScale = baseScale;
             temp.SetupAnimation(bulletAnimator, curMover, position);
             temp.updateAction = updateAction;
             return temp;
@@ -396,43 +416,10 @@ namespace BulletHounds
         /// </summary>
         public void ResetBullet()
         {
+            position = staticPos;
+            deltaVelocity = baseVelocity;
             bulletAnimator.StopAnimation(curMover);
             counter = 0;
         }
-
-        #region Game Methods
-        public override void Initialize()
-        {
-            base.Initialize();
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
-            game.Components.Add(this);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-            if (isActive)
-            {
-                switch (bulletImage.drawType)
-                {
-                    case 1:
-                        spriteBatch.Draw(bulletImage.image, position, Color.White);
-                        break;
-                    case 2:
-                        spriteBatch.Draw(bulletImage.image, position, bulletImage.sourceBounds, Color.White);
-                        break;
-                    case 3:
-                        spriteBatch.Draw(bulletImage.image, position, bulletImage.sourceBounds, Color.White,
-                            rotation, bulletImage.center, scale, bulletImage.spriteEf, 0);
-                        break;
-                }
-            }
-        }
-        #endregion
     }
 }

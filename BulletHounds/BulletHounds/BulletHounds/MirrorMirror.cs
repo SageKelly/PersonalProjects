@@ -61,6 +61,7 @@ namespace BulletHounds
 
         private void UpdateBullet(ref Bullet b)
         {
+            b.position += b.baseVelocity;
         }
 
         private void grazingEffect(ref Bullet thisOne,ref Bullet other)
