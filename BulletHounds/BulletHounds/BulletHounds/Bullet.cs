@@ -30,10 +30,16 @@ namespace BulletHounds
         public BulletTypes bulletType { get; set; }
 
         #region Motion Variables
-        public Vector2 staticPos;
-        public Vector2 position, baseVelocity, deltaVelocity, maxVelocity, acceleration;
-        public float baseRotation, rotation;
-        public float baseScale;
+        private Vector2 staticPos;
+        public Vector2 position;
+        public Vector2 baseVelocity;
+        public Vector2 deltaVelocity;
+        public Vector2 maxVelocity { get; private set; }
+        public Vector2 acceleration { get; private set; }
+        private float baseRotation;
+        public float rotation;
+        private float baseScale;
+        public float scale;
         /// <summary>
         /// The bullet's update method
         /// </summary>
@@ -54,6 +60,7 @@ namespace BulletHounds
         /// The currently selected Mover
         /// </summary>
         public Mover curMover;
+        private Mover initialMover;
         /// <summary>
         /// Denotes an animation has been set, and
         /// this should use that instead of the image
@@ -163,9 +170,12 @@ namespace BulletHounds
                 {
                     bulletAnimator.StopAnimation(curMover);
                 }
+                b_is_active = temp;
             }
         }
+        private int baseDamage;
         public int damage;
+        private int baseHealth;
         public int health;
         #endregion
 
@@ -254,13 +264,16 @@ namespace BulletHounds
         /// </summary>
         /// <param name="bullet_animator">the animator for the bullet</param>
         /// <param name="intialMover">the initial animation for the bullet.
-        /// Can be pulled from the public animations Dictionary</param>
+        /// Can be pulled from the public animations Dictionary. This
+        /// one will be used to reset the bullet.</param>
+        /// <param name="mover_name">the name of the initial mover</param>
         /// <param name="bulletPosition">the position of the bullet</param>
         public virtual void SetupAnimation(Animator bullet_animator, Mover intialMover, Vector2 bulletPosition)
         {
             bulletMovers = new Dictionary<string, Mover>();
             bulletAnimator = bullet_animator;
             curMover = intialMover;
+            bulletMovers.Add(curMover.name, curMover);
 
             if (bullet_animator != null)
                 isAnimated = true;
@@ -325,22 +338,6 @@ namespace BulletHounds
 
         #endregion
 
-        public void Update(GameTime gameTime, ref Bullet other)
-        {
-
-            /*
-            if (b_hit_action_set && isHit)
-            {
-                hit(this);
-            }
-            if (b_grazing_set && isGrazed)
-            {
-                grazing(ref this, ref other);
-            }
-            */
-
-        }
-
         /// <summary>
         /// Sets the internal counter until it equals the delay
         /// </summary>
@@ -362,12 +359,12 @@ namespace BulletHounds
             temp.bulletEffects = bulletEffects;
             temp.bulletMovers = bulletMovers;
             temp.bulletType = bulletType;
-            temp.damage = damage;
+            temp.baseDamage = baseDamage;
             temp.delay = delay;
             temp.delaySet = delaySet;
             temp.grazingAction = grazingAction;
             temp.grazingHitbounds = grazingHitbounds;
-            temp.health = health;
+            temp.baseHealth = baseHealth;
             temp.hitAction = hitAction;
             temp.hitbounds = hitbounds;
             temp.isAnimated = isAnimated;
@@ -390,12 +387,12 @@ namespace BulletHounds
             temp.bulletEffects = bulletEffects;
             temp.bulletMovers = bulletMovers;
             temp.bulletType = bulletType;
-            temp.damage = damage;
+            temp.baseDamage = baseDamage;
             temp.delay = delay;
             temp.delaySet = delaySet;
             temp.grazingAction = grazingAction;
             temp.grazingHitbounds = grazingHitbounds;
-            temp.health = health;
+            temp.baseHealth = baseHealth;
             temp.hitAction = hitAction;
             temp.hitActionSet = hitActionSet;
             temp.hitbounds = hitbounds;
@@ -417,8 +414,16 @@ namespace BulletHounds
         public void ResetBullet()
         {
             position = staticPos;
+            grazingHitbounds.Offset((int)position.X, (int)position.Y);
+            hitbounds.Offset((int)position.X, (int)position.Y);
+            isGrazed = false;
+            isHit = false;
+            checkCollision = true;
             deltaVelocity = baseVelocity;
+            rotation = baseRotation;
+            scale = baseScale;
             bulletAnimator.StopAnimation(curMover);
+            curMover = initialMover;
             counter = 0;
         }
     }

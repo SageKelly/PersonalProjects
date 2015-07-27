@@ -12,12 +12,12 @@ namespace BulletHounds
         /// <summary>
         /// The previous keyboard state
         /// </summary>
-        KeyboardState prevKey { get; }
+        KeyboardState prevKey { get; set; }
 
         /// <summary>
         /// The current keyboard state
         /// </summary>
-        KeyboardState keyState { get; }
+        KeyboardState keyState { get; set; }
         //TODO: customizable controls
         //TOOD: focus on gamepad
         /// <summary>

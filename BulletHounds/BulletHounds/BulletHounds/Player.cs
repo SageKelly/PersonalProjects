@@ -24,13 +24,13 @@ namespace BulletHounds
 
 
         #region Properties
-        public KeyboardState prevKey { get; private set; }
+        public KeyboardState prevKey { get;  set; }
 
-        public KeyboardState keyState { get; private set; }
+        public KeyboardState keyState { get;  set; }
 
-        public GamePadState prevGamePadState { get; private set; }
+        public GamePadState prevGamePadState { get;  set; }
 
-        public GamePadState gamePadState { get; private set; }
+        public GamePadState gamePadState { get;  set; }
 
         public PlayerIndex pIndex { get; private set; }
 
@@ -59,18 +59,6 @@ namespace BulletHounds
         {
             base.Initialize();
             animationSet = new Animator(game, Vector2.Zero);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            keyState = Keyboard.GetState();
-            gamePadState = GamePad.GetState(pIndex);
-
-
-
-            prevKey = keyState;
-            prevGamePadState = gamePadState;
         }
 
         public abstract void HandleControls(GameTime gameTime);

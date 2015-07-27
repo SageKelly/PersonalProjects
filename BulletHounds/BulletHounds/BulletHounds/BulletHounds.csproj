@@ -78,6 +78,8 @@
     <Compile Include="Arena.cs" />
     <Compile Include="Attack.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="BulletManager.cs" />
+    <Compile Include="BulletPool.cs" />
     <Compile Include="Effect.cs" />
     <Compile Include="ElementInteraction.cs" />
     <Compile Include="IInput.cs" />

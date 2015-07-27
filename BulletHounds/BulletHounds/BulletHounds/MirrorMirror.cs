@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +35,27 @@ namespace BulletHounds
             images = game.Content.Load<Texture2D>("Infini-Ballistic");
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            HandleControls(gameTime);
+        }
+
         public override void HandleControls(GameTime gameTime)
         {
-            
+            keyState = Keyboard.GetState();
+
+            GamePad.GetState(pIndex);
+
+            prevKey = keyState;
         }
 
         protected override void SetupBullets()
         {
-            Bullet bulletFire = new Bullet(game,
-                new Image2D(images, new Rectangle(135, 80, 7, 5)),
+            Bullet bulletFire = new Bullet(new Image2D(images, new Rectangle(135, 80, 7, 5)),
                 this.pIndex);
             bulletFire.setupCollision(new Rectangle(0, 0, 7, 5));
-            bulletFire.setupGrazing(2,new Bullet.GrazingDelegate(grazingEffect));
+            bulletFire.setupGrazing(2, new Bullet.GrazingDelegate(grazingEffect));
             bulletFire.SetupMovement(Vector2.Zero, new Vector2(7, 0), Vector2.Zero, Vector2.Zero,
                 new Bullet.UpdateDelegate(UpdateBullet));
             bulletFire.bulletType = Bullet.BulletTypes.Fire;
@@ -64,9 +74,9 @@ namespace BulletHounds
             b.position += b.baseVelocity;
         }
 
-        private void grazingEffect(ref Bullet thisOne,ref Bullet other)
+        private void grazingEffect(ref Bullet thisOne, ref Bullet other)
         {
-            other.health -= thisOne.damage/2;
+            other.health -= thisOne.damage / 2;
         }
 
         protected override void SetupAnimations()

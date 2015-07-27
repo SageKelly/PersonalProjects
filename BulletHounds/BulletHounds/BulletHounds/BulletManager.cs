@@ -62,18 +62,51 @@ namespace BulletHounds
                     b.hitbounds.Offset((int)b.position.X, (int)b.position.Y);
                 }
             }
-            for (int a = bulletsTeamA.Count; a >= 0;a-- )
+            for (int a = bulletsTeamA.Count; a >= 0; a--)
             {
-                for(int )
-            }
-                if (b.isHit)
+                Bullet bA = bulletsTeamA[a];
+                for (int b = bulletsTeamB.Count; b >= 0; b--)
                 {
-                    if (b.hitActionSet)
+                    Bullet bB = bulletsTeamB[b];
+                    if (bA.hitbounds.Intersects(bB.hitbounds) && (!bA.isHit || !bB.isHit))
                     {
-                        b.hitAction(ref b);
+                        bA.isHit = bB.isHit = true;
+                    }
+                    else
+                    {
+                        bA.isHit = bB.isHit = false;
+                    }
+                    if (bA.grazingHitbounds.Intersects(bB.grazingHitbounds) && (!bA.isHit && !bB.isHit))
+                    {
+                        bA.isGrazed = true;
+                        bB.isGrazed = true;
+                    }
+                    if (bA.isHit)
+                    {
+                        if (bA.hitActionSet)
+                        {
+                            bA.hitAction(ref bA);
+                        }
+                    }
+                    else
+                    {
+                        bA.isActive = false;
+                        bulletsTeamA.RemoveAt(a);
+                    }
+                    if (bB.isHit)
+                    {
+                        if (bB.hitActionSet)
+                        {
+                            bB.hitAction(ref bB);
+                        }
+                    }
+                    else
+                    {
+                        bB.isActive = false;
+                        bulletsTeamB.RemoveAt(b);
                     }
                 }
-
+            }
         }
     }
 }
