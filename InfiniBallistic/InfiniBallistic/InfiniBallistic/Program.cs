@@ -1,6 +1,6 @@
 using System;
 
-namespace BulletHounds
+namespace InfiniBallistic
 {
 #if WINDOWS || XBOX
     static class Program
