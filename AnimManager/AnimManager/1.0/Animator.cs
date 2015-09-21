@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
-
+//Last Edited: April 6, 2015
 namespace PicAnimator
 {
     /// <summary>
@@ -16,12 +16,12 @@ namespace PicAnimator
     /// <summary>
     /// Used to register operations to active FrameData
     /// </summary>
-    public delegate void HappeningEvent();
+    public delegate void HappeningEvent(object sender);
 
     /// <summary>
     /// Holds the current state of a Mover's Play State
     /// </summary>
-    public enum PlayState
+    internal enum PlayState
     {
         /// <summary>
         /// The Mover is Playing
@@ -47,7 +47,7 @@ namespace PicAnimator
     /// Animates a collection of Animatinons, and allows the user to play, pause, stop and rewind animations at will.
     /// </summary>
     ///    
-    public class Animator : DrawableGameComponent
+    public class Animator
     {
         /// <summary>
         /// The main list of all Mover objects associated with this Animator
@@ -92,22 +92,22 @@ namespace PicAnimator
                 i_mover_loop_counter = i_animation_loop_counter = i_anima_loop_counter = 0;
                 SPEffects = SpriteEffects.None;
                 CurMover.PState = PlayState.Play;
-                if (CurMover.Animations.Count != 0)
-                    CurAnimation = CurMover.Animations[i_animation_index];
+                if (CurMover.InnerItems.Count != 0)
+                    CurAnimation = CurMover.InnerItems[i_animation_index];
                 else
                 {
                     CurAnimation = null;
-                    throw new ArgumentOutOfRangeException("Animations must be added to the Mover before Animator creation");
+                    throw new ArgumentOutOfRangeException("InnerItems must be added to the Mover before Animator creation");
                 }
-                if (CurAnimation != null && CurAnimation.Animas.Count != 0)
-                    CurAnima = CurAnimation.Animas[i_anima_index];
+                if (CurAnimation != null && CurAnimation.InnerItems.Count != 0)
+                    CurAnima = CurAnimation.InnerItems[i_anima_index];
                 else
                 {
                     CurAnima = null;
                     throw new ArgumentOutOfRangeException("Animas must be added to the Mover before Animator creation");
                 }
-                if (CurAnima != null && CurAnima.Frames.Count != 0)
-                    CurFrame = CurAnima.Frames[i_frame_index];
+                if (CurAnima != null && CurAnima.InnerItems.Count != 0)
+                    CurFrame = CurAnima.InnerItems[i_frame_index];
                 else
                 {
                     CurFrame = null;
@@ -126,6 +126,7 @@ namespace PicAnimator
                 SPEffects = SpriteEffects.None;
                 CurMover.PState = PlayState.Stop;
                 SpeedPerc = 1.00f;
+                CurMover.IsActive = false;
             }
 
             /// <summary>
@@ -138,30 +139,32 @@ namespace PicAnimator
                 SPEffects = SPE;
                 if (CurMover.PState == PlayState.Stop)
                 {
-                    if (CurMover.Animations.Count != 0)
-                        CurAnimation = CurMover.Animations[i_animation_index];
+                    if (CurMover.InnerItems.Count != 0)
+                        CurAnimation = CurMover.InnerItems[i_animation_index];
                     else
                     {
                         CurAnimation = null;
-                        throw new LoopingException("Animations must be added to the Mover before Animator creation");
+                        throw new LoopingException("InnerItems must be added to the Mover before Animator creation");
                     }
 
-                    if (CurAnimation != null && CurAnimation.Animas.Count != 0)
-                        CurAnima = CurAnimation.Animas[i_anima_index];
+                    if (CurAnimation != null && CurAnimation.InnerItems.Count != 0)
+                        CurAnima = CurAnimation.InnerItems[i_anima_index];
                     else
                     {
                         CurAnima = null;
                         throw new ArgumentOutOfRangeException("Animas must be added to the Mover before Animator creation");
                     }
 
-                    if (CurAnima != null && CurAnima.Frames.Count != 0)
-                        CurFrame = CurAnima.Frames[i_frame_index];
+                    if (CurAnima != null && CurAnima.InnerItems.Count != 0)
+                        CurFrame = CurAnima.InnerItems[i_frame_index];
                     else
                     {
                         CurFrame = null;
                         throw new ArgumentOutOfRangeException("Frames must be added to Anima before Animator creation");
                     }
                 }
+                if (!CurMover.IsActive)
+                    CurMover.IsActive = true;
                 CurMover.PState = PlayState.Play;
                 SpeedPerc = speedPerc;
             }
@@ -169,67 +172,14 @@ namespace PicAnimator
 
         private TimeSpan timer;
 
-        private SpriteBatch spriteBatch;
-
-        /// <summary>
-        /// The rotation, in radians, of the Mover
-        /// </summary>
-        public float Rotation;
-
-        /// <summary>
-        /// The rotation origin for the Mover
-        /// </summary>
-        public Vector2 Origin;
-
-        /// <summary>
-        /// The position of the Mover: for drawing and movement purposes
-        /// </summary>
-        public Vector2 Position;
-        /// <summary>
-        /// The maximum velocity for the Mover: should be used for player movement
-        /// </summary>
-        public Vector2 MaxVelocity;
-
-        /// <summary>
-        /// The default vector for player movement. Holds how much local positional change occurs
-        /// </summary>
-        public Vector2 DeltaVelocity;
-
-        /// <summary>
-        /// The acceleration for movement purposes
-        /// </summary>
-        public Vector2 Acceleration;
-
-        /// <summary>
-        /// The scale for the Mover
-        /// </summary>
-        public Vector2 Scale;
-
-        /// <summary>
-        /// The tint for drawing the Mover
-        /// </summary>
-        public Color Tint;
-
         /// <summary>
         /// Animates Movers
         /// </summary>
-        /// <param name="game">The game you're using (Just do it...I dont know)</param>
-        /// <param name="pos">Drawing position for the Mover. Velocity and
-        /// Accleration are also available (See SetupVectors()).</param>
-        public Animator(Game game, Vector2 pos)
-            : base(game)
+        public Animator()
         {
             MotherList = new List<Mover>();
             PlayList = new List<MoverData>();
             RecentList = new List<Mover>();
-            Origin = Vector2.Zero;
-            Position = pos;
-            MaxVelocity = Vector2.Zero;
-            DeltaVelocity = Vector2.Zero;
-            Acceleration = Vector2.Zero;
-            Scale = Vector2.One;
-            Rotation = 0.00f;
-            Tint = Color.White;
         }
 
         /// <summary>
@@ -250,28 +200,7 @@ namespace PicAnimator
             MotherList = Data;
         }
 
-        /// <summary>
-        /// Sets up the positional vectors for drawing and moving the overall animation
-        /// </summary>
-        /// <param name="vel">Velocity</param>
-        public void SetupVectors(Vector2 vel)
-        {
-            DeltaVelocity = vel;
-        }
-
-        /// <summary>
-        /// Sets up the positional vectors for drawing and moving the overall animation
-        /// </summary>
-        /// <param name="max_vel">Max Velocity: with Acceleration used, this should be used to 
-        /// keep track of how fast the can ever move.</param>
-        /// <param name="accel">Acceleration: if used this should be 1/60 of the desired speed,
-        /// since XNA runs at 60 fps.</param>
-        public void SetupVectors(Vector2 max_vel, Vector2 accel)
-        {
-            MaxVelocity = max_vel;
-            Acceleration = accel;
-        }
-
+        #region Next Methods
         private bool NextMover(ref MoverData md)
         {
             md.CurMover.IsActive = false;
@@ -288,13 +217,13 @@ namespace PicAnimator
 
 
             //If infinite
-            if (md.i_animation_index == md.CurMover.Animations.Count)
+            if (md.i_animation_index == md.CurMover.InnerItems.Count)
             {
                 md.i_animation_index = 0;
                 if (md.CurMover.IsInfinite)
                 {
                     md.CurMover.hasLooped = true;
-                    md.CurAnimation = md.CurMover.Animations[md.i_animation_index];
+                    md.CurAnimation = md.CurMover.InnerItems[md.i_animation_index];
                     md.CurAnimation.IsActive = true;
                     return true;
                 }
@@ -305,7 +234,7 @@ namespace PicAnimator
                     {
                         //increment loop counter
                         md.i_mover_loop_counter++;
-                        md.CurAnimation = md.CurMover.Animations[md.i_animation_index];
+                        md.CurAnimation = md.CurMover.InnerItems[md.i_animation_index];
                         md.CurAnimation.IsActive = true;
                         return true;
                     }
@@ -315,7 +244,7 @@ namespace PicAnimator
                         //If there are more animations
                         if (NextMover(ref md))
                         {
-                            md.CurAnimation = md.CurMover.Animations[md.i_animation_index];
+                            md.CurAnimation = md.CurMover.InnerItems[md.i_animation_index];
                             md.CurAnimation.IsActive = true;
                             return true;
                         }
@@ -325,7 +254,7 @@ namespace PicAnimator
             }
             else
             {
-                md.CurAnimation = md.CurMover.Animations[md.i_animation_index];
+                md.CurAnimation = md.CurMover.InnerItems[md.i_animation_index];
                 md.CurAnimation.IsActive = true;
                 return true;
             }
@@ -336,13 +265,13 @@ namespace PicAnimator
             md.i_anima_index++;
             md.CurAnima.IsActive = false;
             //If infinite
-            if (md.i_anima_index == md.CurAnimation.Animas.Count)
+            if (md.i_anima_index == md.CurAnimation.InnerItems.Count)
             {
                 md.i_anima_index = 0;
                 if (md.CurAnimation.IsInfinite)
                 {
                     md.CurAnimation.hasLooped = true;
-                    md.CurAnima = md.CurAnimation.Animas[md.i_anima_index];
+                    md.CurAnima = md.CurAnimation.InnerItems[md.i_anima_index];
                     md.CurAnima.IsActive = true;
                     return true;
                 }
@@ -353,7 +282,7 @@ namespace PicAnimator
                     {
                         //increment loop counter
                         md.i_animation_loop_counter++;
-                        md.CurAnima = md.CurAnimation.Animas[md.i_anima_index];
+                        md.CurAnima = md.CurAnimation.InnerItems[md.i_anima_index];
                         md.CurAnima.IsActive = true;
                         return true;
                     }
@@ -363,7 +292,7 @@ namespace PicAnimator
                         //If there are more animations
                         if (NextAnimation(ref md))
                         {
-                            md.CurAnima = md.CurAnimation.Animas[md.i_anima_index];
+                            md.CurAnima = md.CurAnimation.InnerItems[md.i_anima_index];
                             md.CurAnima.IsActive = true;
                             return true;
                         }
@@ -373,7 +302,7 @@ namespace PicAnimator
             }
             else
             {
-                md.CurAnima = md.CurAnimation.Animas[md.i_anima_index];
+                md.CurAnima = md.CurAnimation.InnerItems[md.i_anima_index];
                 md.CurAnima.IsActive = true;
                 return true;
             }
@@ -385,14 +314,14 @@ namespace PicAnimator
             md.CurFrame.IsActive = false;
             md.i_frame_index++;
 
-            if (md.i_frame_index == md.CurAnima.Frames.Count)
+            if (md.i_frame_index == md.CurAnima.InnerItems.Count)
             {
                 md.i_frame_index = 0;
                 //If infinite
                 if (md.CurAnima.IsInfinite)
                 {
                     md.CurAnima.hasLooped = true;
-                    md.CurFrame = md.CurAnima.Frames[md.i_frame_index];
+                    md.CurFrame = md.CurAnima.InnerItems[md.i_frame_index];
                     md.CurFrame.IsActive = true;
                     return true;
                 }
@@ -403,7 +332,7 @@ namespace PicAnimator
                     {
                         //increment loop counter
                         md.i_anima_loop_counter++;
-                        md.CurFrame = md.CurAnima.Frames[md.i_frame_index];
+                        md.CurFrame = md.CurAnima.InnerItems[md.i_frame_index];
                         md.CurFrame.IsActive = true;
                         return true;
                     }
@@ -413,13 +342,13 @@ namespace PicAnimator
                         //If there are more anima
                         if (NextAnima(ref md))
                         {
-                            md.CurFrame = md.CurAnima.Frames[md.i_frame_index];
+                            md.CurFrame = md.CurAnima.InnerItems[md.i_frame_index];
                             md.CurFrame.IsActive = true;
                             return true;
                         }
                         else
                         {
-                            StopAnimation(md.CurMover);
+                            Stop(md.CurMover);
                             return false;
                         }
                     }
@@ -427,19 +356,21 @@ namespace PicAnimator
             }
             else
             {
-                md.CurFrame = md.CurAnima.Frames[md.i_frame_index];
+                md.CurFrame = md.CurAnima.InnerItems[md.i_frame_index];
                 md.CurFrame.IsActive = true;
                 return true;
             }
         }
+        #endregion
 
+        #region Animation Methods
         /// <summary>
         /// ...Plays...Animation
         /// </summary>
         /// <param name="data">The data which will be animated</param>
         /// <param name="SPE">The Sprite effect for the animation</param>
         /// <param name="SpeedPercentage">The speed at which to play the animation. 1.00 is regular speed.</param>
-        public void PlayAnimation(Mover data, SpriteEffects SPE, float SpeedPercentage = 1.00f)
+        public void Play(Mover data, SpriteEffects SPE, float SpeedPercentage = 1.00f)
         {
             bool found = false;
             Mover temp = data;
@@ -504,7 +435,7 @@ namespace PicAnimator
         /// <summary>
         /// Pauses the animation at the current frame; does not stop or reset it
         /// </summary>
-        public void PauseAnimation(Mover data)
+        public void Pause(Mover data)
         {
             //Look for if the Mover in question is already playing
             foreach (MoverData md in PlayList)
@@ -519,7 +450,7 @@ namespace PicAnimator
         /// <summary>
         /// Stops and resets animation
         /// </summary>
-        public void StopAnimation(Mover data)
+        public void Stop(Mover data)
         {
             Mover temp = data;
             for (int i = PlayList.Count - 1; i >= 0; i--)
@@ -540,7 +471,7 @@ namespace PicAnimator
         /// Continues to animate the Anima data until the animation has stopped
         /// </summary>
         /// <param name="gameTime">GameTime parameter for persistent animation</param>
-        private void Animate(GameTime gameTime)
+        public void Animate(GameTime gameTime)
         {
             timer += gameTime.ElapsedGameTime;
 
@@ -558,48 +489,7 @@ namespace PicAnimator
                 }
             }
         }
-
-        /// <summary>
-        /// Loads content
-        /// </summary>
-        protected override void LoadContent()
-        {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-        }
-
-
-        /// <summary>
-        /// Updates the current frame for animation
-        /// </summary>
-        /// <param name="gameTime">Update's GameTime</param>
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-            Animate(gameTime);
-        }
-
-        /// <summary>
-        /// Draws animation (NOT READY)
-        /// </summary>
-        /// <param name="gameTime">Draw's GameTime</param>
-        public override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-            /* */
-            spriteBatch.Begin();
-            for (int i = 0; i < PlayList.Count; i++)
-            {
-                MoverData md = PlayList[i];
-                if (md.CurMover.PState == PlayState.Play)
-                {
-                    spriteBatch.Draw(md.CurFrame.Image, Position, md.CurFrame.Source,
-                        Tint, Rotation, Origin, Scale, md.SPEffects, 0);
-                }
-            }
-            spriteBatch.End();
-
-        }
-
+        #endregion
 
         /// <summary>
         /// Find the current frame for a particular Mover

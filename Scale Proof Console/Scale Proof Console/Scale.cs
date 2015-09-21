@@ -17,10 +17,15 @@ namespace Scale_Proof_Console
         /// </summary>
         public Resources.Notes[] Notes;
         public string Name;
-        public Scale(string name, Resources.Notes[] notes)
+
+        /// <summary>
+        /// Creates a Scale
+        /// </summary>
+        /// <param name="name">the string-based name of the scale. Refer to the Resource Class for determination.</param>
+        public Scale(string name, bool isSharp = true)
         {
             Name = name;
-            Notes = notes;
+            Notes = Resources.MakeScale(name, isSharp);
         }
 
     }

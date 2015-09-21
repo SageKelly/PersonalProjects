@@ -5,3 +5,10 @@ C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\AnimManager\AnimManager\o
 C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\AnimManager\AnimManager\obj\x86\Debug\AnimManager.dll
 C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\AnimManager\AnimManager\obj\x86\Debug\AnimManager.pdb
 C:\Users\Kasha\Documents\Visual Studio 2010\Real Stuff\AnimManager\AnimManager\bin\x86\Debug\AnimManager.XML
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\bin\x86\Debug\AnimManager.XML
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\bin\x86\Debug\AnimManager.dll
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\bin\x86\Debug\AnimManager.pdb
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\obj\x86\Debug\AnimManager.csprojResolveAssemblyReference.cache
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\obj\x86\Debug\AnimManager.dll
+C:\PersonalProjects\PersonalProjects\AnimManager\AnimManager\obj\x86\Debug\AnimManager.pdb

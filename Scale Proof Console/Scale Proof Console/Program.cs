@@ -28,6 +28,15 @@ namespace Scale_Proof_Console
         public int SetLength = LOWEST_SET;
         public const int HIGHEST_SET = 300;
 
+        #region Screen Strings
+        string StrStartGame = "Start Game";
+        string StrSettings = "Settings";
+        string StrManageData = "Manage Data";
+
+
+        #endregion
+
+
         public Resources.Notes[] Scale;
 
         public List<int>SetMaker;
@@ -39,7 +48,8 @@ namespace Scale_Proof_Console
         ConsoleKeyInfo CKI;
 
         #region Print Regions
-
+        int center_X = Console.WindowWidth / 2;
+        int center_Y = Console.WindowHeight / 2;
         #endregion
 
         static void Main(string[] args)
@@ -48,6 +58,30 @@ namespace Scale_Proof_Console
 
         }
 
+        public void Setup()
+        {
+
+        }
+
+        public void PrintStart()
+        {
+
+        }
+
+        public void PrintGame()
+        {
+
+        }
+
+        public void PrintResult()
+        {
+
+        }
+
+        public void HandleInput()
+        {
+
+        }
         
     }
 }

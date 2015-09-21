@@ -2,26 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+//Last edited: April 6, 2015
 namespace PicAnimator
 {
     /// <summary>
     /// Abstract Container class
     /// </summary>
-    public abstract class DataContainer
+    public abstract class DataContainer<T>
     {
         /// <summary>
-        /// Used to register events to active Anima (NOT CURRENTLY IMPLEMENTED)
+        /// Used to register activation events to this object
         /// </summary>
-        public event HappeningEvent ActivationEvent, DeactivationEvent;
+        public event HappeningEvent ActivationEvent;
 
         /// <summary>
-        /// Tells whether or not the Anima has looped in animation
+        /// Used to register deactivation events to this object
         /// </summary>
-        public bool hasLooped;
+        public event HappeningEvent DeactivationEvent;
 
         /// <summary>
-        /// How many times the Anima should play. 0 is infinite
+        /// Tells whether or not this object has looped in animation
+        /// </summary>
+        internal bool hasLooped;
+
+        internal List<T> InnerItems;
+
+        /// <summary>
+        /// How many times this object should play. 0 is infinite
         /// </summary>
         public int LoopFor
         {
@@ -30,7 +37,7 @@ namespace PicAnimator
         }
 
         /// <summary>
-        /// Tell whether or not the Anima loops infinitely
+        /// Tell whether or not this object loops infinitely
         /// </summary>
         public bool IsInfinite
         {
@@ -38,18 +45,19 @@ namespace PicAnimator
             protected set;
         }
         /// <summary>
-        /// Holds the standard value for an infinitely animating animation
+        /// Holds the standard value for an infinitely animating object class
         /// </summary>
         protected const int INF_CONST = -1;
+
         /// <summary>
-        /// Determines whether or not the current DataContainer is active
+        /// Determines whether or not this current object is active
         /// </summary>
         protected bool b_is_active;
 
         /// <summary>
-        /// Tells whether or not the Anima is active
+        /// Tells whether or not this object is active
         /// </summary>
-        public bool IsActive
+        internal virtual bool IsActive
         {
             get
             {
@@ -57,17 +65,14 @@ namespace PicAnimator
             }
             set
             {
-                bool b_prev_state = false;
-
                 //hold previous value
-                if (b_is_active)
-                    b_prev_state = b_is_active;
+                bool b_prev_state = b_is_active;
 
                 //obtain new value
                 b_is_active = value;
 
                 //check for activation
-                if (b_is_active)
+                if (!b_prev_state && b_is_active)
                     OnActivate();
 
                 //check for deactivation (i.e. WAS active and NOW inactive)
@@ -77,20 +82,23 @@ namespace PicAnimator
         }
 
         /// <summary>
-        /// Holds animation data
+        /// Holds lower-level data
         /// </summary>
         protected DataContainer()
         {
             hasLooped = false;
+            InnerItems = new List<T>();
         }
 
         /// <summary>
-        /// Creates Anima data which holds FrameData objects
+        /// Creates an upper-level object which holds lower-level objects
         /// </summary>
-        /// <param name="loop_for">Determines how many subsequent times the data will loop. "-1" is for infinite. "0" is none.</param>
-        public DataContainer(int loop_for)
+        /// <param name="loop_for">Determines how many subsequent times
+        /// the data will loop. "-1" is for infinite. "0" is none.</param>
+        public DataContainer(List<T> data, int loop_for)
             : this()
         {
+            InnerItems = data;
             LoopFor = loop_for;
             if (LoopFor <= INF_CONST)
                 IsInfinite = true;
@@ -101,22 +109,22 @@ namespace PicAnimator
         /// <summary>
         /// Runs the Activated event delegate
         /// </summary>
-        protected void OnActivate()
+        protected virtual void OnActivate()
         {
             if (ActivationEvent != null)
             {
-                ActivationEvent();
+                ActivationEvent(this);
             }
         }
 
         /// <summary>
         /// Runs the Deactivated event delegate
         /// </summary>
-        protected void OnDeactivate()
+        protected virtual void OnDeactivate()
         {
             if (DeactivationEvent != null)
             {
-                DeactivationEvent();
+                DeactivationEvent(this);
             }
         }
     }

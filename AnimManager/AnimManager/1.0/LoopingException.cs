@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+//Last edited: April 6, 2015
 namespace PicAnimator
 {
     class LoopingException : Exception

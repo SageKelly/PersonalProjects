@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-
+//Last edited: April 6, 2015
 namespace PicAnimator
 {
     /// <summary>
     /// A collection of animations, the animation of which cannot be concatenated with another Mover object
     /// </summary>
-    public class Mover : DataContainer
+    public class Mover : DataContainer<Animation>
     {
         #region Public Vars
         /// <summary>
         /// Dictates the state of this Mover object
         /// </summary>
-        public PlayState PState
+        internal PlayState PState
         {
             get
             {
@@ -35,13 +35,9 @@ namespace PicAnimator
         }
 
         /// <summary>
-        /// A collection of Animation objects
+        /// The name of the Mover
         /// </summary>
-        public List<Animation> Animations
-        {
-            get;
-            private set;
-        }
+        public string name { get; private set; }
 
         /// <summary>
         /// Used for registering to the animation beginning its playback
@@ -65,51 +61,53 @@ namespace PicAnimator
         private Mover()
         {
             hasLooped = false;
-            Animations = new List<Animation>();
+            InnerItems = new List<Animation>();
         }
 
         /// <summary>
-        /// Allows for a combination of Animations to be played
+        /// Allows for a combination of InnerItems to be played
         /// one after the other.
         /// </summary>
+        /// <param name="name">The name of the Mover</param>
         /// <param name="loop_for">Determines how many subsequent times the data will loop.
         /// "-1" is infinite, "0" is none.</param>
-        public Mover(int loop_for)
+        public Mover(string name,int loop_for )
             : this()
         {
+            this.name = name;
             LoopFor = loop_for;
             if (LoopFor <= INF_CONST)
                 IsInfinite = true;
             else
                 IsInfinite = false;
             PState = PlayState.Inactive;
-
-            Animations = new List<Animation>();
         }
 
         /// <summary>
-        /// Allows for a combination of Animations to be played
+        /// Allows for a combination of InnerItems to be played
         /// one after the other.
         /// </summary>
+        /// <param name="name">The name of the Mover</param>
         /// <param name="data">The list of animas for the animation</param>
         /// <param name="loop_for">Determines how many subsequent times the data will loop.
         /// "-1" is infinite, "0" is none.</param>
-        public Mover(List<Animation> data, int loop_for)
-            : this(loop_for)
+        public Mover(string name, List<Animation> data, int loop_for)
+            : this(name, loop_for)
         {
-            Animations = data;
+            InnerItems = data;
         }
 
         /// <summary>
-        /// Allows for a combination of Animations to be played
+        /// Allows for a combination of InnerItems to be played
         /// one after the other.
         /// </summary>
+        /// <param name="name">The name of the Mover</param>
         /// <param name="Animas">The list of Animas to add</param>
-        /// <param name="mover_loop_for">Determins how many subsequent times the mover data wil loop.
+        /// <param name="mover_loop_for">Determins how many subsequent times the Mover data wil loop.
         /// "-1" is infinite, "0" is none.</param>
         /// <param name="anim_loop_for">The same mover_loop_foor, but for the list of anima</param>
-        public Mover(List<Anima> Animas, int mover_loop_for, int anim_loop_for)
-            : this(mover_loop_for)
+        public Mover(string name, List<Anima> Animas, int mover_loop_for, int anim_loop_for)
+            : this(name,mover_loop_for)
         {
             if (mover_loop_for == -1)
             {
@@ -123,35 +121,37 @@ namespace PicAnimator
         /// <summary>
         /// Take a list of frames and turns them into a Mover object
         /// </summary>
+        /// <param name="name">The name of the Mover</param>
         /// <param name="Frames">The list of frames to add</param>
-        /// <param name="mover_loop_for">Determines how many subsequent times the mover data wil loop.
+        /// <param name="mover_loop_for">Determines how many subsequent times the Mover data wil loop.
         /// "-1" is infinite, "0" is none.</param>
         /// <param name="anim_loop_for">The same mover_loop_foor, but for the automatically-generated animation</param>
         /// <param name="anima_loop_for">The same mover_loop_foor, but for the automatically-generated anima</param>
-        public Mover(List<Frame> Frames, int mover_loop_for, int anim_loop_for, int anima_loop_for)
-            : this(mover_loop_for)
+        public Mover(string name, List<Frame> Frames, int mover_loop_for, int anim_loop_for, int anima_loop_for)
+            : this(name, mover_loop_for)
         {
-            if (anima_loop_for == -1)
+            if (mover_loop_for == -1)
             {
                 if (anim_loop_for == -1)
                 {
                     throw new LoopingException("No infinite sub-loops allowed");
                 }
-                if (mover_loop_for == -1)
+                if (anima_loop_for == -1)
                 {
                     throw new LoopingException("No infinite sub-loops allowed");
                 }
             }
 
             this.AddData(new Animation(anim_loop_for));
-            Animations[Animations.Count - 1].AddData(new Anima(Frames, anima_loop_for));
+            InnerItems[InnerItems.Count - 1].AddData(new Anima(Frames, anima_loop_for));
         }
 
         /// <summary>
         /// Accepts a base frame to automatically generate a Mover
         /// </summary>
+        /// <param name="name">The name of the Mover</param>
         /// <param name="baseFrame">The base frame to use to add the rest</param>
-        /// <param name="mover_loop_for">Determines how many subsequent times the mover data wil loop.
+        /// <param name="mover_loop_for">Determines how many subsequent times the Mover data wil loop.
         /// "-1" is infinite, "0" is none.</param>
         /// <param name="anim_loop_for">The same as mover_loop_for, but for the automatically-generated animation</param>
         /// <param name="anima_loop_for">The same as mover_loop_for, but for the automatically-genereated anima</param>
@@ -160,25 +160,23 @@ namespace PicAnimator
         /// initial frame</param>
         /// <param name="YSourceDelta">The amount of change in the source image file's Y axis in relation to the
         /// initial frame</param>
-        public Mover(Frame baseFrame, int mover_loop_for, int anim_loop_for,
+        public Mover(string name, Frame baseFrame, int mover_loop_for, int anim_loop_for,
             int anima_loop_for, int ExtraFrames, int XSourceDelta, int YSourceDelta)
-            : this(mover_loop_for)
+            : this(name, mover_loop_for)
         {
-            if (anima_loop_for == -1)
+            if (mover_loop_for == -1)
             {
                 if (anim_loop_for == -1)
                 {
                     throw new LoopingException("No infinite sub-loops allowed");
                 }
-                if (mover_loop_for == -1)
+                if (anima_loop_for == -1)
                 {
                     throw new LoopingException("No infinite sub-loops allowed");
                 }
             }
             this.AddData(new Animation(anim_loop_for));
-            Anima temp = new Anima(anima_loop_for);
-            temp.AddFrames(baseFrame, ExtraFrames, XSourceDelta, YSourceDelta);
-            Animations[Animations.Count - 1].AddData(temp);
+            InnerItems[InnerItems.Count - 1].AddData(new Anima(baseFrame,anima_loop_for,ExtraFrames,XSourceDelta,YSourceDelta));
         }
 
         /// <summary>
@@ -187,14 +185,14 @@ namespace PicAnimator
         /// <param name="data">The Animation object to be added</param>
         public void AddData(Animation data)
         {
-            foreach (Animation anim in Animations)
+            foreach (Animation anim in InnerItems)
             {
                 if (anim.IsInfinite)
                 {
                     throw new LoopingException();
                 }
             }
-            Animations.Add(data);
+            InnerItems.Add(data);
         }
 
         private void OnPause()
@@ -215,6 +213,28 @@ namespace PicAnimator
                 StoppingEvent();
         }
 
+        /// <summary>
+        /// Runs the Activated event delegate
+        /// </summary>
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+            foreach(Animation an in InnerItems)
+            {
+                an.IsActive = true;
+            }
+        }
 
+        /// <summary>
+        /// Runs the Deactivated event delegate
+        /// </summary>
+        protected override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            foreach (Animation an in InnerItems)
+            {
+                an.IsActive = false;
+            }
+        }
     }
 }

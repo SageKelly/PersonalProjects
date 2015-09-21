@@ -4,25 +4,19 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+//Last edited: April 6, 2015
 namespace PicAnimator
 {
 
     /// <summary>
     /// Collection of FrameData
     /// </summary>
-    public class Anima : DataContainer
+    public class Anima : DataContainer<Frame>
     {
-        /// <summary>
-        /// The collection of FrameData
-        /// </summary>
-        public List<Frame> Frames;
 
         private Anima()
-        {
-            hasLooped = false;
-            Frames = new List<Frame>();
-        }
+            : base()
+        { }
 
         /// <summary>
         /// Creates Anima data which holds FrameData objects
@@ -44,10 +38,8 @@ namespace PicAnimator
         /// <param name="frames">A given list of frames to add to the anima</param>
         /// <param name="loop_for">Determines how many subsequent times the data will loop. "-1" is for infinite. "0" is none.</param>
         public Anima(List<Frame> frames, int loop_for)
-            : this(loop_for)
-        {
-            Frames = frames;
-        }
+            : base(frames, loop_for)
+        { }
 
         /// <summary>
         /// Adds frames to the frame and any systematically different frames, assuming the frames
@@ -60,13 +52,11 @@ namespace PicAnimator
         /// initial frame</param>
         /// <param name="YSourceDelta">The amount of change in the source image file's Y axis in relation to the
         /// initial frame</param>
-        public Anima(Frame baseFrame,int loop_for, int ExtraFrames, int XSourceDelta, int YSourceDelta)
-            :this(loop_for)
+        public Anima(Frame baseFrame, int loop_for, int ExtraFrames, int XSourceDelta, int YSourceDelta)
+            : this(loop_for)
         {
             AddFrames(baseFrame, ExtraFrames, XSourceDelta, YSourceDelta);
         }
-
-
 
         /// <summary>
         /// Adds the frame the list of frames
@@ -74,7 +64,7 @@ namespace PicAnimator
         /// <param name="data">The Frame object to add</param>
         public void AddFrame(Frame data)
         {
-            Frames.Add(data);
+            InnerItems.Add(data);
         }
 
         /// <summary>
@@ -90,15 +80,39 @@ namespace PicAnimator
         public void AddFrames(Frame data, int ExtraFrames, int XSourceDelta, int YSourceDelta)
         {
             Frame temp = data;
-            Frames.Add(data);
+            InnerItems.Add(data);
             Rectangle temp_rect = temp.Source;
             int fps = temp.FPS;
             int delay = temp.MilliDelay;
             for (int i = 1; i <= ExtraFrames; i++)
             {
-                Frames.Add(new Frame(temp.Image,
-                    new Rectangle(i * XSourceDelta, i * YSourceDelta, temp_rect.Width, temp_rect.Height),
+                InnerItems.Add(new Frame(temp.Image,
+                    new Rectangle(temp_rect.X + i * XSourceDelta, temp_rect.Y + i * YSourceDelta, temp_rect.Width, temp_rect.Height),
                     fps, delay));
+            }
+        }
+
+        /// <summary>
+        /// Runs the Activated event delegate
+        /// </summary>
+        protected override void OnActivate()
+        {
+            base.OnActivate();
+            foreach (Frame f in InnerItems)
+            {
+                f.IsActive = true;
+            }
+        }
+
+        /// <summary>
+        /// Runs the Deactivated event delegate
+        /// </summary>
+        protected override void OnDeactivate()
+        {
+            base.OnDeactivate();
+            foreach (Frame f in InnerItems)
+            {
+                f.IsActive = false;
             }
         }
     }
