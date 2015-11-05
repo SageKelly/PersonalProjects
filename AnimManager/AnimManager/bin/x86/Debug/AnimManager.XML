@@ -130,6 +130,12 @@
             Runs the Deactivated event delegate
             </summary>
         </member>
+        <member name="M:PicAnimator.Anima.LastFrame">
+            <summary>
+            Returns the last frame in the Anima's animation cycle
+            </summary>
+            <returns>The last frame in the Anima</returns>
+        </member>
         <member name="T:PicAnimator.Animation">
             <summary>
             Holds a collection of Anima data
@@ -191,6 +197,12 @@
             Runs the Deactivated event delegate
             </summary>
         </member>
+        <member name="M:PicAnimator.Animation.LastFrame">
+            <summary>
+            Returns the last frame in the Animation's animation cycle
+            </summary>
+            <returns>The last frame in the Animation</returns>
+        </member>
         <member name="T:PicAnimator.AnimatorEventHandler">
             <summary>
             Used to register to Playing Pausing and Stopping events
@@ -251,6 +263,12 @@
             <summary>
             Animates Movers
             </summary>
+        </member>
+        <member name="M:PicAnimator.Animator.#ctor(System.Collections.Generic.List{PicAnimator.Mover})">
+            <summary>
+            Animates Movers
+            </summary>
+            <param name="data">The list of Movers to be added to the Animator</param>
         </member>
         <member name="M:PicAnimator.Animator.AddData(PicAnimator.Mover)">
             <summary>
@@ -455,6 +473,19 @@
             <summary>
             Runs the Deactivated event delegate
             </summary>
+        </member>
+        <member name="M:PicAnimator.Mover.LastFrame">
+            <summary>
+            Returns the last frame in the Mover's animation cycle
+            </summary>
+            <returns>The last frame in the Mover</returns>
+        </member>
+        <member name="M:PicAnimator.Mover.FindFrame(System.Int32)">
+            <summary>
+            Finds the Frame that would occur at the chosen animation step
+            </summary>
+            <param name="index">The zero-based animation index</param>
+            <returns></returns>
         </member>
         <member name="P:PicAnimator.Mover.PState">
             <summary>

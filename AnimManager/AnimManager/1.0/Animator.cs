@@ -183,6 +183,15 @@ namespace PicAnimator
         }
 
         /// <summary>
+        /// Animates Movers
+        /// </summary>
+        /// <param name="data">The list of Movers to be added to the Animator</param>
+        public Animator(List<Mover>data):this()
+        {
+            MotherList.AddRange(data);
+        }
+
+        /// <summary>
         /// Adds Animation data to the collection
         /// </summary>
         /// <param name="Data">The Animation data to be added</param>

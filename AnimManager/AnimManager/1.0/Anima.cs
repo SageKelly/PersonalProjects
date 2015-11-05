@@ -115,5 +115,14 @@ namespace PicAnimator
                 f.IsActive = false;
             }
         }
+
+        /// <summary>
+        /// Returns the last frame in the Anima's animation cycle
+        /// </summary>
+        /// <returns>The last frame in the Anima</returns>
+        public Frame LastFrame()
+        {
+            return InnerItems.Last<Frame>();
+        }
     }
 }

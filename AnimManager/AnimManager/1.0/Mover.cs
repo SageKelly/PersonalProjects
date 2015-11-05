@@ -71,7 +71,7 @@ namespace PicAnimator
         /// <param name="name">The name of the Mover</param>
         /// <param name="loop_for">Determines how many subsequent times the data will loop.
         /// "-1" is infinite, "0" is none.</param>
-        public Mover(string name,int loop_for )
+        public Mover(string name, int loop_for)
             : this()
         {
             this.name = name;
@@ -107,7 +107,7 @@ namespace PicAnimator
         /// "-1" is infinite, "0" is none.</param>
         /// <param name="anim_loop_for">The same mover_loop_foor, but for the list of anima</param>
         public Mover(string name, List<Anima> Animas, int mover_loop_for, int anim_loop_for)
-            : this(name,mover_loop_for)
+            : this(name, mover_loop_for)
         {
             if (mover_loop_for == -1)
             {
@@ -176,7 +176,7 @@ namespace PicAnimator
                 }
             }
             this.AddData(new Animation(anim_loop_for));
-            InnerItems[InnerItems.Count - 1].AddData(new Anima(baseFrame,anima_loop_for,ExtraFrames,XSourceDelta,YSourceDelta));
+            InnerItems[InnerItems.Count - 1].AddData(new Anima(baseFrame, anima_loop_for, ExtraFrames, XSourceDelta, YSourceDelta));
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace PicAnimator
         protected override void OnActivate()
         {
             base.OnActivate();
-            foreach(Animation an in InnerItems)
+            foreach (Animation an in InnerItems)
             {
                 an.IsActive = true;
             }
@@ -235,6 +235,45 @@ namespace PicAnimator
             {
                 an.IsActive = false;
             }
+        }
+
+        /// <summary>
+        /// Returns the last frame in the Mover's animation cycle
+        /// </summary>
+        /// <returns>The last frame in the Mover</returns>
+        public Frame LastFrame()
+        {
+            return InnerItems.Last<Animation>().InnerItems.Last<Anima>().InnerItems.Last<Frame>();
+        }
+
+        /// <summary>
+        /// Finds the Frame that would occur at the chosen animation step
+        /// </summary>
+        /// <param name="index">The zero-based animation index</param>
+        /// <returns></returns>
+        public Frame FindFrame(int index)
+        {
+            bool notfound = true;
+            Frame result = null;
+            while (notfound)
+            {
+                foreach (Animation anim in InnerItems)
+                {
+                    foreach (Anima anima in anim.InnerItems)
+                    {
+                        if (anima.InnerItems.Count < index)
+                        {
+                            result = anima.InnerItems[index];
+                            notfound = false;
+                        }
+                        else
+                        {
+                            index -= anima.InnerItems.Count - 1;
+                        }
+                    }
+                }
+            }
+            return result;
         }
     }
 }
