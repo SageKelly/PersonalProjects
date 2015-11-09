@@ -14,8 +14,8 @@ namespace BulletManager
     public class Manager : DrawableGameComponent
     {
         //Note: Do not create the Manager until all teams and players have been sorted.
-        List<ShellPlayer> TeamAPlayers;
-        List<ShellPlayer> TeamBPlayers;
+        List<Character> TeamAPlayers;
+        List<Character> TeamBPlayers;
         List<Bullet> ATeamBullets;
         List<Bullet> BTeamBullets;
         List<Bullet> Recycled;
@@ -30,8 +30,8 @@ namespace BulletManager
         {
             this.game = game;
             friendlyFire = ff;
-            TeamAPlayers = new List<ShellPlayer>();
-            TeamBPlayers = new List<ShellPlayer>();
+            TeamAPlayers = new List<Character>();
+            TeamBPlayers = new List<Character>();
             ATeamBullets = new List<Bullet>();
             BTeamBullets = new List<Bullet>();
             Recycled = new List<Bullet>();
@@ -58,8 +58,6 @@ namespace BulletManager
                 Bullet bu = ATeamBullets[i];
                 //run the Bullet's update method
                 bu.Update(gameTime);
-                //Then the Type's update method
-                bu.bulletType.Update(gameTime, ref bu);
             }
 
             for (int i = 0; i < BTeamBullets.Count; i++)
@@ -67,8 +65,6 @@ namespace BulletManager
                 Bullet bu = BTeamBullets[i];
                 //run the Bullet's update method
                 bu.Update(gameTime);
-                //Then the Type's update method
-                bu.bulletType.Update(gameTime, ref bu);
             }
             if (friendlyFire)
             {
@@ -121,7 +117,7 @@ namespace BulletManager
         /// </summary>
         /// <param name="p">The Player to be added</param>
         /// <param name="TeamA">The team to which the Player belongs</param>
-        public void RegisterPlayer(ShellPlayer p, bool TeamA = true)
+        public void RegisterPlayer(Character p, bool TeamA = true)
         {
             if (TeamA)
             {
@@ -165,14 +161,14 @@ namespace BulletManager
                         //Create a Bullet of the same type as bu
                         if (bu.onTeamA)
                         {
-                            buI.Reset(bu.bulletType);
+                            buI.Reset(bu);
                             Recycled[i] = buI;
                             ATeamBullets.Add(Recycled[i]);
                             ATeamBullets[ATeamBullets.Count - 1].DeactivationEvent += BulletCleanup;
                         }
                         else
                         {
-                            buI.Reset(bu.bulletType);
+                            buI.Reset(bu);
                             Recycled[i] = buI;
                             BTeamBullets.Add(Recycled[i]);
                             BTeamBullets[BTeamBullets.Count - 1].DeactivationEvent += BulletCleanup;
@@ -185,12 +181,12 @@ namespace BulletManager
             {
                 if (bu.onTeamA )
                 {
-                    ATeamBullets.Add(new Bullet(bu.position,bu.onTeamA, bu.bulletType));
+                    ATeamBullets.Add(new Bullet(bu.position,bu.onTeamA,bu.Anims,bu.startingEType,bu.Name,bu.rotation));
                     ATeamBullets[ATeamBullets.Count - 1].DeactivationEvent += BulletCleanup;
                 }
                 else
                 {
-                    BTeamBullets.Add(new Bullet(bu.position,bu.onTeamA, bu.bulletType));
+                    BTeamBullets.Add(new Bullet(bu.position, bu.onTeamA, bu.Anims, bu.startingEType, bu.Name, bu.rotation));
                     BTeamBullets[BTeamBullets.Count - 1].DeactivationEvent += BulletCleanup;
                 }
             }
@@ -351,7 +347,7 @@ namespace BulletManager
         /// <param name="BBullets">Team B's opposing Bullets</param>
         private void CheckPlayerCollision(ref List<Bullet> ABullets, ref List<Bullet> BBullets)
         {
-            foreach (ShellPlayer p in TeamAPlayers)
+            foreach (Character p in TeamAPlayers)
             {
                 for (int i = ABullets.Count - 1; i >= 0; i--)
                 {
@@ -369,7 +365,7 @@ namespace BulletManager
                 }
             }
 
-            foreach (ShellPlayer p in TeamBPlayers)
+            foreach (Character p in TeamBPlayers)
             {
                 for (int i = BBullets.Count - 1; i >= 0; i--)
                 {

@@ -1,0 +1,2 @@
+﻿Filename.png
+NAME,width,height,extra_frames,fps,is_horizontal(boolean)

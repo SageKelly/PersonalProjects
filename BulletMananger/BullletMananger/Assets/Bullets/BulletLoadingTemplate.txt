@@ -1,0 +1,16 @@
+﻿*The filename will be the exact name of the Bullet class to which it belongs
+
+*All frames should be made horizontally. They will be assumed that way be default.
+ However, they can be interpreted as vertical as well. After the dimensions, add
+  a false to signify vertical arrangement. A blank entry will be assumed true.
+
+*Start each file immediately with the filename of the image, followed by these tags.
+
+*Leave the dimensions blank to signify no animation has been made. However, all
+ tags must be mentioned in each file.
+
+ *"extra_frames" means the amount of frames composed within this animation - 1.
+EXAMPLE,x_pos,y_pos,width,height,extra_frames,fps,is_horizontal(boolean)
+TYPE,bullet_type
+IDLE,
+DYING,

@@ -1,0 +1,40 @@
+﻿*The filename will be the exact name of the character class to which it belongs
+
+*All frames should be made horizontally. They will be assumed that way be default.
+ However, they can be interpreted as vertical as well. After the dimensions, add
+  a false to signify vertical arrangement.
+
+*Start each file immediately with the filename of the image, followed by these tags.
+
+*Leave the dimensions blank to signify no animation has been made. However, all
+ tags must be mentioned in each file.
+
+ *"extra_frames" means the amount of frames composed within this animation - 1.
+EXAMPLE,x_pos,y_pos,width,height,extra_frames,fps,is_horizontal(boolean)
+FILE_NAME,filename
+ATTACK1,
+ATTACK2,
+ATTACK3,
+ENTER,
+IDLE,
+HIT,
+SHOCK1,
+SHOCK2,
+SHOCK3,
+WIN,
+LOSE,
+*Following are the Bullets used by the character.
+*Each Bullet will have its own file much like the character.
+BULLET,name,filename
+*Attacks work by creating Bullets positioned in relation to the Character's center.
+ATTACK_FORM,attack_name,can_move(boolean)
+*bullet list. Each line represents a Bullet
+bullet_index,x_pos,y_pos,spawn_time,
+
+END_ATTACK_FORM
+ATTACK,attack_name
+
+END_ATTACK_FORM
+ATTACK,attack_name
+
+END_ATTACK_FORM

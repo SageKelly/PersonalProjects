@@ -23,8 +23,6 @@ namespace BulletManager
         */
         public Game game;
 
-        public Bullet bulletType;
-
         public Vector2 position;
         /// <summary>
         /// The base, unchanging velocity of the bullet
@@ -42,6 +40,10 @@ namespace BulletManager
         /// Represents the rotational center of the Bullet
         /// </summary>
         public Vector2 center;
+        /// <summary>
+        /// represents the aethetic name of the Bullet
+        /// </summary>
+        public string Name;
         public Vector2 acceleration;
         public float rotation;
         public float scale;
@@ -51,17 +53,21 @@ namespace BulletManager
         /// </summary>
         public Animator animator { get; protected set; }
         /// <summary>
+        /// Represents the loaded list of Movers for this Bullet
+        /// </summary>
+        public Dictionary<string, Mover> Anims { get; private set; }
+        /// <summary>
         /// The default Animation for the bullet while it's flying
         /// </summary>
-        public Mover idlingAnim;
+        public Mover idleMover;
         /// <summary>
         /// The default Animation for the bullet while it's dying
         /// </summary>
-        public Mover dyingAnim;
+        public Mover dyingMover;
         /// <summary>
         /// A list of effect animations that are applied to the Bullet via grazing
         /// </summary>
-        public List<Mover> EffectAnims;
+        public List<Mover> EffectMovers;
         public Mover curMover;
         /// <summary>
         /// The bullet's main hitbounds
@@ -116,17 +122,17 @@ namespace BulletManager
         /// </summary>
         public enum ElementTypes
         {
-            Fire,
-            Ice,
-            Water,
-            Metal,
-            Glass,
-            Energy,
-            Electricity,
-            Wood,
-            Sound,
-            Gum,
-            Rubber
+            Fire = 0,
+            Ice = 1,
+            Water = 2,
+            Metal = 3,
+            Glass = 4,
+            Energy = 5,
+            Electricity = 6,
+            Wood = 7,
+            Sound = 8,
+            Gum = 9,
+            Rubber = 10
         }
         /// <summary>
         /// The starting elemental type of the Bullet before extra types are added.
@@ -171,35 +177,40 @@ namespace BulletManager
             rotation = 0.0f;
             radius = 3;
             animator = new Animator();
-            animator.AddData(idlingAnim);
-            animator.AddData(dyingAnim);
+            animator.AddData(idleMover);
+            animator.AddData(dyingMover);
             isActive = true;
             scale = 1.0f;
             ETypes = new List<ElementTypes>();
             deltaDamage = baseDamage;
             deltaHealth = baseHealth;
-            curMover = idlingAnim;
+            curMover = idleMover;
             animator.Play(curMover, sprEff);
         }
 
         /// <summary>
         /// Creates a Bullet
         /// </summary>
-        /// <param name="game">The game in which this bullet will be used</param>
-        /// <param name="position">The initial position of the bBllet</param>
+        /// <param name="pos">The intial position of the Bullet</param>
         /// <param name="teamA">The ID derived from the player or team</param>
-        /// <param name="image">How the bullet looks</param>
-        /// <param name="SE">The visual orientation of the Bullet</param>
+        /// <param name="anims">The list of Mover objects the Bullets will use</param>
+        /// <param name="type">The elemental Type of the Bullet</param>
+        /// <param name="name">The name of the Bullet (for display purposes)</param>
+        /// <param name="bullet_owner">The Character that owns the Bullet</param>
         /// <param name="rot">the Bullet's intial rotation</param>
-        public Bullet(Vector2 pos, bool teamA,  Bullet bullet_type, float rot = 0)
+        public Bullet(Vector2 pos, bool teamA, Dictionary<string, Mover> anims, ElementTypes type, string name, float rot = 0)
         {
-            onTeamA = teamA;
-            sprEff = onTeamA ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            rotation = rot;
-            bulletType = bullet_type;
-            onTeamA = teamA;
             position = pos;
-            dyingAnim.DeactivationEvent += Deactivate;
+            onTeamA = teamA;
+            Anims = anims;
+            idleMover = anims[ImageLoader.IDLE];
+            dyingMover = anims[ImageLoader.DYING];
+            curMover = idleMover;
+            startingEType = type;
+            Name = name;
+            rotation = rot;
+            sprEff = onTeamA ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            dyingMover.DeactivationEvent += Deactivate;
         }
 
         /// <summary>
@@ -215,9 +226,9 @@ namespace BulletManager
             rotation = bu.rotation;
             scale = bu.scale;
             sprEff = bu.sprEff;
-            idlingAnim = bu.idlingAnim;
-            dyingAnim = bu.dyingAnim;
-            EffectAnims = bu.EffectAnims;
+            idleMover = bu.idleMover;
+            dyingMover = bu.dyingMover;
+            EffectMovers = bu.EffectMovers;
             curMover = bu.curMover;
             radius = bu.radius;
             HitBounds = bu.HitBounds;
@@ -252,12 +263,11 @@ namespace BulletManager
         }
         #endregion
 
-        /// <summary>
+       
+ /// <summary>
         /// Updates multiple aspects of the Bullet
         /// </summary>
         /// <param name="gameTime">The GameTime's timer to aid in the Bullet's updating</param>
-        public abstract void Update(GameTime gameTime, ref Bullet bu);
-
         public void Update(GameTime gameTime)
         {
             if (lifetimeCounter > 0)
@@ -281,7 +291,7 @@ namespace BulletManager
             if (Draw)
             {
                 animator.Stop(curMover);
-                curMover = dyingAnim;
+                curMover = dyingMover;
                 animator.Play(curMover, sprEff);
             }
             else
@@ -290,40 +300,40 @@ namespace BulletManager
             }
         }
 
-        public void Reset(Bullet type)
-        {
-            this.bulletType = type;
-            Reset();
-        }
-
         public void Reset()
         {
-            acceleration = bulletType.acceleration;
-            baseDamage = bulletType.baseDamage;
-            baseHealth = bulletType.baseHealth;
-            baseVelocity = bulletType.baseVelocity;
-            center = bulletType.center;
+            Reset(this);
+        }
+
+        public void Reset(Bullet bu)
+        {
+            position = bu.position;
+            acceleration = bu.acceleration;
+            baseDamage = bu.baseDamage;
+            baseHealth = bu.baseHealth;
+            baseVelocity = bu.baseVelocity;
+            center = bu.center;
+            dyingMover = bu.dyingMover;
+            EffectMovers = bu.EffectMovers;
+            ETypes = bu.ETypes;
+            GrazeBounds = bu.GrazeBounds;
+            hasGrazingAction = bu.hasGrazingAction;
+            HitBounds = bu.HitBounds;
+            idleMover = bu.idleMover;
+            lifetime = bu.lifetime;
+            maxVelocity = bu.maxVelocity;
+            radius = bu.radius;
+            ricochetZeroPoint = bu.ricochetZeroPoint;
+            rotation = bu.rotation;
+            scale = bu.scale;
+            sprEff = bu.sprEff;
+            startingEType = bu.startingEType;
+            //personal resetting
+            lifetimeCounter = lifetime;
+            deltaVelocity = baseVelocity;
             deltaDamage = baseDamage;
             deltaHealth = baseHealth;
-            deltaVelocity = baseVelocity;
-            dyingAnim = bulletType.dyingAnim;
-            EffectAnims = bulletType.EffectAnims;
-            ETypes = bulletType.ETypes;
-            GrazeBounds = bulletType.GrazeBounds;
-            hasGrazingAction = bulletType.hasGrazingAction;
-            HitBounds = bulletType.HitBounds;
-            idlingAnim = bulletType.idlingAnim;
-            lifetime = bulletType.lifetime;
-            lifetimeCounter = lifetime;
-            maxVelocity = bulletType.maxVelocity;
-            radius = bulletType.radius;
-            ricochetZeroPoint = bulletType.ricochetZeroPoint;
-            rotation = bulletType.rotation;
-            scale = bulletType.scale;
-            sprEff = bulletType.sprEff;
-            startingEType = bulletType.startingEType;
-            //personal resetting
-            curMover = idlingAnim;
+            curMover = idleMover;
             animator = new Animator();
         }
 
@@ -335,6 +345,11 @@ namespace BulletManager
         }
 
 
-        public abstract Bullet CopyBullet(Vector2 pos);
+        public Bullet CopyBullet(Vector2 pos)
+        {
+            Bullet result=new Bullet();
+
+            return result;
+        }
     }
 }

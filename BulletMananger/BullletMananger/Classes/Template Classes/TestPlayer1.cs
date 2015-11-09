@@ -4,16 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BulletManager
+namespace BulletManager.Classes.Template_Classes
 {
-    public class MirrorMirror : Character
+    class TestPlayer1 : Character
     {
-
-        public MirrorMirror(Game game, ImageLoader.CharacterData cd, bool onTeamA)
+        public TestPlayer1(Game game, ImageLoader.CharacterData cd, bool onTeamA)
             : base(game, cd, onTeamA)
         {
 
         }
-
     }
 }

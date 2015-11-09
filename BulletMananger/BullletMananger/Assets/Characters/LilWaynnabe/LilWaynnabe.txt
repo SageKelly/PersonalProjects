@@ -1,0 +1,14 @@
+﻿Test Sprites 2.png
+*EXAMPLE,x_pos,y_pos,width,height,extra_frames,fps,is_horizontal(boolean)
+ATTACK1,0,12,12,12,4,12,true
+ATTACK2,0,12,12,12,4,12,true
+ATTACK3,0,12,12,12,4,12,true
+ENTER,
+HIT,
+IDLE,0,0,12,12,5,12,true
+LOSE,0,36,12,12,4,12,true
+SHOCK1,0,24,12,12,3,12,true
+SHOCK2,0,24,12,12,3,12,true
+SHOCK3,0,24,12,12,3,12,true
+WIN,0,48,12,12,4,12,true
+
