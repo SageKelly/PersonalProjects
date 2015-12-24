@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 using System.Xml.Serialization;
 using System.IO;
+using System.Windows.Media.Animation;
 
 namespace ClockWatcher
 {
@@ -27,12 +28,10 @@ namespace ClockWatcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string SESSION_FILENAME = "SessionFiles.xml";
-
         /// <summary>
         /// Represents, during selection mode, which TimeEntry is currently selected.
         /// </summary>
-        private TimeEntry currentSelectedEntry;
+        private TimeEntryData currentSelectedEntry;
 
         private int selectionIndex;
         public string defaultComment { get; private set; }
@@ -43,27 +42,27 @@ namespace ClockWatcher
 
         public SessionManager SM { get; private set; }
 
-        #region Properties
-        #endregion
-
         public MainWindow()
         {
-            InitializeComponent();
             SM = new SessionManager();
-            SM.newAddedCommentEvent += currentTimeEntry_newComment;
-            SM.timeEntryDeletedEvent += currentTimeEntry_delete;
-            SM.commentEntryDeletedEvent += entry_delete;
+            InitializeComponent();
+            LoadStacks();
+            AddSessionStamp();
             //Deserialize();
             defaultComment = "Add New Comment";
             commentAddingBox.Text = defaultComment;
             _isSelecting = false;
-            //this.Closed += MainWindow_Closed;
             DataContext = SM;
+            binding = new Binding();
+
+            binding.Source = SM.CommentLibrary;
+            B_OpenSession.Visibility = Visibility.Hidden;
         }
 
 
         #region Methods
         #region Event Methods
+        #region commentAddBox
         /// <summary>
         /// Registered to MainWindow.commentAddingButton.Click Event
         /// </summary>
@@ -73,7 +72,8 @@ namespace ClockWatcher
         {
             if (commentAddingBox.Text != defaultComment && commentAddingBox.Text != "")
             {
-                SM.newCommentEntry(commentAddingBox.Text);
+                addCommentEntry(commentAddingBox.Text);
+
             }
         }
         /// <summary>
@@ -95,20 +95,30 @@ namespace ClockWatcher
             commentAddingBox.Text = defaultComment;
         }
         /// <summary>
+        /// Registered to SessionManager.commentEntryDeletedEvent Event
+        /// </summary>
+        /// <param name="deletionIndex"></param>
+        private void commentEntry_delete(object sender, RoutedEventArgs rea)
+        {
+            commentEntry sentinel = (commentEntry)sender;
+            commentStack.Children.Remove(sentinel);
+            SM.deleteComment(sentinel);
+        }
+        #endregion
+
+        /// <summary>
         /// Registered to TimeEntry.textChangedEvent Event
         /// (see entryAdder_Click())
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void commentBox_TextChanged(object sender, TextChangedEventArgs e)
+        public void filterIntelList(object sender, TextChangedEventArgs e)
         {
             _currentTextbox = sender as TextBox;
 
-            binding = new Binding();
-            binding.Source = SM.commentLibrary;
             intelListBox.SetBinding(ListBox.ItemsSourceProperty, binding);
 
-            ICollectionView view = CollectionViewSource.GetDefaultView(SM.commentLibrary);
+            ICollectionView view = CollectionViewSource.GetDefaultView(SM.CommentLibrary);
             view.Filter =
                 //null;
             (o) =>
@@ -116,11 +126,11 @@ namespace ClockWatcher
                 //filter out all entries that neither start with nor contain the sentinel's comment
                 if (_currentTextbox.Text == string.Empty)
                 {
-                    return (o as commentEntry).comment != string.Empty;
+                    return (o as string) != string.Empty;
                 }
                 else
                 {
-                    return (o as commentEntry).comment.Contains(_currentTextbox.Text);
+                    return (o as string).Contains(_currentTextbox.Text);
                 }
             };
             /*
@@ -129,37 +139,14 @@ namespace ClockWatcher
             {
                 intelPopup.Placement = PlacementMode.Left;
                 intelPopup.PlacementTarget = _currentTextbox;
-                intelPopup.IsOpen = true;
+                if (view.IsEmpty)
+                {
+                    intelPopup.IsOpen = false;
+                }
+                else intelPopup.IsOpen = true;
             }
         }
-        /// <summary>
-        /// Registered to SessionManager.timeEntryDeletedEvent Event
-        /// </summary>
-        /// <param name="deletionIndex"></param>
-        public void currentTimeEntry_delete(int deletionIndex)
-        {
-            if (scrollStack.Children.Count > deletionIndex &&
-                (scrollStack.Children[deletionIndex] as TimeEntry).entryID == deletionIndex)
-                scrollStack.Children.RemoveAt(deletionIndex);
-        }
-        /// <summary>
-        /// Registered to SessionManager.newAddedCommentEvent Event
-        /// </summary>
-        /// <param name="comment">the string comment</param>
-        private void currentTimeEntry_newComment(commentEntry newEntry)
-        {
-            commentStack.Children.Add(newEntry);
-        }
-        /// <summary>
-        /// Registered to SessionManager.commentEntryDeletedEvent Event
-        /// </summary>
-        /// <param name="deletionIndex"></param>
-        private void entry_delete(int deletionIndex)
-        {
-            if (commentStack.Children.Count > deletionIndex&&
-                (commentStack.Children[deletionIndex] as commentEntry).entryID == deletionIndex)
-                commentStack.Children.RemoveAt(deletionIndex);
-        }
+
         /// <summary>
         /// Registered to MainWindow.entryadderButton.Click Event
         /// </summary>
@@ -167,10 +154,18 @@ namespace ClockWatcher
         /// <param name="e"></param>
         private void entryAdder_Click(object sender, RoutedEventArgs e)
         {
-            SM.addNewTimeEntry();
             //Subscribe to the assorted events
-            SM.currentSession.currentTimeEntry.textChangedEvent += commentBox_TextChanged;
-            scrollStack.Children.Add(SM.currentSession.currentTimeEntry);
+            TimeEntry newTE = SM.addNewTimeEntry();
+            //Subscribe to the assorted events
+            RegisterToTimeEntry(newTE);
+            timeStack.Children.Add(newTE);
+        }
+
+        void deleteTimeEntry(object sender)
+        {
+            TimeEntry sentinel = (TimeEntry)sender;
+            SM.deleteTimeEntry(sentinel);
+            timeStack.Children.Remove(sentinel);
         }
         /// <summary>
         /// Registered to MainWindow.intelPopup.intelListBox.SelectionChanged Event
@@ -181,11 +176,102 @@ namespace ClockWatcher
         {
             ListBox temp = sender as ListBox;
             if (temp.SelectedItem != null)
-                _currentTextbox.Text = ((commentEntry)temp.SelectedItem).comment;
+                _currentTextbox.Text = (string)temp.SelectedItem;
 
             temp.SelectedItem = null;
             intelPopup.IsOpen = false;
         }
+
+        /// <summary>
+        /// Registered to commentEntry.checkedEvent Event:
+        /// triggers when the isChecked status of any commentEntry changes
+        /// (see newCommentEntry())
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="rea"></param>
+        public void filterTimeEntries(object sender, RoutedEventArgs rea)
+        {
+            /*
+             * IsMarkedForView is used internally to check to see if something
+             * should be messed with by the checking of another commentEntry.
+             * However, isCollapsed should have the highest priority of
+             * accuracy, for even if something is not marked for view, if none
+             * of the commentEntries are checked, all TimeEntries should still
+             * be visible.
+             */
+            commentEntry sentinel = sender as commentEntry;
+            bool isOneChecked = sentinel.isChecked;
+            //first check to see if there are other comments checked
+            if (!sentinel.isChecked)
+            {
+                foreach (commentEntry ce in commentStack.Children)
+                {
+                    if (ce != sentinel && ce.isChecked)
+                    {
+                        isOneChecked = true;
+                        break;
+                    }
+                }
+            }
+            foreach (UIElement uie in timeStack.Children)
+            {
+                if (uie.GetType() == typeof(TimeEntry))
+                {
+                    TimeEntry temp = (TimeEntry)uie;
+                    if (temp.Data.Comment == sentinel.comment)
+                    {
+                        temp.isMarkedForView = sentinel.isChecked;
+                    }
+                }
+            }
+            if (isOneChecked)
+            {
+                //Do basic filtering
+
+                foreach (UIElement uie in timeStack.Children)
+                {
+                    if (uie.GetType() == typeof(TimeEntry))
+                    {
+                        TimeEntry temp = (TimeEntry)uie;
+                        /*
+                         * If the comments don't match and this entry wasn't
+                         * tagged by another checked commentEntry to stay visibile...
+                        */
+                        if (temp.Data.Comment != sentinel.comment && !temp.isMarkedForView)
+                        {
+                            //...then close it.
+                            temp.isCollapsed = true;
+                        }
+                        else
+                        {
+                            //if the comments match...
+                            if (temp.Data.Comment == sentinel.comment)
+                            {
+                                /*
+                                 * have the TimeEntry collapse or expand if necessary
+                                */
+                                temp.isCollapsed = !sentinel.isChecked;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //set all timeEntries' collapsed variables to false
+                foreach (UIElement uie in timeStack.Children)
+                {
+                    if (uie.GetType() == typeof(TimeEntry))
+                    {
+                        TimeEntry temp = (TimeEntry)uie;
+                        temp.isCollapsed = false;
+                        temp.isMarkedForView = false;
+                    }
+                }
+            }
+            SM.CalculateFilteredTimeSpent();
+        }
+
         /// <summary>
         /// Registered to MainWindow.KeysDown Event
         /// </summary>
@@ -242,50 +328,171 @@ namespace ClockWatcher
                     if (_isSelecting)
                     {
                         if (selectionIndex == 0)
-                            selectionIndex = SM.currentSession.timeEntries.Count - 1;
+                            selectionIndex = SM.CurrentSession.TimeEntries.Count - 1;
                         else
                             selectionIndex--;
-                        currentSelectedEntry.isSelected = false;
-                        currentSelectedEntry = SM.currentSession.timeEntries[selectionIndex];
-                        currentSelectedEntry.isSelected = true;
+                        currentSelectedEntry.Owner.IsSelected = false;
+                        currentSelectedEntry = SM.CurrentSession.TimeEntries[selectionIndex];
+                        currentSelectedEntry.Owner.IsSelected = true;
                         //currentSelectedEntry.Focus();//this works for forcing scroll
                     }
                     break;
                 case Key.Down:
                     if (_isSelecting)
                     {
-                        selectionIndex = (selectionIndex + 1) % SM.currentSession.timeEntries.Count;
-                        currentSelectedEntry.isSelected = false;
-                        currentSelectedEntry = SM.currentSession.timeEntries[selectionIndex];
-                        currentSelectedEntry.isSelected = true;
+                        selectionIndex = (selectionIndex + 1) % SM.CurrentSession.TimeEntries.Count;
+                        currentSelectedEntry.Owner.IsSelected = false;
+                        currentSelectedEntry = SM.CurrentSession.TimeEntries[selectionIndex];
+                        currentSelectedEntry.Owner.IsSelected = true;
                     }
                     break;
             }
         }
+
         /// <summary>
-        /// Registered to MainWindow.Closed Event
+        /// Registered to the Window.Closing event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainWindow_Closed(object sender, EventArgs e)
+        private void SaveSession(object sender, CancelEventArgs e)
         {
-            //Serialize the object
-            XmlSerializer XMLS = new XmlSerializer(typeof(SessionManager));
-            StreamWriter sw = new StreamWriter(SESSION_FILENAME);
-            XMLS.Serialize(sw, SM);
-            sw.Close();
+            if (SM.CurrentSession == SM.OpenSession)
+                SM.SaveSession();
+        }
+
+        /// <summary>
+        /// Registered to the B_ViewSession.Click event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConfirmSelection(object sender, RoutedEventArgs e)
+        {
+            uncheckView();
+            //Then load new Session
+            SM.LoadSession(OldSessions.SelectedItems);
+
+            LoadStacks();
+            B_OpenSession.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Registered to B_OpenSession.Click event
+        /// Loads list of old sessions and presents them onscreen.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowOldSessions(object sender, RoutedEventArgs e)
+        {
+            SM.LoadSessions();
+            /*
+            if (SM.CurrentSession != SM.OpenSession)
+            {
+                B_OpenSession.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                B_OpenSession.Visibility = Visibility.Hidden;
+            }
+            */
+        }
+
+        /// <summary>
+        /// Registered to the B_DeleteSession.Click Event
+        /// Deletes selected session
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteSelectedSession(object sender, RoutedEventArgs e)
+        {
+            /*
+             * 1. Delete the .bin file
+             * 2. Remove the name of the .bin file from the ProgramData's list.
+             * 3. Remove the name of the UI-friendly name from the SessionManager's list
+             */
+            SM.DeleteSession(OldSessions.SelectedIndex);
+        }
+
+        private void CancelView(object sender, RoutedEventArgs e)
+        {
+            uncheckView();
+        }
+
+        private void RealoadOpenSession(object sender, RoutedEventArgs e)
+        {
+            /*
+             * 1. Load old session
+             * 2. Add TimeEntries and CommentEntries back to the UI
+             * 3. Rig the TimeEntries and CommentEntries with their
+             * control-based and UI-based events
+             * 4. Turn watching back on.
+             */
+            SM.LoadOpenSession();
+            LoadStacks(false);
+            uncheckView();
+            B_OpenSession.Visibility = Visibility.Hidden;
         }
         #endregion
 
-        #region Class Methods
-        private void Deserialize()
+        private void AddSessionStamp()
         {
-            XmlSerializer XMLS = new XmlSerializer(typeof(SessionManager));
-            FileStream fs = new FileStream(SESSION_FILENAME, FileMode.Open);
-            SM = (SessionManager)XMLS.Deserialize(fs);
-
+            TextBlock timeStamp = new TextBlock();
+            timeStamp.Text = "-----------" + SM.CurrentSession.Name + "-----------";
+            timeStack.Children.Add(timeStamp);
         }
-        #endregion
+
+        private void addCommentEntry(string comment)
+        {
+            commentEntry newEntry = SM.newCommentEntry(comment);
+            if (newEntry != null)
+            {
+                commentStack.Children.Add(newEntry);
+                RegisterToComment(newEntry);
+            }
+        }
+
+        private void RegisterToComment(commentEntry comment)
+        {
+            comment.checkedEvent += filterTimeEntries;
+            comment.delete += commentEntry_delete;
+        }
+
+        private void RegisterToTimeEntry(TimeEntry te)
+        {
+            te.deleteEvent += deleteTimeEntry;
+            te.newCommentEvent += addCommentEntry;
+            te.textChangedEvent += filterIntelList;
+        }
+
+        private void uncheckView()
+        {
+            TB_ViewSessions.IsChecked = false;
+        }
+
+        private void LoadStacks(bool view_only = true)
+        {
+            //Clear UI of TimeEntries
+            timeStack.Children.Clear();
+            //Add enough TimeEntries for new Session
+            foreach (UIElement uie in SM.Entries)
+            {
+                timeStack.Children.Add(uie);
+                if (uie.GetType() == typeof(TimeEntry))
+                {
+                    ((TimeEntry)uie).ViewOnly = view_only;
+                    RegisterToTimeEntry((TimeEntry)uie);
+                }
+            }
+
+            //Remove comment entries
+            commentStack.Children.Clear();
+            foreach (string s in SM.CommentLibrary)
+            {
+                commentEntry newEntry = new commentEntry(s);
+                newEntry.ViewOnly = view_only;
+                RegisterToComment(newEntry);
+                commentStack.Children.Add(newEntry);
+            }
+        }
 
         #endregion
     }

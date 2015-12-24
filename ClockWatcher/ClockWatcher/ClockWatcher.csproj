@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>TestIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="System" />
@@ -59,11 +62,13 @@
     <Compile Include="commentEntry.xaml.cs">
       <DependentUpon>commentEntry.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgramData.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="TimeEntry.xaml.cs">
       <DependentUpon>TimeEntry.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TimeEntryData.cs" />
     <Page Include="commentEntry.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -111,6 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="TestIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

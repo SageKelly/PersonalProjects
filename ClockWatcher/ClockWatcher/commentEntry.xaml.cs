@@ -40,8 +40,31 @@ namespace ClockWatcher
         private ScaleTransform animatedScale;
 
         private DoubleAnimation scaleAnim;
-        private int _entryID;
         private bool _isChecked;
+        private bool view_only;
+
+        public bool ViewOnly
+        {
+            get
+            {
+                return view_only;
+            }
+            set
+            {
+                if (view_only != value)
+                {
+                    view_only = value;
+                    if (view_only)
+                    {
+                        deleteButton.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        deleteButton.Visibility = Visibility.Visible;
+                    }
+                }
+            }
+        }
 
         public string comment
         {
@@ -52,17 +75,6 @@ namespace ClockWatcher
             set
             {
                 SetValue(commentEntry.commentProperty, value);
-            }
-        }
-        public int entryID
-        {
-            get
-            {
-                return _entryID;
-            }
-            private set
-            {
-                _entryID = value;
             }
         }
         public bool isChecked
@@ -112,11 +124,11 @@ namespace ClockWatcher
             animatedTransform.Children.Add(animatedScale);
             this.RenderTransform = animatedTransform;
             scaleAnim.Completed += animationScale_Completed;
+            ViewOnly = false;
         }
-        public commentEntry(int id, string comment)
+        public commentEntry(string comment)
             : this()
         {
-            entryID = id;
             this.comment = comment;
         }
 

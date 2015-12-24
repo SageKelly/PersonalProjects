@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +22,7 @@ namespace ClockWatcher
     /// <summary>
     /// Interaction logic for timeEntry.xaml
     /// </summary>
-    public partial class TimeEntry : UserControl
+    public partial class TimeEntry : UserControl, INotifyPropertyChanged
     {
         private static string defaultComment = "Type Comment Here";
 
@@ -33,31 +34,20 @@ namespace ClockWatcher
             typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
         public static readonly DependencyProperty controlWidthProperty = DependencyProperty.Register("controlWidth", typeof(double),
             typeof(TimeEntry), new FrameworkPropertyMetadata(0.0));
-        public static readonly DependencyProperty commentProperty = DependencyProperty.Register("comment", typeof(string), typeof(TimeEntry),
-                new FrameworkPropertyMetadata(defaultComment));
         public static readonly DependencyProperty detailsExpandedProperty =
             DependencyProperty.Register("detailsExpanded", typeof(bool), typeof(TimeEntry),
             new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnDetailsExpanded)));
-        public static readonly DependencyProperty timeInProperty = DependencyProperty.Register("timeIn", typeof(DateTime), typeof(TimeEntry),
-                new FrameworkPropertyMetadata(DateTime.Now));
-        public static readonly DependencyProperty timeOutProperty = DependencyProperty.Register("timeOut", typeof(DateTime), typeof(TimeEntry),
-                new FrameworkPropertyMetadata(DateTime.Now));
-        public static readonly DependencyProperty timeSpentProperty = DependencyProperty.Register("timeSpent", typeof(TimeSpan), typeof(TimeEntry),
-                new FrameworkPropertyMetadata(TimeSpan.Zero));
-        public static readonly DependencyProperty selectedProperty = DependencyProperty.Register("isSelected", typeof(bool),
-            typeof(TimeEntry), new PropertyMetadata(false));
-
-        public static readonly DependencyPropertyKey subCommentsPropertyKey = DependencyProperty.RegisterReadOnly("subComments", typeof(List<string>),
-            typeof(TimeEntry),
-                new FrameworkPropertyMetadata(new List<string>()));
-        public static readonly DependencyProperty subCommentsProperty = subCommentsPropertyKey.DependencyProperty;
+        public static readonly DependencyProperty IsSelectedProperty = DependencyProperty.Register("IsSelected", typeof(bool), typeof(TimeEntry), new FrameworkPropertyMetadata(false));
+        public static readonly DependencyProperty IsCollapsedProperty = DependencyProperty.Register("isCollapsed", typeof(bool), typeof(TimeEntry), new FrameworkPropertyMetadata(false));
         #endregion
-        
+        public TimeEntryData Data { get; private set; }
+        #region Animation fields
         private TransformGroup animatedTransform;
         private ScaleTransform animatedScale;
-
         private DoubleAnimation deleteDoubleAnimation;
+        #endregion
 
+        #region Event-based fields
         public delegate void deleteEventHandler(object sender);
         public delegate void textChangedEventHandler(object sender, TextChangedEventArgs tcea);
         public delegate void enterPressEventHandler(object sender, KeyEventArgs kea);
@@ -67,14 +57,17 @@ namespace ClockWatcher
         public event enterPressEventHandler enterPressEvent;
         public event textChangedEventHandler textChangedEvent;
         public event newCommentEventHandler newCommentEvent;
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
 
         /// <summary>
         /// This will be used along with isCollapsed to ensure
         /// this entry was marked as collapsed/uncollapsed by
         /// a commentEntry being checked.
         /// </summary>
-        private bool _isMarkedForView,_isCollapsed;
-        private int _entryID;
+        private bool _isMarkedForView;
+        private bool view_only;
+
         #region Properties
         #region Dependency Properties
         public bool alarmExpanded
@@ -110,17 +103,6 @@ namespace ClockWatcher
                 SetValue(controlWidthProperty, value);
             }
         }
-        public string comment
-        {
-            get
-            {
-                return (string)GetValue(TimeEntry.commentProperty);
-            }
-            set
-            {
-                SetValue(TimeEntry.commentProperty, value);
-            }
-        }
         public bool detailsExpanded
         {
             get
@@ -132,26 +114,60 @@ namespace ClockWatcher
                 SetValue(detailsExpandedProperty, value);
             }
         }
-        public int entryID
-        {
-            get
-            {
-                return _entryID;
-            }
-            private set
-            {
-                _entryID = value;
-            }
-        }
         public bool isCollapsed
         {
             get
             {
-                return _isCollapsed;
+                return (bool)GetValue(IsCollapsedProperty);
             }
             set
             {
-                _isCollapsed = value;
+                if (isCollapsed != value)
+                {
+                    SetValue(IsCollapsedProperty, value);
+                    if (isCollapsed)
+                    {
+                        VisualStateManager.GoToState(this, "Collapsed", true);
+                    }
+                    else
+                    {
+                        VisualStateManager.GoToState(this, "Visible", true);
+                    }
+                }
+            }
+        }
+        public bool IsSelected
+        {
+            get
+            {
+                return (bool)GetValue(IsSelectedProperty);
+            }
+            set
+            {
+                SetValue(IsSelectedProperty, value);
+            }
+        }
+        #endregion
+        public bool ViewOnly
+        {
+            get
+            {
+                return view_only;
+            }
+            set
+            {
+                if (view_only != value)
+                {
+                    view_only = value;
+                    if (view_only)
+                    {
+                        deleteButton.Visibility = Visibility.Hidden;
+                    }
+                    else
+                    {
+                        deleteButton.Visibility = Visibility.Visible;
+                    }
+                }
             }
         }
         public bool isMarkedForView
@@ -165,63 +181,6 @@ namespace ClockWatcher
                 _isMarkedForView = value;
             }
         }
-        public bool isSelected
-        {
-            get
-            {
-                return (bool)GetValue(selectedProperty);
-            }
-            set
-            {
-                SetValue(selectedProperty, value);
-            }
-        }
-        public List<string> subComments
-        {
-            get
-            {
-                return (List<string>)GetValue(TimeEntry.subCommentsProperty);
-            }
-            set
-            {
-                SetValue(TimeEntry.subCommentsProperty, value);
-            }
-        }
-        public DateTime timeIn
-        {
-            get
-            {
-                return (DateTime)GetValue(TimeEntry.timeInProperty);
-            }
-            set
-            {
-                SetValue(TimeEntry.timeInProperty, value);
-            }
-        }
-        public DateTime timeOut
-        {
-            get
-            {
-                return (DateTime)GetValue(TimeEntry.timeOutProperty);
-            }
-            set
-            {
-                SetValue(TimeEntry.timeOutProperty, value);
-            }
-        }
-        public TimeSpan timeSpent
-        {
-            get
-            {
-                return (TimeSpan)GetValue(TimeEntry.timeSpentProperty);
-            }
-            set
-            {
-                SetValue(TimeEntry.timeSpentProperty, value);
-            }
-        }
-
-        #endregion
         #endregion
 
         static TimeEntry() { }
@@ -230,33 +189,62 @@ namespace ClockWatcher
         {
             setUpRenderTransform();
             setUpAnimationVariables();
-            DataContext = this;
+            Data = new TimeEntryData(this, id);
+            DataContext = Data;
             this.InitializeComponent();
             deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
-            entryID = id;
+            ViewOnly = false;
+        }
+
+        public TimeEntry(TimeEntryData ted)
+        {
+            setUpRenderTransform();
+            setUpAnimationVariables();
+            Data = ted;
+            Data.Owner = this;
+            DataContext = Data;
+            this.InitializeComponent();
+            deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
         }
 
         #region Methods
         #region Event Methods
+        #region commentBox
         private void commentBox_GotFocus(object sender, RoutedEventArgs e)
         {
             SolidColorBrush foregroundBrush = new SolidColorBrush((Color)Resources["blackCommentColor"]);
             commentBox.Foreground = foregroundBrush;
             if (commentBox.Text == defaultComment)
                 commentBox.Text = "";
+            else
+            {
+                commentBox.SelectAll();
+            }
         }
         private void commentBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            SolidColorBrush foregroundBrush = new SolidColorBrush((Color)Resources["grayCommentColor"]);
+            SolidColorBrush foregroundBrush;
+            if (commentBox.Text == "" || commentBox.Text == defaultComment)
+            {
+                foregroundBrush = new SolidColorBrush((Color)Resources["grayCommentColor"]);
+            }
+            else
+            {
+                foregroundBrush = new SolidColorBrush((Color)Resources["blackCommentColor"]);
+            }
             commentBox.Foreground = foregroundBrush;
         }
         private void commentBox_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            comment = (sender as TextBox).Text;
+            Data.Comment = (sender as TextBox).Text;
+            if (Data.Comment != defaultComment || Data.Comment != "")
+            {
+                commentBox.Foreground = new SolidColorBrush((Color)Resources["blackCommentColor"]);
+            }
         }
         private void commentBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            comment = (sender as TextBox).Text;
+            Data.Comment = (sender as TextBox).Text;
             if (textChangedEvent != null)
             {
                 textChangedEvent(sender, e);
@@ -265,8 +253,9 @@ namespace ClockWatcher
         private void commentConfirmButton_Click(object sender, RoutedEventArgs e)
         {
             if (newCommentEvent != null)
-                newCommentEvent(comment);
+                newCommentEvent(Data.Comment);
         }
+        #endregion
         private void deleteButton_Click(object sender, RoutedEventArgs e)
         {
             deleteAnimation();
@@ -321,7 +310,7 @@ namespace ClockWatcher
         /// </summary>
         public void ClearComment()
         {
-            comment = string.Empty;
+            Data.Comment = string.Empty;
         }
         /// <summary>
         /// Determines whether or not the TimeEntry's comment contains the default text
@@ -329,7 +318,7 @@ namespace ClockWatcher
         /// <returns>returns true if it does, else it returns false</returns>
         public bool commentDefault()
         {
-            if (comment == defaultComment)
+            if (Data.Comment == defaultComment)
                 return true;
             return false;
         }
@@ -342,10 +331,9 @@ namespace ClockWatcher
         /// <summary>
         /// Adds the timeOut data for the TimeEntry
         /// </summary>
-        public void finalizeTimeEntry()
+        public void finalize()
         {
-            timeOut = DateTime.Now;
-            timeOutBlock.Text = timeOut.TimeOfDay.ToString();
+            Data.TimeOut = DateTime.Now;
         }
         private void setUpAnimationVariables()
         {
@@ -361,7 +349,25 @@ namespace ClockWatcher
 
             this.RenderTransform = animatedTransform;
         }
+
+        private void OnPropertyChanged([CallerMemberName]string property_name = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property_name));
+            }
+        }
         #endregion
+
+        /// <summary>
+        /// Registered to the UserControl.Loaded Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FocusOnComment(object sender, RoutedEventArgs e)
+        {
+            Keyboard.Focus(commentBox);
+        }
 
         #endregion
 

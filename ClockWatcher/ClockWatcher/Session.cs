@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,67 +14,191 @@ using System.Windows;
 namespace ClockWatcher
 {
     [Serializable]
-    public class Session : DependencyObject
+    public class Session : INotifyPropertyChanged, ISerializable
     {
-        public static readonly DependencyProperty nameProperty =
-            DependencyProperty.Register("name", typeof(string),
-            typeof(Session), new FrameworkPropertyMetadata(string.Empty));
+        private TimeSpan total_time;
+        private string name;
+        private List<TimeEntryData> time_entries;
+        private List<string> comment_library;
+        private DateTime creation_date;
 
-        public static readonly DependencyProperty totalTimeProperty =
-            DependencyProperty.Register("totalTime", typeof(TimeSpan), typeof(Session),
-            new PropertyMetadata(TimeSpan.Zero));
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public List<TimeEntry> timeEntries { get; private set; }
-        public TimeEntry currentTimeEntry { get; private set; }
-        public DateTime creationDate { get; private set; }
-        public TimeSpan totalTime
+        #region Properties
+        public List<string> CommentLibrary
         {
             get
             {
-                return (TimeSpan)GetValue(totalTimeProperty);
+                return comment_library;
             }
             set
             {
-                SetValue(totalTimeProperty, value);
+                if (comment_library != value)
+                {
+                    comment_library = value;
+                    OnPropertyChanged("CommentLibrary");
+                }
             }
         }
 
-        public string name
+        public DateTime creationDate
+        {
+            get
+            { return creation_date; }
+            private set
+            { creation_date = value; }
+        }
+
+        public TimeEntryData currentTimeEntry { get; private set; }
+        public List<TimeEntryData> TimeEntries
+        {
+            get
+            { return time_entries; }
+            private set
+            { time_entries = value; }
+        }
+        public TimeSpan TotalTime
         {
             get
             {
-                return (string)GetValue(nameProperty);
+                return total_time;
             }
             set
             {
-                SetValue(nameProperty, value);
+                if (total_time != value)
+                {
+                    OnPropertyChanged("TotalTime");
+                    total_time = value;
+                }
             }
         }
+
+        public string Name
+        {
+            get
+            {
+                return FriendlyName(name);
+            }
+            private set
+            {
+                name = value;
+            }
+        }
+        #endregion
 
         public Session()
         {
-            timeEntries = new List<TimeEntry>();
+            TimeEntries = new List<TimeEntryData>();
+            comment_library = new List<string>();
             creationDate = DateTime.Now;
-            name = DateTime.Now.ToString();
+            Name = FileName(creationDate.ToString());
         }
 
-        public void addEntry(DateTime timeIn)
+        protected Session(SerializationInfo info, StreamingContext context)
         {
-            timeEntries.Add(new TimeEntry(timeEntries.Count));
-            currentTimeEntry = timeEntries.Last();
-            currentTimeEntry.timeIn = timeIn;
-            currentTimeEntry.deleteEvent += delete;
+            total_time = (TimeSpan)info.GetValue("total_time", typeof(TimeSpan));
+            name = (string)info.GetValue("name", typeof(string));
+            time_entries = (List<TimeEntryData>)info.GetValue("time_entries", typeof(List<TimeEntryData>));
+            creation_date = (DateTime)info.GetValue("creation_date", typeof(DateTime));
+            comment_library = (List<string>)info.GetValue("comment_library", typeof(List<string>));
         }
 
-        private void delete(object sender)
+        public commentEntry addComment(string text)
         {
-            timeEntries.Remove(sender as TimeEntry);
-            if (timeEntries.Count > 0)
-                currentTimeEntry = timeEntries.Last();
+            foreach (string s in comment_library)
+            {
+                if (s == text)
+                    return null;
+            }
+            commentEntry result = new commentEntry(text);
+            comment_library.Add(text);
+            return result;
+        }
+
+        public void deleteComment(commentEntry ce)
+        {
+            /*
+             * Remove the comment from all TimeEntries whose
+             * comment matches this one.
+            */
+            foreach (TimeEntryData te in TimeEntries)
+            {
+                if (ce.comment == te.Comment)
+                {
+                    te.Comment = "";
+                }
+            }
+            comment_library.Remove(ce.comment);
+        }
+
+        public TimeEntry addEntry(DateTime timeIn)
+        {
+            TimeEntry result = new TimeEntry(TimeEntries.Count);
+            TimeEntries.Add(result.Data);
+            currentTimeEntry = result.Data;
+            currentTimeEntry.TimeIn = timeIn;
+            return result;
+        }
+
+        public void deleteTimeEntry(TimeEntry t)
+        {
+            TimeEntries.Remove(t.Data);
+            if (TimeEntries.Count > 0)
+                currentTimeEntry = TimeEntries.Last();
             else
                 currentTimeEntry = null;
         }
 
+        public void Save()
+        {
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.None);
+            formatter.Serialize(stream, this);
+            stream.Close();
+        }
 
+        /// <summary>
+        /// Gets the name of the Session
+        /// </summary>
+        /// <returns>Returns the file-friendly version of the Session name</returns>
+        public string GetRawName()
+        {
+            return name;
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string member_name = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(member_name));
+            }
+        }
+
+        public static string FriendlyName(string text)
+        {
+            string[] data = text.Split(' ');
+            //3 parts: date time AM/PM
+            string date = data[0].Replace('_', '/');
+            string time = data[1].Replace('_', ':');
+            string AMPM = data[2].Substring(0, 2);
+            return date + " " + time + " " + AMPM;
+        }
+
+        public static string FileName(string text)
+        {
+            text += ".bin";
+            text = text.Replace('/', '_');
+            text = text.Replace(':', '_');
+            return text;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("total_time", total_time, typeof(TimeSpan));
+            info.AddValue("name", name);
+            info.AddValue("time_entries", time_entries, typeof(List<TimeEntryData>));
+            info.AddValue("creation_date", creation_date);
+            info.AddValue("comment_library", comment_library, typeof(List<string>));
+        }
     }
 }
