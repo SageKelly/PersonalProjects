@@ -33,8 +33,12 @@
             this.SC_NoteTime = new System.Windows.Forms.SplitContainer();
             this.L_NoteCount = new System.Windows.Forms.Label();
             this.L_NoteNumber = new System.Windows.Forms.Label();
-            this.L_TimeLeft = new System.Windows.Forms.Label();
+            this.SC_TimeNote = new System.Windows.Forms.SplitContainer();
             this.L_Timer = new System.Windows.Forms.Label();
+            this.L_TimeLeft = new System.Windows.Forms.Label();
+            this.L_Note = new System.Windows.Forms.Label();
+            this.L_No = new System.Windows.Forms.Label();
+            this.L_NoNote = new System.Windows.Forms.Label();
             this.B_Quit = new System.Windows.Forms.Button();
             this.B_ViewData = new System.Windows.Forms.Button();
             this.B_Start = new System.Windows.Forms.Button();
@@ -52,9 +56,10 @@
             this.B_CsDb = new System.Windows.Forms.Button();
             this.B_C = new System.Windows.Forms.Button();
             this.TickDownTimer = new System.Windows.Forms.Timer(this.components);
-            this.SC_Core = new System.Windows.Forms.SplitContainer();
-            this.LB_Notes = new System.Windows.Forms.ListBox();
             this.difficultiesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.sessionFormBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+            this.sessionFormBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
+            this.sessionFormBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.SC_Left)).BeginInit();
             this.SC_Left.Panel1.SuspendLayout();
             this.SC_Left.Panel2.SuspendLayout();
@@ -63,16 +68,20 @@
             this.SC_NoteTime.Panel1.SuspendLayout();
             this.SC_NoteTime.Panel2.SuspendLayout();
             this.SC_NoteTime.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SC_Core)).BeginInit();
-            this.SC_Core.Panel1.SuspendLayout();
-            this.SC_Core.Panel2.SuspendLayout();
-            this.SC_Core.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SC_TimeNote)).BeginInit();
+            this.SC_TimeNote.Panel1.SuspendLayout();
+            this.SC_TimeNote.Panel2.SuspendLayout();
+            this.SC_TimeNote.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.difficultiesBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // SC_Left
             // 
             this.SC_Left.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.SC_Left.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SC_Left.IsSplitterFixed = true;
             this.SC_Left.Location = new System.Drawing.Point(0, 0);
             this.SC_Left.Name = "SC_Left";
@@ -100,7 +109,7 @@
             this.SC_Left.Panel2.Controls.Add(this.B_D);
             this.SC_Left.Panel2.Controls.Add(this.B_CsDb);
             this.SC_Left.Panel2.Controls.Add(this.B_C);
-            this.SC_Left.Size = new System.Drawing.Size(484, 367);
+            this.SC_Left.Size = new System.Drawing.Size(549, 367);
             this.SC_Left.SplitterDistance = 183;
             this.SC_Left.TabIndex = 1;
             // 
@@ -119,10 +128,9 @@
             // 
             // SC_NoteTime.Panel2
             // 
-            this.SC_NoteTime.Panel2.Controls.Add(this.L_TimeLeft);
-            this.SC_NoteTime.Panel2.Controls.Add(this.L_Timer);
-            this.SC_NoteTime.Size = new System.Drawing.Size(484, 183);
-            this.SC_NoteTime.SplitterDistance = 116;
+            this.SC_NoteTime.Panel2.Controls.Add(this.SC_TimeNote);
+            this.SC_NoteTime.Size = new System.Drawing.Size(549, 183);
+            this.SC_NoteTime.SplitterDistance = 130;
             this.SC_NoteTime.TabIndex = 0;
             // 
             // L_NoteCount
@@ -148,16 +156,27 @@
             this.L_NoteNumber.TabIndex = 0;
             this.L_NoteNumber.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // L_TimeLeft
+            // SC_TimeNote
             // 
-            this.L_TimeLeft.AutoSize = true;
-            this.L_TimeLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.L_TimeLeft.Location = new System.Drawing.Point(3, 7);
-            this.L_TimeLeft.Name = "L_TimeLeft";
-            this.L_TimeLeft.Size = new System.Drawing.Size(114, 29);
-            this.L_TimeLeft.TabIndex = 1;
-            this.L_TimeLeft.Text = "Time Left";
-            this.L_TimeLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SC_TimeNote.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.SC_TimeNote.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SC_TimeNote.IsSplitterFixed = true;
+            this.SC_TimeNote.Location = new System.Drawing.Point(0, 0);
+            this.SC_TimeNote.Name = "SC_TimeNote";
+            // 
+            // SC_TimeNote.Panel1
+            // 
+            this.SC_TimeNote.Panel1.Controls.Add(this.L_Timer);
+            this.SC_TimeNote.Panel1.Controls.Add(this.L_TimeLeft);
+            // 
+            // SC_TimeNote.Panel2
+            // 
+            this.SC_TimeNote.Panel2.Controls.Add(this.L_Note);
+            this.SC_TimeNote.Panel2.Controls.Add(this.L_No);
+            this.SC_TimeNote.Panel2.Controls.Add(this.L_NoNote);
+            this.SC_TimeNote.Size = new System.Drawing.Size(415, 183);
+            this.SC_TimeNote.SplitterDistance = 238;
+            this.SC_TimeNote.TabIndex = 2;
             // 
             // L_Timer
             // 
@@ -169,6 +188,49 @@
             this.L_Timer.Size = new System.Drawing.Size(0, 91);
             this.L_Timer.TabIndex = 0;
             this.L_Timer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // L_TimeLeft
+            // 
+            this.L_TimeLeft.AutoSize = true;
+            this.L_TimeLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.L_TimeLeft.Location = new System.Drawing.Point(3, 7);
+            this.L_TimeLeft.Name = "L_TimeLeft";
+            this.L_TimeLeft.Size = new System.Drawing.Size(114, 29);
+            this.L_TimeLeft.TabIndex = 1;
+            this.L_TimeLeft.Text = "Time Left";
+            this.L_TimeLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // L_Note
+            // 
+            this.L_Note.AutoSize = true;
+            this.L_Note.Font = new System.Drawing.Font("Microsoft Sans Serif", 52F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.L_Note.Location = new System.Drawing.Point(79, 31);
+            this.L_Note.Margin = new System.Windows.Forms.Padding(0);
+            this.L_Note.Name = "L_Note";
+            this.L_Note.Size = new System.Drawing.Size(53, 79);
+            this.L_Note.TabIndex = 1;
+            this.L_Note.Text = " ";
+            // 
+            // L_No
+            // 
+            this.L_No.AutoSize = true;
+            this.L_No.CausesValidation = false;
+            this.L_No.Font = new System.Drawing.Font("Microsoft Sans Serif", 52F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.L_No.Location = new System.Drawing.Point(3, 34);
+            this.L_No.Name = "L_No";
+            this.L_No.Size = new System.Drawing.Size(53, 79);
+            this.L_No.TabIndex = 1;
+            this.L_No.Text = " ";
+            // 
+            // L_NoNote
+            // 
+            this.L_NoNote.AutoSize = true;
+            this.L_NoNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.L_NoNote.Location = new System.Drawing.Point(3, 7);
+            this.L_NoNote.Name = "L_NoNote";
+            this.L_NoNote.Size = new System.Drawing.Size(134, 24);
+            this.L_NoNote.TabIndex = 0;
+            this.L_NoNote.Text = "Number / Note";
             // 
             // B_Quit
             // 
@@ -391,42 +453,28 @@
             this.TickDownTimer.Interval = 1;
             this.TickDownTimer.Tick += new System.EventHandler(this.TickDownTimer_Tick);
             // 
-            // SC_Core
-            // 
-            this.SC_Core.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SC_Core.Location = new System.Drawing.Point(0, 0);
-            this.SC_Core.Name = "SC_Core";
-            // 
-            // SC_Core.Panel1
-            // 
-            this.SC_Core.Panel1.Controls.Add(this.SC_Left);
-            // 
-            // SC_Core.Panel2
-            // 
-            this.SC_Core.Panel2.Controls.Add(this.LB_Notes);
-            this.SC_Core.Size = new System.Drawing.Size(664, 367);
-            this.SC_Core.SplitterDistance = 488;
-            this.SC_Core.TabIndex = 2;
-            // 
-            // LB_Notes
-            // 
-            this.LB_Notes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LB_Notes.FormattingEnabled = true;
-            this.LB_Notes.Location = new System.Drawing.Point(0, 0);
-            this.LB_Notes.Name = "LB_Notes";
-            this.LB_Notes.Size = new System.Drawing.Size(172, 367);
-            this.LB_Notes.TabIndex = 0;
-            // 
             // difficultiesBindingSource
             // 
             this.difficultiesBindingSource.DataSource = typeof(SongProofForms.Resources.Difficulties);
+            // 
+            // sessionFormBindingSource1
+            // 
+            this.sessionFormBindingSource1.DataSource = typeof(SongProofForms.SessionForm);
+            // 
+            // sessionFormBindingSource2
+            // 
+            this.sessionFormBindingSource2.DataSource = typeof(SongProofForms.SessionForm);
+            // 
+            // sessionFormBindingSource
+            // 
+            this.sessionFormBindingSource.DataSource = typeof(SongProofForms.SessionForm);
             // 
             // SessionForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 367);
-            this.Controls.Add(this.SC_Core);
+            this.ClientSize = new System.Drawing.Size(549, 367);
+            this.Controls.Add(this.SC_Left);
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(500, 406);
             this.Name = "SessionForm";
@@ -441,14 +489,18 @@
             this.SC_NoteTime.Panel1.ResumeLayout(false);
             this.SC_NoteTime.Panel1.PerformLayout();
             this.SC_NoteTime.Panel2.ResumeLayout(false);
-            this.SC_NoteTime.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SC_NoteTime)).EndInit();
             this.SC_NoteTime.ResumeLayout(false);
-            this.SC_Core.Panel1.ResumeLayout(false);
-            this.SC_Core.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.SC_Core)).EndInit();
-            this.SC_Core.ResumeLayout(false);
+            this.SC_TimeNote.Panel1.ResumeLayout(false);
+            this.SC_TimeNote.Panel1.PerformLayout();
+            this.SC_TimeNote.Panel2.ResumeLayout(false);
+            this.SC_TimeNote.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SC_TimeNote)).EndInit();
+            this.SC_TimeNote.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.difficultiesBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sessionFormBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -478,8 +530,13 @@
         private System.Windows.Forms.Button B_ViewData;
         private System.Windows.Forms.Button B_Start;
         private System.Windows.Forms.Label L_NoteCount;
-        private System.Windows.Forms.SplitContainer SC_Core;
-        private System.Windows.Forms.ListBox LB_Notes;
         private System.Windows.Forms.BindingSource difficultiesBindingSource;
+        private System.Windows.Forms.SplitContainer SC_TimeNote;
+        private System.Windows.Forms.Label L_Note;
+        private System.Windows.Forms.Label L_No;
+        private System.Windows.Forms.Label L_NoNote;
+        private System.Windows.Forms.BindingSource sessionFormBindingSource1;
+        private System.Windows.Forms.BindingSource sessionFormBindingSource;
+        private System.Windows.Forms.BindingSource sessionFormBindingSource2;
     }
 }

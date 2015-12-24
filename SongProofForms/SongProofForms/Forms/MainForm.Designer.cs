@@ -74,6 +74,7 @@
             this.B_Session_Data.TabIndex = 9;
             this.B_Session_Data.Text = "View Session Data";
             this.B_Session_Data.UseVisualStyleBackColor = true;
+            this.B_Session_Data.Click += new System.EventHandler(this.B_Session_Data_Click);
             // 
             // B_Exit
             // 

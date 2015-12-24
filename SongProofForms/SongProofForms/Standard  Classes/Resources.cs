@@ -14,7 +14,6 @@ namespace SongProofForms
         public enum Notes
         {
             //DO NOT GIVE THESE VALUES
-            Empty,
             C,
             Cs,
             Df,

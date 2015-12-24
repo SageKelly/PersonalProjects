@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SongProofForms
 {
@@ -33,7 +29,9 @@ namespace SongProofForms
 
         public Resources.Difficulties Diff;
 
-        public Scale Scale;
+        public Scale ScaleUsed;
+
+        public string UniqueID { get; private set; }
 
         /// <summary>
         /// Holds the notes for one game
@@ -44,6 +42,8 @@ namespace SongProofForms
 
         private int internalIndex;
 
+
+
         /// <summary>
         /// Creates a  Session
         /// </summary>
@@ -53,8 +53,9 @@ namespace SongProofForms
         public Session(Resources.Difficulties difficulty, Scale scale_used, int[] notes)
         {
             ID = DateTime.Now;
+            UniqueID = ID.Date + ", " + ID.TimeOfDay + ": " + ScaleUsed.Name + ", " + Diff;
             Diff = difficulty;
-            Scale = scale_used;
+            ScaleUsed = scale_used;
             Notes = notes;
             Data = new NoteData[notes.Length];
             internalIndex = 0;
@@ -65,15 +66,16 @@ namespace SongProofForms
         /// </summary>
         public DateTime ID { get; private set; }
 
-
         /// <summary>
         /// Stores Note input for each guessed
         /// </summary>
         /// <param name="index">The index of the note the player is currently on</param>
-        public void StoreNoteInput(int index, bool correct)
+        /// <param name="correct">Was the guess correct?</param>
+        /// <param name="remaining_time">How long did it take for them to guess?</param>
+        public void StoreNoteInput(int index, bool correct, int remaining_time)
         {
             if (internalIndex < Data.Length)
-                Data[internalIndex++] = new NoteData(index, Diff.GetHashCode(), correct);
+                Data[internalIndex++] = new NoteData(index, remaining_time, correct);
         }
     }
 }

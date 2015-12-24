@@ -13,12 +13,19 @@ namespace SongProofForms
     public partial class MainForm : Form
     {
         SessionSetupForm SSF;
-        public List<Session> Sessions { get; private set; }
+        /// <summary>
+        /// Holds the list of UniqueIDs on a file.
+        /// </summary>
+        const string SESSION_FILENAME = "SPF_Sessions.bin";
+        /// <summary>
+        /// Made to store the UniqueIDs of all the sessions
+        /// </summary>
+        public List<string> Sessions { get; private set; }
         public MainForm()
         {
             InitializeComponent();
             Resources.BuildDictionaries();
-            Sessions = new List<Session>();
+            Sessions = new List<string>();
             Size = MaximumSize = MinimumSize = FormResource.ScreenSize;
         }
 
@@ -32,6 +39,11 @@ namespace SongProofForms
         private void B_Exit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void B_Session_Data_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -37,6 +37,9 @@
             this.B_Begin = new System.Windows.Forms.Button();
             this.NUD_NoteCount = new System.Windows.Forms.NumericUpDown();
             this.C_IsSharp = new System.Windows.Forms.CheckBox();
+            Size = FormResource.ScreenSize;
+            MaximumSize = FormResource.ScreenSize;
+            MinimumSize = FormResource.ScreenSize;
             ((System.ComponentModel.ISupportInitialize)(this.NUD_NoteCount)).BeginInit();
             this.SuspendLayout();
             // 

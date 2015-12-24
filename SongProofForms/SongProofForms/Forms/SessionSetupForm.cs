@@ -18,7 +18,6 @@ namespace SongProofForms
         public SessionSetupForm(MainForm mf, Point location)
         {
             InitializeComponent();
-            Size = MaximumSize = MinimumSize = FormResource.ScreenSize;
 
             NUD_NoteCount.Increment = Resources.LOWEST_INC;
             NUD_NoteCount.Minimum = NUD_NoteCount.Value = Resources.LOWEST_SET;
@@ -43,10 +42,11 @@ namespace SongProofForms
             Scale temp = Resources.MakeScale((string)CB_Scales.SelectedItem,
                 C_IsSharp.Checked);
             Resources.Difficulties Diff = (Resources.Difficulties)CB_Diff.SelectedItem;
-            MF.Sessions.Add(new Session(Diff, temp, Resources.MakeQuiz(temp,
-                (int)NUD_NoteCount.Value)));
+            Session newSession = new Session(Diff, temp, Resources.MakeQuiz(temp,
+                (int)NUD_NoteCount.Value));
+            MF.Sessions.Add(newSession.UniqueID);
             this.Hide();
-            SF = new SessionForm(MF, MF.Sessions.Last());
+            SF = new SessionForm(MF, newSession);
             SF.Location = this.Location;
             SF.Show();
         }
