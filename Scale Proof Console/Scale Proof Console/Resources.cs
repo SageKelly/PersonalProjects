@@ -11,11 +11,9 @@ namespace Scale_Proof_Console
     /// </summary>
     public static class Resources
     {
-        /// <summary>
-        /// All possible notes within a European music system
-        /// </summary>
         public enum Notes
         {
+            //DO NOT GIVE THESE VALUES
             C,
             Cs,
             Df,
@@ -34,10 +32,8 @@ namespace Scale_Proof_Console
             Bf,
             B
         }
+        public Notes Note;
 
-        /// <summary>
-        /// The per-note guessing times for each difficulty setting
-        /// </summary>
         public enum Difficulties
         {
             Easy = 3000,
@@ -45,91 +41,127 @@ namespace Scale_Proof_Console
             Hard = 500
         }
 
+        public const int LOWEST_SET = 50;
+        public const int LOWEST_INC = 10;
+        public const int HIGHEST_SET = 300;
+
         #region Scales
-        private static Notes[] ScaleC = { Notes.C, Notes.D, Notes.E, Notes.F, Notes.G, Notes.A, Notes.B };
-        private static Notes[] ScaleCs = { Notes.Cs, Notes.Ds, Notes.F, Notes.Fs, Notes.Gs, Notes.As, Notes.C };
-        private static Notes[] ScaleD = { Notes.D, Notes.E, Notes.Fs, Notes.G, Notes.A, Notes.B, Notes.C };
-        private static Notes[] ScaleDs = { Notes.Ds, Notes.F, Notes.G, Notes.Gs, Notes.As, Notes.C, Notes.D };
-        private static Notes[] ScaleE = { Notes.E, Notes.Fs, Notes.Gs, Notes.A, Notes.B, Notes.Cs, Notes.Ds };
-        private static Notes[] ScaleF = { Notes.F, Notes.G, Notes.A, Notes.Bf, Notes.C, Notes.D, Notes.E };
-        private static Notes[] ScaleFs = { Notes.Fs, Notes.Gs, Notes.As, Notes.B, Notes.Cs, Notes.Ds, Notes.F };
-        private static Notes[] ScaleG = { Notes.G, Notes.A, Notes.B, Notes.C, Notes.D, Notes.E, Notes.Fs };
-        private static Notes[] ScaleGs = { Notes.G, Notes.A, Notes.B, Notes.C, Notes.D, Notes.E, Notes.F };
-        private static Notes[] ScaleA = { Notes.A, Notes.B, Notes.Cs, Notes.D, Notes.E, Notes.Fs, Notes.Gs };
-        private static Notes[] ScaleAs = { Notes.As, Notes.C, Notes.D, Notes.Ds, Notes.F, Notes.G, Notes.A };
-        private static Notes[] ScaleB = { Notes.B, Notes.Cs, Notes.Ds, Notes.E, Notes.Fs, Notes.Gs, Notes.As };
-        #endregion
-
-        #region string values for notes
-        public const string C = "C";
-        public const string CS = "C#";
-        private const string DB = "Db";
-        public const string D = "D";
-        public const string DS = "D#";
-        private const string EB = "Eb";
-        public const string E = "E";
-        public const string F = "F";
-        public const string FS = "F#";
-        private const string GB = "Gb";
-        public const string G = "G";
-        public const string GS = "G#";
-        private const string AB = "Ab";
-        public const string A = "A";
-        public const string AS = "A#";
-        private const string BB = "Bb";
-        public const string B = "B";
+        private static Notes[] ScaleCMajor = { Notes.C, Notes.D, Notes.E, Notes.F, Notes.G, Notes.A, Notes.B };
+        private static Notes[] ScaleCsMajor = { Notes.Cs, Notes.Ds, Notes.F, Notes.Fs, Notes.Gs, Notes.As, Notes.C };
+        private static Notes[] ScaleDMajor = { Notes.D, Notes.E, Notes.Fs, Notes.G, Notes.A, Notes.B, Notes.C };
+        private static Notes[] ScaleDsMajor = { Notes.Ds, Notes.F, Notes.G, Notes.Gs, Notes.As, Notes.C, Notes.D };
+        private static Notes[] ScaleEMajor = { Notes.E, Notes.Fs, Notes.Gs, Notes.A, Notes.B, Notes.Cs, Notes.Ds };
+        private static Notes[] ScaleFMajor = { Notes.F, Notes.G, Notes.A, Notes.Bf, Notes.C, Notes.D, Notes.E };
+        private static Notes[] ScaleFsMajor = { Notes.Fs, Notes.Gs, Notes.As, Notes.B, Notes.Cs, Notes.Ds, Notes.F };
+        private static Notes[] ScaleGMajor = { Notes.G, Notes.A, Notes.B, Notes.C, Notes.D, Notes.E, Notes.Fs };
+        private static Notes[] ScaleGsMajor = { Notes.G, Notes.A, Notes.B, Notes.C, Notes.D, Notes.E, Notes.F };
+        private static Notes[] ScaleAMajor = { Notes.A, Notes.B, Notes.Cs, Notes.D, Notes.E, Notes.Fs, Notes.Gs };
+        private static Notes[] ScaleAsMajor = { Notes.As, Notes.C, Notes.D, Notes.Ds, Notes.F, Notes.G, Notes.A };
+        private static Notes[] ScaleBMajor = { Notes.B, Notes.Cs, Notes.Ds, Notes.E, Notes.Fs, Notes.Gs, Notes.As };
         #endregion
 
         /// <summary>
-        /// List of Scales, document by scale name. (e.g. C, C#, etc.)
+        /// Holds the list of all versions of a scale's name
         /// </summary>
-        public static Dictionary<string, Notes[]> Scales { get; private set; }
+        public static List<string> ScaleNames { get; private set; }
         /// <summary>
-        /// Holds the string values of each of the notes
+        /// The list of all unique scales
+        /// </summary>
+        private static List<Notes[]> Scales;
+        /// <summary>
+        /// A relational table mapping scale names to unique scales
+        /// </summary>
+        private static Dictionary<string, Notes[]> ScaleTable;
+        /// <summary>
+        /// Holds the string values of each of the notes for display purposes
         /// </summary>
         public static Dictionary<Notes, string> NoteValues { get; private set; }
 
-        private static bool DictionariesBuilt = false;
+        static bool DictionariesBuilt = false;
 
         /// <summary>
         /// Populates the dictionaries with scales and notes for later reference
         /// </summary>
-        private static void BuildDictionary()
+        private static void BuildDictionaries()
         {
-            Scales = new Dictionary<string, Notes[]>();
-
-            Scales.Add(C, ScaleC);
-            Scales.Add(CS, ScaleCs);
-            Scales.Add(D, ScaleD);
-            Scales.Add(DS, ScaleDs);
-            Scales.Add(E, ScaleE);
-            Scales.Add(F, ScaleF);
-            Scales.Add(FS, ScaleFs);
-            Scales.Add(G, ScaleG);
-            Scales.Add(GS, ScaleGs);
-            Scales.Add(A, ScaleA);
-            Scales.Add(AS, ScaleAs);
-            Scales.Add(B, ScaleB);
-
+            ScaleNames = new List<string>();
+            Scales = new List<Notes[]>();
+            ScaleTable = new Dictionary<string, Notes[]>();
             NoteValues = new Dictionary<Notes, string>();
 
-            NoteValues.Add(Notes.C, C);
-            NoteValues.Add(Notes.Cs, CS);
-            NoteValues.Add(Notes.Df, DB);
-            NoteValues.Add(Notes.D, D);
-            NoteValues.Add(Notes.Ds, DS);
-            NoteValues.Add(Notes.Ef, EB);
-            NoteValues.Add(Notes.E, E);
-            NoteValues.Add(Notes.F, F);
-            NoteValues.Add(Notes.Fs, FS);
-            NoteValues.Add(Notes.Gf, GB);
-            NoteValues.Add(Notes.G, G);
-            NoteValues.Add(Notes.Gs, GS);
-            NoteValues.Add(Notes.Af, AB);
-            NoteValues.Add(Notes.A, A);
-            NoteValues.Add(Notes.As, AS);
-            NoteValues.Add(Notes.Bf, BB);
-            NoteValues.Add(Notes.B, B);
+            #region Scale Names
+            ScaleNames.Add("C Major");
+            ScaleNames.Add("C♯ Major");
+            ScaleNames.Add("D♭ Major");
+            ScaleNames.Add("D Major");
+            ScaleNames.Add("D♯ Major");
+            ScaleNames.Add("E♭ Major");
+            ScaleNames.Add("E Major");
+            ScaleNames.Add("F Major");
+            ScaleNames.Add("F♯ Major");
+            ScaleNames.Add("G♭ Major");
+            ScaleNames.Add("G Major");
+            ScaleNames.Add("G♯ Major");
+            ScaleNames.Add("A♭ Major");
+            ScaleNames.Add("A Major");
+            ScaleNames.Add("A♯ Major");
+            ScaleNames.Add("B♭ Major");
+            ScaleNames.Add("B Major");
+            #endregion
+
+            #region Scales
+            Scales.Add(ScaleCMajor);
+            Scales.Add(ScaleCsMajor);
+            Scales.Add(ScaleDMajor);
+            Scales.Add(ScaleDsMajor);
+            Scales.Add(ScaleEMajor);
+            Scales.Add(ScaleFMajor);
+            Scales.Add(ScaleFsMajor);
+            Scales.Add(ScaleGMajor);
+            Scales.Add(ScaleGsMajor);
+            Scales.Add(ScaleAMajor);
+            Scales.Add(ScaleAsMajor);
+            Scales.Add(ScaleBMajor);
+            #endregion
+
+            #region ScaleName → Scale Relational Table
+            ScaleTable.Add(ScaleNames[0], Scales[0]);  //"C Major");
+            ScaleTable.Add(ScaleNames[1], Scales[1]);  //"C# Major");
+            ScaleTable.Add(ScaleNames[2], Scales[1]);  //"Db Major");
+            ScaleTable.Add(ScaleNames[3], Scales[2]);  //"D Major");
+            ScaleTable.Add(ScaleNames[4], Scales[3]);  //"D# Major");
+            ScaleTable.Add(ScaleNames[5], Scales[3]);  //"Eb Major");
+            ScaleTable.Add(ScaleNames[6], Scales[4]);  //"E Major");
+            ScaleTable.Add(ScaleNames[7], Scales[5]);  //"F Major");
+            ScaleTable.Add(ScaleNames[8], Scales[6]);  //"F# Major");
+            ScaleTable.Add(ScaleNames[9], Scales[6]);  //"Gb Major");
+            ScaleTable.Add(ScaleNames[10], Scales[7]); //"G Major");
+            ScaleTable.Add(ScaleNames[11], Scales[8]); //"G# Major");
+            ScaleTable.Add(ScaleNames[12], Scales[8]); //"Ab Major");
+            ScaleTable.Add(ScaleNames[13], Scales[9]); //"A Major");
+            ScaleTable.Add(ScaleNames[14], Scales[10]); //"A# Major");
+            ScaleTable.Add(ScaleNames[15], Scales[10]);//"Bb Major");
+            ScaleTable.Add(ScaleNames[16], Scales[11]);//"B Major");
+            #endregion
+
+            #region Note Values
+            NoteValues.Add(Notes.Cs, "C♯");
+            NoteValues.Add(Notes.Df, "D♭");
+            NoteValues.Add(Notes.D, "D");
+            NoteValues.Add(Notes.Ds, "D♯");
+            NoteValues.Add(Notes.Ef, "E♭");
+            NoteValues.Add(Notes.E, "E");
+            NoteValues.Add(Notes.F, "F");
+            NoteValues.Add(Notes.Fs, "F♯");
+            NoteValues.Add(Notes.Gf, "G♭");
+            NoteValues.Add(Notes.G, "G");
+            NoteValues.Add(Notes.Gs, "G♯");
+            NoteValues.Add(Notes.Af, "A♭");
+            NoteValues.Add(Notes.A, "A");
+            NoteValues.Add(Notes.As, "A♯");
+            NoteValues.Add(Notes.Bf, "B♭");
+            NoteValues.Add(Notes.B, "B");
+            #endregion
 
             DictionariesBuilt = true;
         }
@@ -137,44 +169,65 @@ namespace Scale_Proof_Console
         /// <summary>
         /// Produces a manipulated scale
         /// </summary>
-        /// <param name="scale_name">The string name of the scale to use. One can
-        /// use the strings from the Resources class for reference</param>
+        /// <param name="scale_name">The scale to use. One can
+        /// use the dictionaries from this for quicker and
+        /// cleaner reference</param>
         /// <param name="showSharp">Denotes if this scale
         /// should represented with sharps or flats</param>
         /// <returns>The manipulated scale</returns>
-        public static Notes[] MakeScale(string scale_name, bool showSharp)
+        public static Scale MakeScale(string scale_name, bool showSharp)
         {
             if (!DictionariesBuilt)
-                BuildDictionary();
+                BuildDictionaries();
 
-            Notes[] result = Scales[scale_name].ToArray();
-
-            for (int i = 0; i < result.Length; i++)
+            Scale result = new Scale(scale_name, ScaleTable[scale_name]);
+            if (!showSharp)
             {
-                switch (result[i])
+                for (int i = 0; i < result.Notes.Length; i++)
                 {
-                    case Notes.Cs:
-                        result[i] = Notes.Df;
-                        break;
-                    case Notes.Ds:
-                        result[i] = Notes.Ef;
-                        break;
-                    case Notes.Fs:
-                        result[i] = Notes.Gf;
-                        break;
-                    case Notes.Gs:
-                        result[i] = Notes.Af;
-                        break;
-                    case Notes.As:
-                        result[i] = Notes.Bf;
-                        break;
-                    default:
-                        break;
+                    switch (result.Notes[i])
+                    {
+                        case Notes.Cs:
+                            result.Notes[i] = Notes.Df;
+                            break;
+                        case Notes.Ds:
+                            result.Notes[i] = Notes.Ef;
+                            break;
+                        case Notes.Fs:
+                            result.Notes[i] = Notes.Gf;
+                            break;
+                        case Notes.Gs:
+                            result.Notes[i] = Notes.Af;
+                            break;
+                        case Notes.As:
+                            result.Notes[i] = Notes.Bf;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             return result;
         }
 
+        /// <summary>
+        /// Creates a the notes for the current session
+        /// </summary>
+        /// <param name="s">The scale being used in the session</param>
+        /// <param name="diff">the difficulty of the session</param>
+        /// <returns></returns>
+        public static int[] MakeQuiz(Scale s, Difficulties diff)
+        {
+            if (!DictionariesBuilt)
+                BuildDictionaries();
+            int[] results = new int[diff.GetHashCode()];
+            Random rng = new Random();
+            for (int i = 0; i < results.Length; i++)
+            {
+                results[i] = rng.Next(0, s.Notes.Length);
+            }
+            return results;
+        }
 
     }
 }

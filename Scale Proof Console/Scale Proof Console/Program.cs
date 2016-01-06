@@ -11,41 +11,38 @@ namespace Scale_Proof_Console
     {
         public enum GameStates
         {
-            Start,
+            Main,
+            Setup,
             Game,
             Settings,
             Pause,
             Results,
             Analytics
         }
-        public GameStates gameStates;
+        public static GameStates gameState;
 
-        public const int EASY = 3000;
-        public const int MEDIUM = 1000;
-        public const int HARD = 500;
 
-        public const int LOWEST_SET = 50;
-        public int SetLength = LOWEST_SET;
-        public const int HIGHEST_SET = 300;
+        public int SetLength = Resources.LOWEST_SET;
+
+        public static Session curSession;
+
+        public static Resources.Difficulties chosenDifficulty;
+        public static string chosenScale;
+        public static bool isSharp;
+
+        /// <summary>
+        /// used for determining what
+        /// </summary>
+        static List<int> SetupList;
 
         #region Screen Strings
         string StrStartGame = "Start Game";
         string StrSettings = "Settings";
         string StrManageData = "Manage Data";
-
-
         #endregion
+        public static Thread ReadKey;
 
-
-        public Resources.Notes[] Scale;
-
-        public List<int>SetMaker;
-
-        public int[] ConcreteSet;
-
-        Thread ReadKey;
-
-        ConsoleKeyInfo CKI;
+        public static ConsoleKeyInfo CKI;
 
         #region Print Regions
         int center_X = Console.WindowWidth / 2;
@@ -54,34 +51,78 @@ namespace Scale_Proof_Console
 
         static void Main(string[] args)
         {
-
+            ReadKey = new Thread(HandleInput);
 
         }
 
-        public void Setup()
+        public static void Setup()
+        {
+            Scale tempScale = Resources.MakeScale(chosenScale, isSharp);
+            curSession = new Session(chosenDifficulty, tempScale, Resources.MakeQuiz(tempScale, chosenDifficulty));
+        }
+
+        public static void SetupGame()
+        {
+            //Scale
+
+            //Length
+
+            //Difficulty
+        }
+
+        public static void PrintMain()
         {
 
         }
 
-        public void PrintStart()
+        public static void PrintSetup()
         {
 
         }
 
-        public void PrintGame()
+        public static void PrintGame()
         {
 
         }
 
-        public void PrintResult()
+        public static void PrintResult()
         {
 
         }
 
-        public void HandleInput()
+        public static void HandleInput()
         {
-
+            CKI = Console.ReadKey(true);
+            switch (gameState)
+            {
+                case GameStates.Analytics:
+                    break;
+                case GameStates.Game:
+                    break;
+                case GameStates.Main:
+                    break;
+                case GameStates.Pause:
+                    break;
+                case GameStates.Results:
+                    break;
+                case GameStates.Settings:
+                    break;
+                case GameStates.Setup:
+                    switch (CKI.Key)
+                    {
+                        case ConsoleKey.Tab:
+                            break;
+                        case ConsoleKey.UpArrow:
+                            break;
+                        case ConsoleKey.DownArrow:
+                            break;
+                    }
+                    break;
+                default:
+                    gameState = GameStates.Main;
+                    break;
+            }
         }
-        
+
     }
 }
