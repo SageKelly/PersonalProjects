@@ -1,0 +1,105 @@
+﻿<Page
+    x:Class="The_Box.PivotPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:The_Box"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition>
+                <NavigationThemeTransition.DefaultNavigationTransitionInfo>
+                    <CommonNavigationTransitionInfo IsStaggeringEnabled="True"/>
+                </NavigationThemeTransition.DefaultNavigationTransitionInfo>
+            </NavigationThemeTransition>
+        </TransitionCollection>
+    </Page.Transitions>
+    <Grid>
+        <Pivot Title="THE BOX" x:Name="pivot" CommonNavigationTransitionInfo.IsStaggerElement="True">
+            <!--Pivot item one-->
+            <PivotItem
+                Margin="19,14.5,0,0" CommonNavigationTransitionInfo.IsStaggerElement="True">
+                <!--Double line list with text wrapping-->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" 
+                                   Text="{Binding Box[0],FallbackValue=A}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" 
+                                   Text="{Binding Box[1],FallbackValue=C}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" 
+                                   Text="{Binding Box[2],FallbackValue=F♯}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" 
+                                   Text="{Binding Box[3],FallbackValue=B}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" 
+                                   Text="{Binding Box[4],FallbackValue=G♯}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" 
+                                   Text="{Binding Box[5],FallbackValue=F}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" 
+                                   Text="{Binding Box[6],FallbackValue=E♭}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" 
+                                   Text="{Binding Box[7],FallbackValue=D}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" 
+                                   Text="{Binding Box[8],FallbackValue=D♭}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" 
+                                   Text="{Binding Box[9],FallbackValue=E}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" 
+                                   Text="{Binding Box[10],FallbackValue=B♭}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                        <TextBlock Grid.Row="3" Grid.Column="2" 
+                                   Text="{Binding Box[11],FallbackValue=G}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="64"/>
+                    </Grid>
+                    <!--
+                        <Button Grid.Row="3" Grid.Column="1"   Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Box it!" Click="Button_Click"/>
+                    -->
+                </Grid>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton x:Uid="AddAppBarButton" x:Name="AddAppBarButton" Label="Box it!" Icon="StopSlideShow" Click="AddAppBarButton_Click" FontFamily="Global User Interface" Tapped="MakeTable" />
+        </CommandBar>
+    </Page.BottomAppBar>
+</Page>
