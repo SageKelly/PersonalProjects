@@ -181,6 +181,11 @@ namespace ClockWatcher
                 _isMarkedForView = value;
             }
         }
+        public bool isFinalized
+        {
+            get;
+            private set;
+        }
         #endregion
 
         static TimeEntry() { }
@@ -194,6 +199,7 @@ namespace ClockWatcher
             this.InitializeComponent();
             deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
             ViewOnly = false;
+            isFinalized = false;
         }
 
         public TimeEntry(TimeEntryData ted)
@@ -205,6 +211,7 @@ namespace ClockWatcher
             DataContext = Data;
             this.InitializeComponent();
             deleteDoubleAnimation.Completed += deleteDoubleAnimation_Completed;
+            isFinalized = false;
         }
 
         #region Methods
@@ -334,6 +341,7 @@ namespace ClockWatcher
         public void finalize()
         {
             Data.TimeOut = DateTime.Now;
+            isFinalized = true;
         }
         private void setUpAnimationVariables()
         {

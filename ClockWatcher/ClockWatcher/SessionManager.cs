@@ -27,6 +27,8 @@ namespace ClockWatcher
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ProgramData Data { get; private set; }
+        public delegate void NewDayEventHandler(object sender, EventArgs ea);
+        public event NewDayEventHandler NewDayEvent;
 
         public ObservableCollection<string> SessionNames { get; private set; }
         private List<string> comment_library;
@@ -53,7 +55,24 @@ namespace ClockWatcher
                 }
             }
         }
+        private DateTime current_time;
         #region Properties
+        public DateTime CurrentTime
+        {
+            get
+            {
+                return DateTime.Now;
+            }
+            set
+            {
+                if (current_time != value)
+                {
+                    current_time = value;
+                    OnPropertyChanged("CurrentTime");
+                }
+            }
+        }
+
         private bool isWatching
         {
             get
@@ -66,12 +85,10 @@ namespace ClockWatcher
                 if (!_isWatching)
                 {
                     _clockWatch.Stop();
-                    _timer.Stop();
                 }
                 else
                 {
                     _clockWatch.Start();
-                    _timer.Start();
                 }
             }
         }
@@ -92,7 +109,7 @@ namespace ClockWatcher
             }
         }
 
-        public Session OpenSession { get; private set; }
+        public List<Session> OpenSessions { get; private set; }
 
         public ObservableCollection<UIElement> Entries { get; private set; }
 
@@ -119,20 +136,24 @@ namespace ClockWatcher
         {
             _clockWatch = new Stopwatch();
             _timer = new Timer(1000);//one second
-            _timer.Elapsed += clockWatch_Elapsed;
+            _timer.Elapsed += timerElapsed;
 
             CommentLibrary = new List<string>();
             SessionNames = new ObservableCollection<string>();
             Data = LoadProgramData();
             comment_library.AddRange(Data.PersistentCommentEntries);
+            OpenSessions = new List<Session>();
 
-            CurrentSession = new Session();
-            OpenSession = CurrentSession;
+            OpenSessions.Add(new Session());
+            CurrentSession = OpenSessions.Last();
 
             MergeCommentLibraries();
             Entries = new ObservableCollection<UIElement>();
             FilteredTime = TimeSpan.Zero;
             _isWatching = false;
+            current_time = new DateTime();
+            CurrentTime = DateTime.Now;
+            _timer.Start();
         }
 
 
@@ -144,18 +165,28 @@ namespace ClockWatcher
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void clockWatch_Elapsed(object sender, ElapsedEventArgs e)
+        public void timerElapsed(object sender, ElapsedEventArgs e)
         {
-            if (CurrentSession != null)
+            CurrentTime = DateTime.Now;
+            if ((CurrentTime.TimeOfDay.Hours == 0 &&
+                CurrentTime.TimeOfDay.Minutes == 0 &&
+                CurrentTime.TimeOfDay.Seconds == 0) &&
+                NewDayEvent != null)
             {
-                //update the timespent variable of the current timeEntry
-                if (CurrentSession.currentTimeEntry != null)
+                NewDayEvent(this, new EventArgs());
+            }
+            if (isWatching)
+            {
+                if (CurrentSession != null)
                 {
-                    CurrentSession.currentTimeEntry.TimeSpent = _clockWatch.Elapsed;
-                    calculateTotalTime();
+                    //update the timespent variable of the current timeEntry
+                    if (CurrentSession.currentTEData != null)
+                    {
+                        CurrentSession.currentTEData.TimeSpent = _clockWatch.Elapsed;
+                        calculateTotalTime();
 
-                    CalculateFilteredTimeSpent();
-
+                        //CalculateFilteredTimeSpent();
+                    }
                 }
             }
         }
@@ -210,10 +241,10 @@ namespace ClockWatcher
         #region Class Methods
         public TimeEntry addNewTimeEntry()
         {
-            if (CurrentSession != null && CurrentSession.currentTimeEntry != null)
+            if (CurrentSession != null && CurrentSession.currentTEData != null)
             {
                 isWatching = false;
-                CurrentSession.currentTimeEntry.Owner.finalize();
+                CurrentSession.currentTEData.Owner.finalize();
             }
             TimeEntry result = CurrentSession.addEntry(DateTime.Now);
             Entries.Add(result);
@@ -223,6 +254,7 @@ namespace ClockWatcher
 
             return result;
         }
+
         public void calculateTotalTime()
         {
             CurrentSession.TotalTime = TimeSpan.Zero;
@@ -236,9 +268,9 @@ namespace ClockWatcher
             if (CurrentSession != null)
             {
                 //update the timespent variable of the current timeEntry
-                if (CurrentSession.currentTimeEntry != null)
+                if (CurrentSession.currentTEData != null)
                 {
-                    CurrentSession.currentTimeEntry.TimeSpent = _clockWatch.Elapsed;
+                    CurrentSession.currentTEData.TimeSpent = _clockWatch.Elapsed;
                     calculateTotalTime();
                 }
             }
@@ -265,16 +297,32 @@ namespace ClockWatcher
 
         public void SaveSession()
         {
-            if (CurrentSession.TimeEntries.Count != 0)
-            {
-                CurrentSession.Save();
-                Data.Sessions.Add(CurrentSession.GetRawName());
-            }
-            else
-            {
-                Data.Sessions.Remove(CurrentSession.Name);
-            }
+            IFormatter formatter = new BinaryFormatter();
 
+            foreach (Session sesh in OpenSessions)
+            {
+                if (sesh.TimeEntries.Count != 0)
+                {
+                    if (!sesh.TimeEntries.Last().Owner.isFinalized)
+                    {
+                        sesh.TimeEntries.Last().Owner.finalize();
+                    }
+                    Stream stream = new FileStream(Data.SESSION_ADDRESS + sesh.Name, FileMode.Create, FileAccess.Write, FileShare.None);
+                    formatter.Serialize(stream, sesh);
+                    stream.Close();
+                    sesh.Save();
+                    Data.Sessions.Add(Session.FileName(sesh.Name));
+                }
+                else
+                {
+                    Data.Sessions.Remove(sesh.Name);
+                }
+            }
+            SaveProgramData();
+        }
+
+        public void SaveProgramData()
+        {
             //Serialize the ProgramData
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(PD_FILE, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -315,7 +363,7 @@ namespace ClockWatcher
 
         public void LoadOpenSession()
         {
-            CurrentSession = OpenSession;
+            CurrentSession = OpenSessions.Last();
             Entries.Clear();
             foreach (TimeEntryData ted in CurrentSession.TimeEntries)
             {
@@ -344,6 +392,7 @@ namespace ClockWatcher
         public void LoadSession(int index)
         {
             isWatching = false;
+            Session prevSession = CurrentSession;
             CurrentSession = Data.OpenSession(index);
             if (CurrentSession != null)
             {
@@ -354,7 +403,29 @@ namespace ClockWatcher
             }
             else
             {
-                CurrentSession = OpenSession;
+                CurrentSession = prevSession;
+            }
+        }
+
+        /// <summary>
+        /// Loads Session from Session View menu
+        /// </summary>
+        /// <param name="index"></param>
+        public void LoadSession(string session_name)
+        {
+            isWatching = false;
+            Session prevSession = CurrentSession;
+            CurrentSession = Data.OpenSession(session_name);
+            if (CurrentSession != null)
+            {
+                ReloadEntries();
+                comment_library.Clear();
+                comment_library.AddRange(Data.PersistentCommentEntries);
+                MergeCommentLibraries();
+            }
+            else
+            {
+                CurrentSession = prevSession;
             }
         }
 
@@ -366,17 +437,15 @@ namespace ClockWatcher
         {
             isWatching = false;
             List<Session> loaded_sessions = Data.OpenSession(items);
-            if (loaded_sessions != null && loaded_sessions.Count > 0)
+            if (loaded_sessions == null) { }
+            else if (loaded_sessions.Count > 0)
             {
+                //This is arbitrary: just so CurrentSession has a value
                 CurrentSession = loaded_sessions[0];
                 ReloadEntries(loaded_sessions);
                 comment_library.Clear();
                 comment_library.AddRange(Data.PersistentCommentEntries);
                 MergeCommentLibraries(loaded_sessions);
-            }
-            else
-            {
-                CurrentSession = OpenSession;
             }
         }
 
@@ -422,6 +491,7 @@ namespace ClockWatcher
         {
             //Remove current TimeEntries
             Entries.Clear();
+            AddSessionStamp(CurrentSession.Name);
             //Add enough for new session
             foreach (TimeEntryData ted in CurrentSession.TimeEntries)
             {
@@ -439,9 +509,7 @@ namespace ClockWatcher
             //Add enough for new session
             foreach (Session sesh in items)
             {
-                TextBlock data_stamp = new TextBlock();
-                data_stamp.Text = sesh.Name;
-                Entries.Add(data_stamp);
+                AddSessionStamp(sesh.Name);
                 foreach (TimeEntryData ted in sesh.TimeEntries)
                 {
                     Entries.Add(new TimeEntry(ted));
@@ -451,10 +519,73 @@ namespace ClockWatcher
         #endregion
         #endregion
 
-        public void DeleteSession(int index)
+        public void DeleteSession(IList items)
         {
-            Data.DeleteSession(index);
-            SessionNames.RemoveAt(index);
+            Data.DeleteSession(items);
+            for (int i = items.Count - 1; i >= 0; i--)
+            {
+                string s = (string)items[i];
+                SessionNames.Remove(s);
+            }
+        }
+
+        public bool SplitSession()
+        {
+            bool PrevEntry = true;
+            if (current_session.TimeEntries.Count == 0)
+            {
+                OpenSessions.Remove(CurrentSession);
+                PrevEntry = false;
+            }
+            else if (CurrentSession.currentTEData != null)
+            {
+                CurrentSession.currentTEData.Owner.finalize();
+            }
+            OpenSessions.Add(new Session());
+            CurrentSession = OpenSessions.Last();
+
+            if (PrevEntry)
+            {
+                /*
+                 * Take the comment from the last TimeEntry, if any,
+                 * and add it to the list of comments in the new Session
+                */
+                TimeEntry t = (TimeEntry)Entries.LastOrDefault(
+                    x => x.GetType() == typeof(TimeEntry));
+
+                string s = t == null ? "New Day" : t.Data.Comment;
+                current_session.addComment(s == null ? "New Day" : s);
+            }
+            return PrevEntry;
+        }
+
+        public TextBlock AddSessionStamp()
+        {
+            TextBlock timeStamp = new TextBlock();
+            timeStamp.Text = "-----------" + CurrentSession.Name + "-----------";
+            Entries.Add(timeStamp);
+            return timeStamp;
+        }
+
+        private void AddSessionStamp(string session_name)
+        {
+            TextBlock timeStamp = new TextBlock();
+            timeStamp.Text = "-----------" + session_name + "-----------";
+            Entries.Add(timeStamp);
+        }
+
+        public string CheckForRecentSession()
+        {
+            string filename = DateTime.Today.Date.ToString().Replace('/', '_').Split(' ')[0];
+            for (int i = Data.Sessions.Count - 1; i >= 0; i--)
+            {
+                string s = Data.Sessions[i];
+                string[] data = s.Split(' ');
+                string date = data[0];
+                if (filename == date)
+                    return Data.Sessions[i];
+            }
+            return null;
         }
     }
 }

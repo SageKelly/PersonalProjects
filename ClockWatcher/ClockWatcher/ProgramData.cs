@@ -13,7 +13,7 @@ namespace ClockWatcher
     public class ProgramData : INotifyPropertyChanged, ISerializable
     {
         /// <summary>
-        /// Holds a list of all comments made within the session
+        /// Holds a list of the filenames of all sessions ever created by this user
         /// </summary>
         public List<string> Sessions;
         /// <summary>
@@ -21,6 +21,7 @@ namespace ClockWatcher
         /// </summary>
         public List<string> PersistentCommentEntries;
 
+        public string SESSION_ADDRESS { get; private set; }
         private DateTime start_time;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -44,8 +45,8 @@ namespace ClockWatcher
 
         public ProgramData(Session currrentSession)
         {
+            SESSION_ADDRESS = "Sessions/";
             Sessions = new List<string>();
-
             PersistentCommentEntries = new List<string>();
             start_time = DateTime.Now;
         }
@@ -55,6 +56,24 @@ namespace ClockWatcher
             Sessions = (List<string>)info.GetValue("Sessions", typeof(List<string>));
             PersistentCommentEntries = (List<string>)info.GetValue("PersistentCommentEntries", typeof(List<string>));
             start_time = (DateTime)info.GetValue("start_time", typeof(DateTime));
+        }
+
+        public Session OpenSession(string session_name)
+        {
+            if (File.Exists(session_name))
+            {
+                IFormatter formatter = new BinaryFormatter();
+                Stream stream = new FileStream(session_name, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+                Session sesh = (Session)formatter.Deserialize(stream);
+                stream.Close();
+                return sesh;
+            }
+            else
+            {
+                //File integrity compromised
+                Sessions = (List<string>)Directory.EnumerateFiles(SESSION_ADDRESS);
+                return null;
+            }
         }
 
         public Session OpenSession(int index)
@@ -67,7 +86,11 @@ namespace ClockWatcher
                 stream.Close();
                 return sesh;
             }
-            return null;
+            else
+            {
+                Sessions = (List<string>)Directory.EnumerateFiles(SESSION_ADDRESS);
+                return null;
+            }
         }
 
         public List<Session> OpenSession(IList items)
@@ -88,6 +111,7 @@ namespace ClockWatcher
                 else
                 {
                     complete = false;
+                    Sessions = (List<string>)Directory.EnumerateFiles(SESSION_ADDRESS);
                     break;
                 }
             }
@@ -111,10 +135,22 @@ namespace ClockWatcher
             info.AddValue("start_time", start_time, typeof(DateTime));
         }
 
-        public void DeleteSession(int index)
+        public bool DeleteSession(IList items)
         {
-            File.Delete(Sessions[index]);
-            Sessions.RemoveAt(index);
+            foreach (string s in items)
+            {
+                if (!File.Exists(Session.FileName(s)))
+                {
+                    Sessions = (List<string>)Directory.EnumerateFiles(SESSION_ADDRESS);
+                    return false;
+                }
+            }
+            foreach (string s in items)
+            {
+                File.Delete(Session.FileName(s));
+                Sessions.Remove(Session.FileName(s));
+            }
+            return true;
         }
     }
 }

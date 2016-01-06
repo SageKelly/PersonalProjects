@@ -49,7 +49,7 @@ namespace ClockWatcher
             { creation_date = value; }
         }
 
-        public TimeEntryData currentTimeEntry { get; private set; }
+        public TimeEntryData currentTEData { get; private set; }
         public List<TimeEntryData> TimeEntries
         {
             get
@@ -131,12 +131,17 @@ namespace ClockWatcher
             comment_library.Remove(ce.comment);
         }
 
+        /// <summary>
+        /// Makes a new TimeEntry and sets the currentTEData
+        /// </summary>
+        /// <param name="timeIn"></param>
+        /// <returns>The newly-created TimeEntry</returns>
         public TimeEntry addEntry(DateTime timeIn)
         {
             TimeEntry result = new TimeEntry(TimeEntries.Count);
             TimeEntries.Add(result.Data);
-            currentTimeEntry = result.Data;
-            currentTimeEntry.TimeIn = timeIn;
+            currentTEData = result.Data;
+            currentTEData.TimeIn = timeIn;
             return result;
         }
 
@@ -144,26 +149,21 @@ namespace ClockWatcher
         {
             TimeEntries.Remove(t.Data);
             if (TimeEntries.Count > 0)
-                currentTimeEntry = TimeEntries.Last();
+                currentTEData = TimeEntries.Last();
             else
-                currentTimeEntry = null;
+                currentTEData = null;
         }
 
         public void Save()
         {
+            if (!time_entries.Last().Owner.isFinalized)
+            {
+                time_entries.Last().Owner.finalize();
+            }
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.None);
+            Stream stream = new FileStream("Sessions/" + name, FileMode.Create, FileAccess.Write, FileShare.None);
             formatter.Serialize(stream, this);
             stream.Close();
-        }
-
-        /// <summary>
-        /// Gets the name of the Session
-        /// </summary>
-        /// <returns>Returns the file-friendly version of the Session name</returns>
-        public string GetRawName()
-        {
-            return name;
         }
 
         private void OnPropertyChanged([CallerMemberName] string member_name = "")

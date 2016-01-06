@@ -42,9 +42,17 @@ namespace ClockWatcher
 
         public SessionManager SM { get; private set; }
 
+        /// <summary>
+        /// Represents a session that was started earlier today but ended.
+        /// </summary>
+        private string oldSession;
+        private bool isDeleting;
+        private bool isContinuing;
+
         public MainWindow()
         {
             SM = new SessionManager();
+            SM.NewDayEvent += SplitSession;
             InitializeComponent();
             LoadStacks();
             AddSessionStamp();
@@ -57,6 +65,34 @@ namespace ClockWatcher
 
             binding.Source = SM.CommentLibrary;
             B_OpenSession.Visibility = Visibility.Hidden;
+            isDeleting = isContinuing = false;
+            CheckForRecentSession();
+            //entryAdder_Click(null, null);
+        }
+
+        private void SplitSession(object sender, EventArgs ea)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                bool prevEntry = SM.SplitSession();
+                if (!prevEntry)
+                {
+                    TextBlock temp = (TextBlock)SM.Entries.Last(x => x.GetType() == typeof(TextBlock));
+                    SM.Entries.Remove(temp);
+                    timeStack.Children.Remove(temp);
+                }
+                AddSessionStamp();
+                if (prevEntry)
+                {
+                    TimeEntry t = (TimeEntry)SM.Entries.LastOrDefault(x => x.GetType() == typeof(TimeEntry));
+                    string s = t == null ? "New Day" : t.Data.Comment;
+                    entryAdder_Click(null, null);
+
+                    TimeEntry temp = (TimeEntry)SM.Entries.Last(x => x.GetType() == typeof(TimeEntry));
+                    temp.Data.Comment = s;
+                }
+                this.Focus();
+            }));
         }
 
 
@@ -356,8 +392,8 @@ namespace ClockWatcher
         /// <param name="e"></param>
         private void SaveSession(object sender, CancelEventArgs e)
         {
-            if (SM.CurrentSession == SM.OpenSession)
-                SM.SaveSession();
+
+            SM.SaveSession();
         }
 
         /// <summary>
@@ -409,7 +445,7 @@ namespace ClockWatcher
              * 2. Remove the name of the .bin file from the ProgramData's list.
              * 3. Remove the name of the UI-friendly name from the SessionManager's list
              */
-            SM.DeleteSession(OldSessions.SelectedIndex);
+            SM.DeleteSession(OldSessions.SelectedItems);
         }
 
         private void CancelView(object sender, RoutedEventArgs e)
@@ -435,9 +471,7 @@ namespace ClockWatcher
 
         private void AddSessionStamp()
         {
-            TextBlock timeStamp = new TextBlock();
-            timeStamp.Text = "-----------" + SM.CurrentSession.Name + "-----------";
-            timeStack.Children.Add(timeStamp);
+            timeStack.Children.Add(SM.AddSessionStamp());
         }
 
         private void addCommentEntry(string comment)
@@ -478,8 +512,9 @@ namespace ClockWatcher
                 timeStack.Children.Add(uie);
                 if (uie.GetType() == typeof(TimeEntry))
                 {
-                    ((TimeEntry)uie).ViewOnly = view_only;
-                    RegisterToTimeEntry((TimeEntry)uie);
+                    TimeEntry temp = (TimeEntry)uie;
+                    temp.ViewOnly = view_only;
+                    RegisterToTimeEntry(temp);
                 }
             }
 
@@ -493,7 +528,52 @@ namespace ClockWatcher
                 commentStack.Children.Add(newEntry);
             }
         }
+        /// <summary>
+        /// Checks to see if a Session for today already exists
+        /// </summary>
+        public void CheckForRecentSession()
+        {
+            oldSession = SM.CheckForRecentSession();
+            if (oldSession != null)
+            {
+                isContinuing = true;
+                //Open Popup in the middle of screen
+                dialogBlock.Text =
+                    "A session for today already exists.\n" +
+                    "Would you like to open that one?";
+                dialogPopup.IsOpen = true;
+                dialogPopup.PlacementTarget = entryAdderButton;
+                dialogPopup.Placement = PlacementMode.Bottom;
+            }
+        }
 
+        void B_No_Click(object sender, RoutedEventArgs e)
+        {
+            if (isDeleting)
+            {
+                isDeleting = false;
+            }
+            else
+            {
+                isContinuing = false;
+            }
+            dialogPopup.IsOpen = false;
+        }
+
+        void B_OK_Click(object sender, RoutedEventArgs e)
+        {
+            if (isDeleting)
+            {
+                isDeleting = false;
+            }
+            else
+            {
+                SM.LoadSession(oldSession);
+                LoadStacks(false);
+                isContinuing = false;
+            }
+            dialogPopup.IsOpen = false;
+        }
         #endregion
     }
 }
