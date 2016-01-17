@@ -7,13 +7,13 @@ namespace SongProofWP8
     {
         public struct NoteData
         {
-            public int Note;
+            public int NoteIndex;
             public bool Correct;
             public int GuessTime;
 
-            public NoteData(int note, int guess_time, bool correct)
+            public NoteData(int note_index, int guess_time, bool correct)
             {
-                Note = note;
+                NoteIndex = note_index;
                 Correct = correct;
                 GuessTime = guess_time;
             }
@@ -34,6 +34,8 @@ namespace SongProofWP8
 
         public NoteData[] Data { get; private set; }
 
+        public string[] Piano;
+
         private int internalIndex;
 
 
@@ -44,12 +46,13 @@ namespace SongProofWP8
         /// <param name="difficulty">The difficult of the session, refer to the Resources Class for determination.</param>
         /// <param name="scale_used">The scale to be used. Refer to the Resources Class for determination.</param>
         /// <param name="notes">The notes being used within this Session</param>
-        public Session(ScaleResources.Difficulties difficulty, Scale scale_used, int[] notes)
+        public Session(ScaleResources.Difficulties difficulty, Scale scale_used, string[] piano, int[] notes)
         {
             ID = DateTime.Now;
-            UniqueID = ID.Date + ", " + ID.TimeOfDay + ": " + ScaleUsed.Name + ", " + Diff;
-            Diff = difficulty;
             ScaleUsed = scale_used;
+            Piano = piano;
+            Diff = difficulty;
+            UniqueID = ID.Date + ", " + ID.TimeOfDay + ": " + ScaleUsed.Name + ", " + Diff;
             Notes = notes;
             Data = new NoteData[notes.Length];
             internalIndex = 0;
@@ -74,7 +77,7 @@ namespace SongProofWP8
 
         private void OnPropertyChanged(string property_name)
         {
-            if(PropertyChanged!=null)
+            if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(property_name));
             }

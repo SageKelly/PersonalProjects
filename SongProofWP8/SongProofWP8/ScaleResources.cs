@@ -51,34 +51,34 @@ namespace SongProofWP8
             Hard = 500
         }
 
-        public enum ScaleGroups
-        {
-            Major,
-            Dominant,
-            Suspended,
-            Minor,
-            HalfDiminished,
-            Diminished
-        }
         public static string[] PianoSharp = new string[] { "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B" };
         public static string[] PianoFlat = new string[] { "C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B" };
-        public static string[] FriendlyPiano = new string[] { "C", "C♯ / D♭", "D", "D♯ / E♭", "E", "F", "F♯ / G♭", "G", "G♯ / A♭", "A", "A♯B♭", "B" };
         //A♯ / B♭
 
         public static Dictionary<ScaleTypes, string> ScaleNames;
         public static Dictionary<ScaleTypes, string> ScaleLib;
 
-        public static Dictionary<ScaleTypes, string> MajorScales;
-        public static Dictionary<ScaleTypes, string> MinorScales;
-        public static Dictionary<ScaleTypes, string> DominantScales;
-        public static Dictionary<ScaleTypes, string> SuspendedScales;
-        public static Dictionary<ScaleTypes, string> HalfDiminishedScales;
-        public static Dictionary<ScaleTypes, string> DiminishedScales;
+        public static List<KVTuple<string, string>> MajorScales;
+        public static List<KVTuple<string, string>> MinorScales;
+        public static List<KVTuple<string, string>> DominantScales;
+        public static List<KVTuple<string, string>> SuspendedScales;
+        public static List<KVTuple<string, string>> HalfDiminishedScales;
+        public static List<KVTuple<string, string>> DiminishedScales;
 
-        public static Dictionary<string, ScaleGroups> ScaleDivisionNames;
+        public static Dictionary<string, List<KVTuple<string, string>>> ScaleDivisionNames;
 
-        public const int LOWEST_SET = 50;
+        /// <summary>
+        /// Represents the lowest amount of notes that can exist within a test
+        /// </summary>
+        public const int LOWEST_SET = 10;
+        /// <summary>
+        /// Represents the incrementation amount that should be used to
+        /// increase/decrease the note amount
+        /// </summary>
         public const int LOWEST_INC = 10;
+        /// <summary>
+        /// Represents the highest amuont of notes that can exist within a test
+        /// </summary>
         public const int HIGHEST_SET = 300;
 
 
@@ -88,18 +88,8 @@ namespace SongProofWP8
         public static string[] ConstantScaleNames { get; private set; }
         public static Difficulties[] DifficultyLevels;
 
-        static bool DictionariesBuilt = false;
-
         static ScaleResources()
         {
-            ScaleDivisionNames = new Dictionary<string, ScaleGroups>();
-            ScaleDivisionNames.Add("Major", ScaleGroups.Major);
-            ScaleDivisionNames.Add("Dominant", ScaleGroups.Dominant);
-            ScaleDivisionNames.Add("Suspended", ScaleGroups.Suspended);
-            ScaleDivisionNames.Add("Minor", ScaleGroups.Minor);
-            ScaleDivisionNames.Add("Half Diminished", ScaleGroups.HalfDiminished);
-            ScaleDivisionNames.Add("Diminished", ScaleGroups.Diminished);
-
             ScaleNames = new Dictionary<ScaleTypes, string>();
             ScaleNames.Add(ScaleTypes.Augmented, "Augmented");
             ScaleNames.Add(ScaleTypes.Aeolian, "Aeolian / Natural Minor");
@@ -132,85 +122,91 @@ namespace SongProofWP8
             ScaleNames.Add(ScaleTypes.WholeTone, "Whole Tone");
 
             ScaleLib = new Dictionary<ScaleTypes, string>();
-            ScaleLib.Add(ScaleTypes.Augmented, "313131");
-            ScaleLib.Add(ScaleTypes.Aeolian, "2122122");
-            ScaleLib.Add(ScaleTypes.BebopDominant, "22122111");
-            ScaleLib.Add(ScaleTypes.BebopMajor, "22121121");
-            ScaleLib.Add(ScaleTypes.BebopMinor1, "21112212");
-            ScaleLib.Add(ScaleTypes.BebopMinor2, "21221121");
-            ScaleLib.Add(ScaleTypes.Blues, "321132");
-            ScaleLib.Add(ScaleTypes.DiminishedH, "12121212");
-            ScaleLib.Add(ScaleTypes.DiminishedW, "21212121");
-            ScaleLib.Add(ScaleTypes.DiminishedWholeTone, "1212222");
-            ScaleLib.Add(ScaleTypes.Dorian, "2122212");
-            ScaleLib.Add(ScaleTypes.HarmonicMajor, "2212131");
-            ScaleLib.Add(ScaleTypes.HarmonicMinor, "2122131");
-            ScaleLib.Add(ScaleTypes.HarmonicMinorMode6, "3121221");
-            ScaleLib.Add(ScaleTypes.Hindu, "2212122");
-            ScaleLib.Add(ScaleTypes.Ionian, "2212221");
-            ScaleLib.Add(ScaleTypes.Locrian1, "1221222");
-            ScaleLib.Add(ScaleTypes.Locrian2, "2121222");
-            ScaleLib.Add(ScaleTypes.Lydian, "2221221");
-            ScaleLib.Add(ScaleTypes.LydianAugmented, "2222121");
-            ScaleLib.Add(ScaleTypes.LydianDominant, "2221212");
-            ScaleLib.Add(ScaleTypes.MelodicMinorAscending, "2122221");
-            ScaleLib.Add(ScaleTypes.Mixolydian, "2212212");
-            ScaleLib.Add(ScaleTypes.PentatonicMajor, "22323");
-            ScaleLib.Add(ScaleTypes.PentatonicMinor, "32232");
-            ScaleLib.Add(ScaleTypes.Phrygian, "1222122");
-            ScaleLib.Add(ScaleTypes.SpanishJewish, "1312122");
-            ScaleLib.Add(ScaleTypes.WholeTone, "222222");
+            ScaleLib.Add(ScaleTypes.Augmented, "31313");
+            ScaleLib.Add(ScaleTypes.Aeolian, "212212");
+            ScaleLib.Add(ScaleTypes.BebopDominant, "2212211");
+            ScaleLib.Add(ScaleTypes.BebopMajor, "2212112");
+            ScaleLib.Add(ScaleTypes.BebopMinor1, "2111221");
+            ScaleLib.Add(ScaleTypes.BebopMinor2, "2122112");
+            ScaleLib.Add(ScaleTypes.Blues, "32113");
+            ScaleLib.Add(ScaleTypes.DiminishedH, "1212121");
+            ScaleLib.Add(ScaleTypes.DiminishedW, "2121212");
+            ScaleLib.Add(ScaleTypes.DiminishedWholeTone, "121222");
+            ScaleLib.Add(ScaleTypes.Dorian, "212221");
+            ScaleLib.Add(ScaleTypes.HarmonicMajor, "221213");
+            ScaleLib.Add(ScaleTypes.HarmonicMinor, "212213");
+            ScaleLib.Add(ScaleTypes.HarmonicMinorMode6, "312122");
+            ScaleLib.Add(ScaleTypes.Hindu, "221212");
+            ScaleLib.Add(ScaleTypes.Ionian, "221222");
+            ScaleLib.Add(ScaleTypes.Locrian1, "122122");
+            ScaleLib.Add(ScaleTypes.Locrian2, "212122");
+            ScaleLib.Add(ScaleTypes.Lydian, "222122");
+            ScaleLib.Add(ScaleTypes.LydianAugmented, "222212");
+            ScaleLib.Add(ScaleTypes.LydianDominant, "222121");
+            ScaleLib.Add(ScaleTypes.MelodicMinorAscending, "212222");
+            ScaleLib.Add(ScaleTypes.Mixolydian, "221221");
+            ScaleLib.Add(ScaleTypes.PentatonicMajor, "2232");
+            ScaleLib.Add(ScaleTypes.PentatonicMinor, "3223");
+            ScaleLib.Add(ScaleTypes.Phrygian, "122212");
+            ScaleLib.Add(ScaleTypes.SpanishJewish, "131212");
+            ScaleLib.Add(ScaleTypes.WholeTone, "22222");
 
-            MajorScales = new Dictionary<ScaleTypes, string>();
-            MajorScales.Add(ScaleTypes.Ionian, ScaleLib[ScaleTypes.Ionian]);
-            MajorScales.Add(ScaleTypes.PentatonicMajor, ScaleLib[ScaleTypes.PentatonicMajor]);
-            MajorScales.Add(ScaleTypes.Lydian, ScaleLib[ScaleTypes.Lydian]);
-            MajorScales.Add(ScaleTypes.BebopMajor, ScaleLib[ScaleTypes.BebopMajor]);
-            MajorScales.Add(ScaleTypes.HarmonicMajor, ScaleLib[ScaleTypes.HarmonicMajor]);
-            MajorScales.Add(ScaleTypes.LydianAugmented, ScaleLib[ScaleTypes.LydianAugmented]);
-            MajorScales.Add(ScaleTypes.Augmented, ScaleLib[ScaleTypes.Augmented]);
-            MajorScales.Add(ScaleTypes.HarmonicMinorMode6, ScaleLib[ScaleTypes.HarmonicMinorMode6]);
-            MajorScales.Add(ScaleTypes.DiminishedH, ScaleLib[ScaleTypes.DiminishedH]);
-            MajorScales.Add(ScaleTypes.Blues, ScaleLib[ScaleTypes.Blues]);
+            MajorScales = new List<KVTuple<string, string>>();
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Ionian], ScaleLib[ScaleTypes.Ionian]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMajor], ScaleLib[ScaleTypes.PentatonicMajor]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Lydian], ScaleLib[ScaleTypes.Lydian]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopMajor], ScaleLib[ScaleTypes.BebopMajor]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.HarmonicMajor], ScaleLib[ScaleTypes.HarmonicMajor]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.LydianAugmented], ScaleLib[ScaleTypes.LydianAugmented]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Augmented], ScaleLib[ScaleTypes.Augmented]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.HarmonicMinorMode6], ScaleLib[ScaleTypes.HarmonicMinorMode6]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedH], ScaleLib[ScaleTypes.DiminishedH]));
+            MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Blues], ScaleLib[ScaleTypes.Blues]));
 
-            DominantScales = new Dictionary<ScaleTypes, string>();
-            DominantScales.Add(ScaleTypes.Mixolydian, ScaleLib[ScaleTypes.Mixolydian]);
-            DominantScales.Add(ScaleTypes.PentatonicMajor, ScaleLib[ScaleTypes.PentatonicMajor]);
-            DominantScales.Add(ScaleTypes.BebopDominant, ScaleLib[ScaleTypes.BebopDominant]);
-            DominantScales.Add(ScaleTypes.SpanishJewish, ScaleLib[ScaleTypes.SpanishJewish]);
-            DominantScales.Add(ScaleTypes.LydianDominant, ScaleLib[ScaleTypes.LydianDominant]);
-            DominantScales.Add(ScaleTypes.Hindu, ScaleLib[ScaleTypes.Hindu]);
-            DominantScales.Add(ScaleTypes.WholeTone, ScaleLib[ScaleTypes.WholeTone]);
-            DominantScales.Add(ScaleTypes.DiminishedH, ScaleLib[ScaleTypes.DiminishedH]);
-            DominantScales.Add(ScaleTypes.DiminishedWholeTone, ScaleLib[ScaleTypes.DiminishedWholeTone]);
-            DominantScales.Add(ScaleTypes.Blues, ScaleLib[ScaleTypes.Blues]);
+            DominantScales = new List<KVTuple<string, string>>();
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Mixolydian], ScaleLib[ScaleTypes.Mixolydian]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMajor], ScaleLib[ScaleTypes.PentatonicMajor]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopDominant], ScaleLib[ScaleTypes.BebopDominant]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.SpanishJewish], ScaleLib[ScaleTypes.SpanishJewish]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.LydianDominant], ScaleLib[ScaleTypes.LydianDominant]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Hindu], ScaleLib[ScaleTypes.Hindu]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.WholeTone], ScaleLib[ScaleTypes.WholeTone]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedH], ScaleLib[ScaleTypes.DiminishedH]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedWholeTone], ScaleLib[ScaleTypes.DiminishedWholeTone]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Blues], ScaleLib[ScaleTypes.Blues]));
 
-            SuspendedScales = new Dictionary<ScaleTypes, string>();
-            SuspendedScales.Add(ScaleTypes.Mixolydian, ScaleLib[ScaleTypes.Mixolydian]);
-            SuspendedScales.Add(ScaleTypes.PentatonicMajor, ScaleLib[ScaleTypes.PentatonicMajor]);
-            SuspendedScales.Add(ScaleTypes.Bebop, "22122111");
+            SuspendedScales = new List<KVTuple<string, string>>();
+            SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Mixolydian], ScaleLib[ScaleTypes.Mixolydian]));
+            SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMajor], ScaleLib[ScaleTypes.PentatonicMajor]));
+            SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], "2212211"));
 
-            MinorScales = new Dictionary<ScaleTypes, string>();
-            MinorScales.Add(ScaleTypes.Dorian, ScaleLib[ScaleTypes.Dorian]);
-            MinorScales.Add(ScaleTypes.PentatonicMinor, ScaleLib[ScaleTypes.PentatonicMinor]);
-            MinorScales.Add(ScaleTypes.BebopMinor1, ScaleLib[ScaleTypes.BebopMinor1]);
-            MinorScales.Add(ScaleTypes.MelodicMinorAscending, ScaleLib[ScaleTypes.MelodicMinorAscending]);
-            MinorScales.Add(ScaleTypes.BebopMinor2, ScaleLib[ScaleTypes.BebopMinor2]);
-            MinorScales.Add(ScaleTypes.Blues, ScaleLib[ScaleTypes.Blues]);
-            MinorScales.Add(ScaleTypes.HarmonicMinor, ScaleLib[ScaleTypes.HarmonicMinor]);
-            MinorScales.Add(ScaleTypes.DiminishedW, ScaleLib[ScaleTypes.DiminishedW]);
-            MinorScales.Add(ScaleTypes.Phrygian, ScaleLib[ScaleTypes.Phrygian]);
-            MinorScales.Add(ScaleTypes.Aeolian, ScaleLib[ScaleTypes.Aeolian]);
+            MinorScales = new List<KVTuple<string, string>>();
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Dorian], ScaleLib[ScaleTypes.Dorian]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMinor], ScaleLib[ScaleTypes.PentatonicMinor]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopMinor1], ScaleLib[ScaleTypes.BebopMinor1]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.MelodicMinorAscending], ScaleLib[ScaleTypes.MelodicMinorAscending]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopMinor2], ScaleLib[ScaleTypes.BebopMinor2]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Blues], ScaleLib[ScaleTypes.Blues]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.HarmonicMinor], ScaleLib[ScaleTypes.HarmonicMinor]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedW], ScaleLib[ScaleTypes.DiminishedW]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Phrygian], ScaleLib[ScaleTypes.Phrygian]));
+            MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Aeolian], ScaleLib[ScaleTypes.Aeolian]));
 
-            HalfDiminishedScales = new Dictionary<ScaleTypes, string>();
-            HalfDiminishedScales.Add(ScaleTypes.Locrian1, ScaleLib[ScaleTypes.Locrian1]);
-            HalfDiminishedScales.Add(ScaleTypes.Locrian2, ScaleLib[ScaleTypes.Locrian2]);
-            HalfDiminishedScales.Add(ScaleTypes.Bebop, "12211122");
+            HalfDiminishedScales = new List<KVTuple<string, string>>();
+            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian1], ScaleLib[ScaleTypes.Locrian1]));
+            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian2], ScaleLib[ScaleTypes.Locrian2]));
+            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], "1221112"));
 
-            DiminishedScales = new Dictionary<ScaleTypes, string>();
-            DiminishedScales.Add(ScaleTypes.DiminishedW, ScaleLib[ScaleTypes.DiminishedW]);
+            DiminishedScales = new List<KVTuple<string, string>>();
+            DiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedW], ScaleLib[ScaleTypes.DiminishedW]));
 
-            DictionariesBuilt = true;
+            ScaleDivisionNames = new Dictionary<string, List<KVTuple<string, string>>>();
+            ScaleDivisionNames.Add("Major", MajorScales);
+            ScaleDivisionNames.Add("Dominant", DominantScales);
+            ScaleDivisionNames.Add("Suspended", SuspendedScales);
+            ScaleDivisionNames.Add("Minor", MinorScales);
+            ScaleDivisionNames.Add("Half Diminished", HalfDiminishedScales);
+            ScaleDivisionNames.Add("Diminished", DiminishedScales);
 
             DifficultyLevels = new Difficulties[3] { Difficulties.Easy, Difficulties.Medium, Difficulties.Hard };
         }
@@ -224,33 +220,9 @@ namespace SongProofWP8
         /// <param name="showSharp">Denotes if this scale
         /// should represented with sharps or flats</param>
         /// <returns>The manipulated scale</returns>
-        public static Scale MakeScale(string starting_key, ScaleGroups scale_group, ScaleTypes scale_name, bool showSharp)
+        public static Scale MakeScale(string starting_key, KVTuple<string, string> scale, bool showSharp)
         {
-            Dictionary<ScaleTypes, string> group;
-            switch (scale_group)
-            {
-                case ScaleGroups.Diminished:
-                    group = DiminishedScales;
-                    break;
-                case ScaleGroups.Dominant:
-                    group = DominantScales;
-                    break;
-                case ScaleGroups.HalfDiminished:
-                    group = HalfDiminishedScales;
-                    break;
-                case ScaleGroups.Minor:
-                    group = MinorScales;
-                    break;
-                case ScaleGroups.Suspended:
-                    group = SuspendedScales;
-                    break;
-                case ScaleGroups.Major:
-                default:
-                    group = MajorScales;
-                    break;
-            }
-            string str_scale = group[scale_name];
-            string[] scale = new string[str_scale.Length + 1];
+            string[] scale_result = new string[scale.Value.Length + 1];
             string[] piano = showSharp ? PianoSharp : PianoFlat;
             int index = 0;
 
@@ -272,15 +244,15 @@ namespace SongProofWP8
                 }
             }
             //put it in
-            scale[0] = piano[index];
+            scale_result[0] = piano[index];
 
             //then find the rest
-            for (int i = 0; i < scale.Length; i++)
+            for (int i = 0; i < scale.Value.Length; i++)
             {
-                index += int.Parse(scale[i]);
-                scale[i + 1] = piano[index];
+                index = (index + int.Parse(scale.Value[i].ToString())) % piano.Length;
+                scale_result[i + 1] = piano[index];
             }
-            Scale result = new Scale(ScaleNames[scale_name], scale);
+            Scale result = new Scale(starting_key + " " + scale.Key, scale_result);
             return result;
         }
 
@@ -310,6 +282,21 @@ namespace SongProofWP8
                 results[i] = temp;
             }
             return results;
+        }
+
+        public static bool IsANumber(string input)
+        {
+            for (int i = 0; i < input.Length; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (input[i] == j.ToString()[0])
+                        break;
+                    else if (input[i] != j.ToString()[0] && j == 9)
+                        return false;
+                }
+            }
+            return true;
         }
 
     }

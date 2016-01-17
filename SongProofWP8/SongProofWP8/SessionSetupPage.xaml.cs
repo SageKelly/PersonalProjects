@@ -1,6 +1,7 @@
 ﻿using SongProofWP8.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -24,20 +25,43 @@ namespace SongProofWP8
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SessionSetupPage : Page
+    public sealed partial class SessionSetupPage : Page, INotifyPropertyChanged
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        public List<string> ScaleGroups;
+        bool ScaleGroupSelected = false;
+        bool ScaleSelected = false;
+        bool KeySelected = false;
+        bool DifficultySelected = false;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private int note_amount;
+
+        public int NoteAmount
+        {
+            get
+            {
+                return note_amount;
+            }
+            set
+            {
+                if (note_amount != value)
+                {
+                    note_amount = value;
+                    OnPropertyChanged("NoteAmount");
+                }
+            }
+        }
 
         public SessionSetupPage()
         {
-            ScaleGroups = ScaleResources.ScaleDivisionNames.Keys.ToList();
             this.InitializeComponent();
-            CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames;
+            CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames.Keys;
             CBDifficulty.ItemsSource = ScaleResources.DifficultyLevels;
             CBKey.ItemsSource = ScaleResources.PianoFlat;
+            NoteAmount = ScaleResources.LOWEST_SET;
+            CBScales.IsEnabled = false;
 
             DataContext = this;
             this.navigationHelper = new NavigationHelper(this);
@@ -127,23 +151,98 @@ namespace SongProofWP8
 
         private void ChckSharp_Checked(object sender, RoutedEventArgs e)
         {
+            int index = -1;
+            if (CBKey.SelectedIndex != -1)
+                index = CBKey.SelectedIndex;
             CBKey.ItemsSource = ScaleResources.PianoSharp;
+            CBKey.SelectedIndex = index;
         }
 
         private void ChckSharp_Unchecked(object sender, RoutedEventArgs e)
         {
-            CBKey.ItemsSource = ScaleResources.PianoSharp;
+            int index = -1;
+            if (CBKey.SelectedIndex != -1)
+                index = CBKey.SelectedIndex;
+            CBKey.ItemsSource = ScaleResources.PianoFlat;
+            CBKey.SelectedIndex = index;
         }
 
         private void BStart_Click(object sender, RoutedEventArgs e)
         {
-            Scale temp = ScaleResources.MakeScale((string)CBKey.SelectedValue, (ScaleResources.ScaleGroups)CBScaleGroups.SelectedValue,
-                (ScaleResources.ScaleTypes)CBScales.SelectedValue, (bool)ChckSharp.IsChecked);
-            ScaleResources.Difficulties Diff = (ScaleResources.Difficulties)CBDifficulty.SelectedItem;
-            SessionManager SM = new SessionManager(new Session(Diff, temp, ScaleResources.MakeQuiz(temp,
-                int.Parse(TBxNoteCount.Text))));
-            Frame.Navigate(typeof(ViewScale), SM);
+            if (ScaleGroupSelected && ScaleSelected && KeySelected && DifficultySelected)
+            {
+                Scale temp = ScaleResources.MakeScale((string)CBKey.SelectedValue,
+                    (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked);
+                ScaleResources.Difficulties Diff = (ScaleResources.Difficulties)CBDifficulty.SelectedItem;
+                SessionManager SM = new SessionManager(new Session(Diff, temp,
+                    (bool)ChckSharp.IsChecked ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
+                    ScaleResources.MakeQuiz(temp,
+                    int.Parse(TBNoteCount.Text))));
+                DataHolder.SM = SM;
+                DataHolder.ShowSharp = (bool)ChckSharp.IsChecked;
+                Frame.Navigate(typeof(ViewScale));
+            }
         }
 
+
+        /// <summary>
+        /// Rigged to the CBScaleGroups.SelectionChanged Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ActivateScales()
+        {
+            if (CBScaleGroups.SelectedIndex != -1)
+            {
+                CBScales.IsEnabled = true;
+                CBScales.ItemsSource = (List<KVTuple<string, string>>)ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
+            }
+        }
+
+        /// <summary>
+        /// Registered to the ComboBox.SelectionChanged Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConfirmSelection(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox sentinel = (ComboBox)sender;
+            if (sentinel == CBScaleGroups)
+            {
+                ActivateScales();
+                ScaleGroupSelected = true;
+            }
+            else if (sentinel == CBScales)
+            {
+                ScaleSelected = true;
+            }
+            else if (sentinel == CBKey)
+            {
+                KeySelected = true;
+            }
+            else if (sentinel == CBDifficulty)
+            {
+                DifficultySelected = true;
+            }
+        }
+
+        private void IncDecValue(object sender, RoutedEventArgs e)
+        {
+            Button sentinel = (Button)sender;
+            if (sentinel == UpButton && NoteAmount < ScaleResources.HIGHEST_SET)
+            {
+                NoteAmount += ScaleResources.LOWEST_INC;
+            }
+            else if (sentinel == DownButton && NoteAmount > ScaleResources.LOWEST_SET)
+            {
+                NoteAmount -= ScaleResources.LOWEST_INC;
+            }
+        }
+
+        private void OnPropertyChanged(string property_name_)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(property_name_));
+        }
     }
 }

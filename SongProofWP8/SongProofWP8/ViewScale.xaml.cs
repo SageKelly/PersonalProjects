@@ -31,18 +31,14 @@ namespace SongProofWP8
 
         public ViewScale()
         {
+            SM = DataHolder.SM;
             this.InitializeComponent();
-
+            TB_ScaleName.Text = SM.CurrentSession.ScaleUsed.Name;
+            LBScale.ItemsSource = SM.CurrentSession.ScaleUsed.Notes;
+            DataContext = this;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-        }
-
-        public ViewScale(object parameter)
-            : this()
-        {
-            SM = parameter as SessionManager;
-            LBScale.ItemsSource = SM.CurrentSession.ScaleUsed.Notes;
         }
 
         /// <summary>
@@ -111,14 +107,14 @@ namespace SongProofWP8
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            this.navigationHelper.OnNavigatedFrom(e);
+            //PhoneApplicationService.State.add("SessionManager", SM);
         }
 
         #endregion
 
         private void BStart_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame.Navigate(typeof(SessionPage));
         }
     }
 }

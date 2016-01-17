@@ -27,22 +27,24 @@
             <TextBlock Text="Scale Review" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
+
         <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+        <Grid Grid.Row="2" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <StackPanel>
-                <TextBlock Text="Here's the Scale you've chosen:" HorizontalAlignment="Center" FontSize="18.14"/>
-                <ListBox x:Name="LBScale">
-                    <ListBox.ItemsPanel>
+                <TextBlock Text="Here's the Scale you've chosen:" HorizontalAlignment="Center" FontSize="26"/>
+                <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" HorizontalAlignment="Center" FontSize="26"/>
+                <ItemsControl x:Name="LBScale" ItemsSource="{Binding}" >
+                    <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
+                            <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.ItemTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Padding="8,0"/>
+                            <TextBlock Padding="7,0" FontSize="26"  Text="{Binding}"/>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
             <Button x:Name="BStart" Content="Begin Proofing" Click="BStart_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         </Grid>

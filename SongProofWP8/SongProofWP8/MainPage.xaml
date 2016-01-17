@@ -14,10 +14,11 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="19,0,0,0">
-            <TextBlock Grid.Row="0" Text="SCALE - PROOF" FontSize="18.14" Margin="0,12,0,0" FontFamily="Segoe WP"/>
+            <TextBlock Grid.Row="0" Text="SONG - PROOF" FontSize="18.14" Margin="0,12,0,0" FontFamily="Segoe WP"/>
+            <TextBlock Text="Become..." Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
         <StackPanel Grid.Row="1" x:Name="buttonStack" Orientation="Vertical" VerticalAlignment="Center">
-            <Button x:Name="BStart" Content="Start New Session" Click="ToSessionSetup" HorizontalAlignment="Center"/>
+            <Button x:Name="B_ScaleProof" Content="Scale - Proof" Click="ToSessionSetup" HorizontalAlignment="Center"/>
             <Button x:Name="BQuit" Content="Quit"  Visibility="Collapsed" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>

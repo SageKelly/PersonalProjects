@@ -7,8 +7,145 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+    <Page.Resources>
+        <Storyboard x:Name="FadeIn" >
+            <DoubleAnimation Storyboard.TargetName="LBScale"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.25">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="FadeOut" >
+            <DoubleAnimation Storyboard.TargetName="LBScale"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0" Duration="0:0:0.25">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Geometry x:Key="Checkmark">F1 M 0,0 C 53.92,-96.96 103.84,-198.4 294.08,-343.36 L 231.68,-399.2 C 111.52,-309.92 39.84,-215.2 -9.12,-112.8
+		 -65.6,-136.48 -77.92,-166.08 -100.48,-201.12 -122.08,-180.16 -164.48,-143.2 -164.48,-143.2 -101.92,-103.04 -59.68,-75.2 0,0 z</Geometry>
+        <Geometry x:Key="X">F1 M 0,0 L -37.6,37.6 C 67.04,187.36 51.36,107.68 107.04,187.36 51.36,268.32 67.04,187.36 -37.6,339.68
+		L 0,377.6 C 152.48,272.8 71.52,288.48 152.48,232.8 232.16,288.48 152.48,272.8 302.08,377.6
+		L 340,339.68 C 237.92,187.36 252.16,268.32 197.92,187.36 252.16,107.68 237.92,187.36 340,37.6
+		L 302.08,0 C 152.48,101.92 232.16,87.68 152.48,141.92 71.52,87.68 152.48,101.92 0,0 z</Geometry>
+        <Storyboard x:Name="PathInOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="NoteCheckSymbol">
+        		<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:0.7" Value="1"/>
+        		<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
+        	</DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <PathGeometry x:Key="Test" FillRule="Nonzero">
+        	<PathFigure IsFilled="True" IsClosed="True" StartPoint="0,0">
+        		<BezierSegment Point3="294.08,-343.36" Point2="103.84,-198.4" Point1="53.92,-96.96"/>
+        		<LineSegment Point="231.68,-399.2"/>
+        		<BezierSegment Point3="-9.12,-112.8" Point2="39.84,-215.2" Point1="111.52,-309.92"/>
+        		<BezierSegment Point3="-100.48,-201.12" Point2="-77.92,-166.08" Point1="-65.6,-136.48"/>
+        		<BezierSegment Point3="-164.48,-143.2" Point2="-164.48,-143.2" Point1="-122.08,-180.16"/>
+        		<BezierSegment Point3="0,0" Point2="-59.68,-75.2" Point1="-101.92,-103.04"/>
+        	</PathFigure>
+        </PathGeometry>
+    </Page.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="SCALE - PROOF" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock x:Name="TB_ScaleName" Text="{Binding ScaleName}" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+        </StackPanel>
+
+        <!-- Timer -->
+        <TextBlock x:Name="TB_Timer" Grid.Row="1" Text="{Binding TimerText}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="48"/>
+
+        <!-- Note Info -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Proofing Progress" HorizontalAlignment="Center"
+                       Margin="0,2" VerticalAlignment="Center" FontSize="16"/>
+                <TextBlock x:Name="TB_NoteCount" Text="{Binding NoteCount}" HorizontalAlignment="Center"
+                       Margin="0,2" VerticalAlignment="Center" FontSize="32"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Note Index" HorizontalAlignment="Center"
+                       Margin="0,2" VerticalAlignment="Center" FontSize="16"/>
+                <TextBlock x:Name="TB_NoteNumber" Text="{Binding NoteNumber}" HorizontalAlignment="Center"
+                       Margin="0,2" VerticalAlignment="Center" FontSize="32"/>
+            </StackPanel>
+            <Border Grid.Column="2" BorderThickness="2.5" CornerRadius="6" BorderBrush="White">
+                <Path x:Name="NoteCheckSymbol" Data="{StaticResource Test}" RenderTransformOrigin="0,0" Stretch="Uniform" StrokeThickness="0" Opacity="0">
+                    <Path.Fill>
+                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,1">
+                            <GradientStop Color="#57009335"/>
+                            <GradientStop Color="#D2FFFF04" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Border>
+            <!--Check Mark and "X" Go in column 3-->
+        </Grid>
+
+        <!--Reveal Scale (for redemption)-->
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ItemsControl x:Name="LBScale" Opacity="0" ItemsSource="{Binding}" VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Padding="7,0" FontSize="26"  Text="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ToggleButton x:Name="B_Cheat" Content="Cheat?" VerticalAlignment="Center" HorizontalAlignment="Center" Click="ToggleScaleView"/>
+        </StackPanel>
+        
+        <!-- Note Grid -->
+        <ListView x:Name="IC_Buttons" Grid.Row="4" ItemsSource="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapGrid HorizontalAlignment="Center" VerticalAlignment="Center"
+                              ItemWidth="50" MaximumRowsOrColumns="6" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding}" Padding="8,0" Click="NoteClick" HorizontalAlignment="Left"
+                            VerticalAlignment="Top" MinWidth="50"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Button Grid -->
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="B_Start" Grid.Column="0" Content="Start" HorizontalAlignment="Center"
+                    Background="Green" Foreground="White" Click="B_Start_Click"/>
+            <Button x:Name="B_ViewResults" Grid.Column="1" Content="View Results" HorizontalAlignment="Center"
+                    Background="Blue" Foreground="White" Click="B_ViewResults_Click"/>
+        </Grid>
     </Grid>
 </Page>
