@@ -26,6 +26,7 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
+        <!--
         <Geometry x:Key="Checkmark">F1 M 0,0 C 53.92,-96.96 103.84,-198.4 294.08,-343.36 L 231.68,-399.2 C 111.52,-309.92 39.84,-215.2 -9.12,-112.8
 		 -65.6,-136.48 -77.92,-166.08 -100.48,-201.12 -122.08,-180.16 -164.48,-143.2 -164.48,-143.2 -101.92,-103.04 -59.68,-75.2 0,0 z</Geometry>
         <Geometry x:Key="X">F1 M 0,0 L -37.6,37.6 C 67.04,187.36 51.36,107.68 107.04,187.36 51.36,268.32 67.04,187.36 -37.6,339.68
@@ -50,12 +51,13 @@
         		<BezierSegment Point3="0,0" Point2="-59.68,-75.2" Point1="-101.92,-103.04"/>
         	</PathFigure>
         </PathGeometry>
+        -->
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -91,7 +93,7 @@
                        Margin="0,2" VerticalAlignment="Center" FontSize="32"/>
             </StackPanel>
             <Border Grid.Column="2" BorderThickness="2.5" CornerRadius="6" BorderBrush="White">
-                <Path x:Name="NoteCheckSymbol" Data="{StaticResource Test}" RenderTransformOrigin="0,0" Stretch="Uniform" StrokeThickness="0" Opacity="0">
+                <Path x:Name="NoteCheckSymbol" Data="F1 M 0,0 C 53.92,-96.96 103.84,-198.4 294.08,-343.36 L 231.68,-399.2 C 111.52,-309.92 39.84,-215.2 -9.12,-112.8 -65.6,-136.48 -77.92,-166.08 -100.48,-201.12 -122.08,-180.16 -164.48,-143.2 -164.48,-143.2 -101.92,-103.04 -59.68,-75.2 0,0 z" RenderTransformOrigin="0,0" Stretch="Uniform" StrokeThickness="0" Opacity="0">
                     <Path.Fill>
                         <LinearGradientBrush EndPoint="1,1" StartPoint="0,1">
                             <GradientStop Color="#57009335"/>
@@ -125,13 +127,13 @@
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapGrid HorizontalAlignment="Center" VerticalAlignment="Center"
-                              ItemWidth="50" MaximumRowsOrColumns="6" Orientation="Horizontal"/>
+                               MaximumRowsOrColumns="6" Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Button Content="{Binding}" Padding="8,0" Click="NoteClick" HorizontalAlignment="Left"
-                            VerticalAlignment="Top" MinWidth="50"/>
+                            VerticalAlignment="Top" MinWidth="60" FontSize="32"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
