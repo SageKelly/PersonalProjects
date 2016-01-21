@@ -26,16 +26,18 @@ namespace SongProofWP8
             SM = new SessionManager(new Session(Diff, temp,
                 sharp ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
                 ScaleResources.MakeQuiz(temp, note_count)));
+            SM.ParsedScale = ScaleResources.ParseScale(Scale);
             ShowSharp = sharp;
         }
 
         public static void SetupTest()
         {
-            if(Scale!=null)
+            if (Scale != null)
             {
                 SetupTest(Key, Scale, ShowSharp, Diff, NoteCount);
             }
         }
+
 
     }
 }

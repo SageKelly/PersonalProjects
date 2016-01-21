@@ -29,14 +29,17 @@ namespace SongProofWP8
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
         public SessionManager SM;
+        public string[] ParsedScale;
 
         public ViewScale()
         {
             SM = DataHolder.SM;
+
             this.InitializeComponent();
             TB_ScaleName.Text = SM.CurrentSession.ScaleUsed.Name;
             LBScale.ItemsSource = SM.CurrentSession.ScaleUsed.Notes;
-            DataContext = this;
+            LBScaleInterval.ItemsSource = SM.ParsedScale;
+            DataContext = SM;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
