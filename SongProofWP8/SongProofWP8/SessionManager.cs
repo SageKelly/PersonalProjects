@@ -25,6 +25,8 @@ namespace SongProofWP8
 
         public Session CurrentSession;
 
+        public string[] ParsedScale;
+
         public DispatcherTimer Timer;
 
         public SessionManager()
