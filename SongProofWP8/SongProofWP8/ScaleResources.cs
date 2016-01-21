@@ -299,5 +299,27 @@ namespace SongProofWP8
             return true;
         }
 
+
+        public static string[] ParseScale(KVTuple<string, string> scale)
+        {
+            string[] result = new string[scale.Value.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                switch (scale.Value[i])
+                {
+                    case '1':
+                        result[i] = "H";
+                        break;
+                    case '2':
+                        result[i] = "W";
+                        break;
+                    case '3':
+                    default:
+                        result[i] = "-3";
+                        break;
+                }
+            }
+            return result;
+        }
     }
 }

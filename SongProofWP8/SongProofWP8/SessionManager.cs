@@ -27,6 +27,8 @@ namespace SongProofWP8
 
         public DispatcherTimer Timer;
 
+        public string[] ParsedScale;
+
         public SessionManager()
         {
             Notes = new List<NoteData>();
