@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -160,6 +161,14 @@ namespace SongProofWP8
             SetTimerText();
             B_ViewResults.IsEnabled = false;
             NoteCount = (curIndex + 1) + " / " + curSession.Notes.Length;
+            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+        }
+
+        void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
+        {
+            e.Handled = true;
+            if (Frame.CanGoBack)
+                Frame.GoBack();
         }
 
         private void NoteClick(object sender, RoutedEventArgs e)
@@ -181,8 +190,8 @@ namespace SongProofWP8
 
                 RecordNoteInput(noteIndex, correct);
                 NextNote();
-                NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
-                PathInOut.Begin();
+                //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
+                //PathInOut.Begin();
             }
         }
 

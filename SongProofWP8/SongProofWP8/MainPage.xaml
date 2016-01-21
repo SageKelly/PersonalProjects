@@ -18,7 +18,7 @@
             <TextBlock Text="Become..." Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
         <StackPanel Grid.Row="1" x:Name="buttonStack" Orientation="Vertical" VerticalAlignment="Center">
-            <Button x:Name="B_ScaleProof" Content="Scale - Proof" Click="ToSessionSetup" HorizontalAlignment="Center"/>
+            <Button x:Name="B_ScaleProof" Content="Scale - Proof" Click="ToSessionSetup" HorizontalAlignment="Center" FontSize="32"/>
             <Button x:Name="BQuit" Content="Quit"  Visibility="Collapsed" HorizontalAlignment="Center"/>
         </StackPanel>
     </Grid>
