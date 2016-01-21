@@ -1,34 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/2010/manifest" xmlns:m2="http://schemas.microsoft.com/appx/2013/manifest" xmlns:m3="http://schemas.microsoft.com/appx/2014/manifest" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest">
-  <Identity Name="a181a85d-ecb9-437a-a49b-fa00035f0fd5" Publisher="CN=Kasha" Version="1.0.0.0" />
-  <mp:PhoneIdentity PhoneProductId="a181a85d-ecb9-437a-a49b-fa00035f0fd5" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+
+  <Identity Name="a181a85d-ecb9-437a-a49b-fa00035f0fd5"
+            Publisher="CN=Kasha"
+            Version="1.0.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="a181a85d-ecb9-437a-a49b-fa00035f0fd5" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
   <Properties>
     <DisplayName>SongProofWP8</DisplayName>
     <PublisherDisplayName>Kasha</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
+
   <Prerequisites>
     <OSMinVersion>6.3.1</OSMinVersion>
     <OSMaxVersionTested>6.3.1</OSMaxVersionTested>
   </Prerequisites>
+  
   <Resources>
-    <Resource Language="x-generate" />
+    <Resource Language="x-generate"/>
   </Resources>
+
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SongProofWP8.App">
-      <m3:VisualElements DisplayName="Song - Proof" Square150x150Logo="Assets\Logo.png" Square44x44Logo="Assets\SmallLogo.png" Description="A tool designed to help users learn the basics of music theory" ForegroundText="light" BackgroundColor="transparent" ToastCapable="false">
-        <m3:LockScreen BadgeLogo="Assets\BadgeLogo.png" Notification="badge" />
-        <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png">
-        </m3:DefaultTile>
-        <m3:SplashScreen Image="Assets\SplashScreen.png" />
-        <m3:InitialRotationPreference>
-          <m3:Rotation Preference="portrait" />
-        </m3:InitialRotationPreference>
-      </m3:VisualElements>
+    <Application Id="App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="SongProofWP8.App">
+        <m3:VisualElements
+            DisplayName="SongProofWP8"
+            Square150x150Logo="Assets\Logo.png"
+            Square44x44Logo="Assets\SmallLogo.png"
+            Description="SongProofWP8"
+            ForegroundText="light"
+            BackgroundColor="transparent">
+            <m3:DefaultTile Wide310x150Logo="Assets\WideLogo.png" Square71x71Logo="Assets\Square71x71Logo.png"/>
+            <m3:SplashScreen Image="Assets\SplashScreen.png"/>
+        </m3:VisualElements>
     </Application>
   </Applications>
   <Capabilities>
     <Capability Name="internetClientServer" />
-    <Capability Name="removableStorage" />
   </Capabilities>
 </Package>

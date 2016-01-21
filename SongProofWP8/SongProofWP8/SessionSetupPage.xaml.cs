@@ -64,7 +64,6 @@ namespace SongProofWP8
             CBScales.IsEnabled = false;
 
             DataContext = this;
-
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
@@ -143,10 +142,10 @@ namespace SongProofWP8
         #endregion
         private void GoBack(object sender, BackPressedEventArgs e)
         {
-            e.Handled = true;
             if (Frame.CanGoBack)
             {
                 Frame.GoBack();
+                e.Handled = true;
             }
         }
 
@@ -172,8 +171,15 @@ namespace SongProofWP8
         {
             if (ScaleGroupSelected && ScaleSelected && KeySelected && DifficultySelected)
             {
-                DataHolder.SetupTest((string)CBKey.SelectedValue, (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked,
-                    (ScaleResources.Difficulties)CBDifficulty.SelectedItem, int.Parse(TBNoteCount.Text));
+                Scale temp = ScaleResources.MakeScale((string)CBKey.SelectedValue,
+                    (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked);
+                ScaleResources.Difficulties Diff = (ScaleResources.Difficulties)CBDifficulty.SelectedItem;
+                SessionManager SM = new SessionManager(new Session(Diff, temp,
+                    (bool)ChckSharp.IsChecked ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
+                    ScaleResources.MakeQuiz(temp,
+                    int.Parse(TBNoteCount.Text))));
+                DataHolder.SM = SM;
+                DataHolder.ShowSharp = (bool)ChckSharp.IsChecked;
                 Frame.Navigate(typeof(ViewScale));
             }
         }

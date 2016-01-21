@@ -12,7 +12,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -22,15 +21,12 @@
             <TextBlock Text="Proofing Results" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
-        <!-- Accuracy Percentage -->
-        <TextBlock x:Name="TB_Percent" Grid.Row="1" FontSize="36"/>
-        
         <!-- Note Info-->
-        <ListView x:Name="LV_Results" Grid.Row="2" SelectionMode="None" ItemsSource="{Binding}">
+        <ListView x:Name="LV_Results" Grid.Row="1" SelectionMode="None" ItemsSource="{Binding}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Note}" FontSize="32" Padding="4,4,8,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        <TextBlock Text="{Binding Note}" FontSize="32" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
                         <!--
                             <ToggleButton.Triggers>
                                 <EventTrigger  RoutedEvent="ToggleButton.Checked">
@@ -63,20 +59,19 @@
                                 </EventTrigger>
                             </ToggleButton.Triggers>
                             -->
-                        <Border x:Name="border" CornerRadius="6" BorderThickness="2.5" Padding="4,0" BorderBrush="White">
+                        <Border x:Name="border" CornerRadius="6" BorderThickness="2.5" BorderBrush="White">
                             <StackPanel Background="Black" Orientation="Vertical">
-                                <TextBlock Text="{Binding StrCorrectGuesses}" TextWrapping="Wrap" FontSize="18"/>
                                 <TextBlock Text="{Binding StrCount}" TextWrapping="Wrap" FontSize="18"/>
+                                <TextBlock Text="{Binding StrCorrectGuesses}" TextWrapping="Wrap" FontSize="18"/>
                                 <TextBlock Text="{Binding StrAvgGuessingTime}" TextWrapping="Wrap" FontSize="18"/>
                             </StackPanel>
                         </Border>
-                        <TextBlock Text="-------------------------" FontSize="32"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

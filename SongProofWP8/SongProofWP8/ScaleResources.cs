@@ -70,7 +70,7 @@ namespace SongProofWP8
         /// <summary>
         /// Represents the lowest amount of notes that can exist within a test
         /// </summary>
-        public const int LOWEST_SET = 50;
+        public const int LOWEST_SET = 10;
         /// <summary>
         /// Represents the incrementation amount that should be used to
         /// increase/decrease the note amount

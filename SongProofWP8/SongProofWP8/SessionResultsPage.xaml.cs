@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,27 +24,18 @@ namespace SongProofWP8
     {
 
         Dictionary<string, NoteAnalytics> Analysis;
+
         public SessionResultsPage()
         {
             this.InitializeComponent();
             Analysis = new Dictionary<string, NoteAnalytics>();
             RunAnalytics();
             DataContext = Analysis.Values;
-            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-
-        }
-
-        void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
-        {
-            e.Handled = true;
-            if (Frame.CanGoBack)
-                Frame.GoBack();
-
+            //LV_Results.ItemsSource = Analysis;
         }
 
         public void RunAnalytics()
         {
-            double percentage = 0;
             Session curSession = DataHolder.SM.CurrentSession;
             string[] scale = curSession.ScaleUsed.Notes;
             foreach (string s in scale)
@@ -63,10 +53,7 @@ namespace SongProofWP8
             foreach (KeyValuePair<string, NoteAnalytics> na in Analysis)
             {
                 na.Value.AvgGuessingTime = na.Value.Count == 0 ? 0 : Math.Round(((na.Value.AvgGuessingTime / na.Value.Count) / 1000), 2);
-                percentage += na.Value.CorrectGuesses;
             }
-            percentage = Math.Round(percentage / curSession.Notes.Length, 2);
-            TB_Percent.Text = "Score: " + (percentage * 100) + "%";
         }
 
         /// <summary>
@@ -85,7 +72,6 @@ namespace SongProofWP8
 
         private void RestartSession(object sender, RoutedEventArgs e)
         {
-            DataHolder.SetupTest();
             Frame.Navigate(typeof(ViewScale));
         }
 
