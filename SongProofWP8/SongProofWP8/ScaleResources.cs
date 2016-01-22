@@ -48,7 +48,8 @@ namespace SongProofWP8
         {
             Easy = 3000,
             Medium = 1000,
-            Hard = 500
+            Hard = 500,
+            Zen = 0,
         }
 
         public static string[] PianoSharp = new string[] { "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B" };
@@ -208,7 +209,7 @@ namespace SongProofWP8
             ScaleDivisionNames.Add("Half Diminished", HalfDiminishedScales);
             ScaleDivisionNames.Add("Diminished", DiminishedScales);
 
-            DifficultyLevels = new Difficulties[3] { Difficulties.Easy, Difficulties.Medium, Difficulties.Hard };
+            DifficultyLevels = new Difficulties[4] { Difficulties.Zen, Difficulties.Easy, Difficulties.Medium, Difficulties.Hard };
         }
 
         /// <summary>
