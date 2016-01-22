@@ -282,7 +282,10 @@ namespace SongProofWP8
                 if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
                     TickDownTimer.Start();
                 else
+                {
                     NextNote();
+                    countingDown = false;
+                }
                 SessionStarted = true;
                 B_Start.IsEnabled = false;
             }
