@@ -40,6 +40,7 @@
         		<EasingDoubleKeyFrame KeyTime="0:0:1" Value="0"/>
         	</DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <!--
         <PathGeometry x:Key="Test" FillRule="Nonzero">
         	<PathFigure IsFilled="True" IsClosed="True" StartPoint="0,0">
         		<BezierSegment Point3="294.08,-343.36" Point2="103.84,-198.4" Point1="53.92,-96.96"/>
@@ -50,6 +51,7 @@
         		<BezierSegment Point3="0,0" Point2="-59.68,-75.2" Point1="-101.92,-103.04"/>
         	</PathFigure>
         </PathGeometry>
+        -->
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -91,6 +93,7 @@
                        Margin="0,2" VerticalAlignment="Center" FontSize="32"/>
             </StackPanel>
             <Border Grid.Column="2" BorderThickness="2.5" CornerRadius="6" BorderBrush="White">
+                <!--
                 <Path x:Name="NoteCheckSymbol" Data="{StaticResource Test}" RenderTransformOrigin="0,0" Stretch="Uniform" StrokeThickness="0" Opacity="0">
                     <Path.Fill>
                         <LinearGradientBrush EndPoint="1,1" StartPoint="0,1">
@@ -99,6 +102,7 @@
                         </LinearGradientBrush>
                     </Path.Fill>
                 </Path>
+                -->
             </Border>
             <!--Check Mark and "X" Go in column 3-->
         </Grid>
@@ -113,7 +117,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Padding="7,0" FontSize="26"  Text="{Binding}"/>
+                        <TextBlock Padding="9,0" FontSize="26"  Text="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -141,10 +145,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button x:Name="B_Start" Grid.Column="0" Content="Start" HorizontalAlignment="Center"
                     Background="Green" Foreground="White" Click="B_Start_Click"/>
-            <Button x:Name="B_ViewResults" Grid.Column="1" Content="View Results" HorizontalAlignment="Center"
+            <Button x:Name="B_Quit" Grid.Column="1" Content="Quit" HorizontalAlignment="Center"
+                    Background="Red" Foreground="White" Click="B_Quit_Click"/>
+            <Button x:Name="B_ViewResults" Grid.Column="2" Content="View Results" HorizontalAlignment="Center"
                     Background="Blue" Foreground="White" Click="B_ViewResults_Click"/>
         </Grid>
     </Grid>

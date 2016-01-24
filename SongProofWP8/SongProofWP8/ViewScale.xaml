@@ -30,10 +30,22 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="2" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <StackPanel>
+            <StackPanel Orientation="Vertical">
                 <TextBlock Text="Here's the Scale you've chosen:" HorizontalAlignment="Center" FontSize="26"/>
                 <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" HorizontalAlignment="Center" FontSize="26"/>
                 <ItemsControl x:Name="LBScale" ItemsSource="{Binding}" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Padding="7,0" FontSize="26"  Text="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl x:Name="LBScaleSkel" ItemsSource="{Binding}" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>

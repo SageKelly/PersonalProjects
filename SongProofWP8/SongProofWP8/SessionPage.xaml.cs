@@ -181,7 +181,7 @@ namespace SongProofWP8
 
                 RecordNoteInput(noteIndex, correct);
                 NextNote();
-                NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
+                //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
                 PathInOut.Begin();
             }
         }
@@ -270,10 +270,20 @@ namespace SongProofWP8
         {
             if (!SessionStarted)
             {
-                TickDownTimer.Start();
+                if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
+                    TickDownTimer.Start();
+                else
+                    NextNote();
                 SessionStarted = true;
                 B_Start.IsEnabled = false;
             }
+        }
+        
+        private void B_Quit_Click(object sender, RoutedEventArgs e)
+        {
+            if (TickDownTimer.IsEnabled)
+                TickDownTimer.Stop();
+            Frame.Navigate(typeof(MainPage));
         }
 
         private void ToggleScaleView(object sender, RoutedEventArgs e)
