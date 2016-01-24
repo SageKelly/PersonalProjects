@@ -16,7 +16,7 @@ namespace SongProofWP8
             Augmented,
             Aeolian,
             Bebop,
-            BebopDominant,
+            BebopHalfDiminished,
             BebopMajor,
             BebopMinor1,
             BebopMinor2,
@@ -95,7 +95,7 @@ namespace SongProofWP8
             ScaleNames.Add(ScaleTypes.Augmented, "Augmented");
             ScaleNames.Add(ScaleTypes.Aeolian, "Aeolian / Natural Minor");
             ScaleNames.Add(ScaleTypes.Bebop, "Bebop");
-            ScaleNames.Add(ScaleTypes.BebopDominant, "Bebop Dominant");
+            ScaleNames.Add(ScaleTypes.BebopHalfDiminished, "Bebop Half-Diminished");
             ScaleNames.Add(ScaleTypes.BebopMajor, "Bebop Major");
             ScaleNames.Add(ScaleTypes.BebopMinor1, "Bebop Minor 1");
             ScaleNames.Add(ScaleTypes.BebopMinor2, "Bebop Minor 2");
@@ -109,8 +109,8 @@ namespace SongProofWP8
             ScaleNames.Add(ScaleTypes.HarmonicMinorMode6, "6th Mode of Harmonic Minor");
             ScaleNames.Add(ScaleTypes.Hindu, "Hindu");
             ScaleNames.Add(ScaleTypes.Ionian, "Ionian / Major");
-            ScaleNames.Add(ScaleTypes.Locrian1, "Locrian 1 / Half Diminished 1");
-            ScaleNames.Add(ScaleTypes.Locrian2, "Locrian 2 / Half Diminished 2");
+            ScaleNames.Add(ScaleTypes.Locrian1, "Locrian 1 / Half-Diminished 1");
+            ScaleNames.Add(ScaleTypes.Locrian2, "Locrian 2 / Half-Diminished 2");
             ScaleNames.Add(ScaleTypes.Lydian, "Lydian");
             ScaleNames.Add(ScaleTypes.LydianAugmented, "Lydian Augmented");
             ScaleNames.Add(ScaleTypes.LydianDominant, "Lydian Dominiant");
@@ -123,34 +123,35 @@ namespace SongProofWP8
             ScaleNames.Add(ScaleTypes.WholeTone, "Whole Tone");
 
             ScaleLib = new Dictionary<ScaleTypes, string>();
-            ScaleLib.Add(ScaleTypes.Augmented, "31313");
-            ScaleLib.Add(ScaleTypes.Aeolian, "212212");
-            ScaleLib.Add(ScaleTypes.BebopDominant, "2212211");
-            ScaleLib.Add(ScaleTypes.BebopMajor, "2212112");
-            ScaleLib.Add(ScaleTypes.BebopMinor1, "2111221");
-            ScaleLib.Add(ScaleTypes.BebopMinor2, "2122112");
-            ScaleLib.Add(ScaleTypes.Blues, "32113");
-            ScaleLib.Add(ScaleTypes.DiminishedH, "1212121");
-            ScaleLib.Add(ScaleTypes.DiminishedW, "2121212");
-            ScaleLib.Add(ScaleTypes.DiminishedWholeTone, "121222");
-            ScaleLib.Add(ScaleTypes.Dorian, "212221");
-            ScaleLib.Add(ScaleTypes.HarmonicMajor, "221213");
-            ScaleLib.Add(ScaleTypes.HarmonicMinor, "212213");
-            ScaleLib.Add(ScaleTypes.HarmonicMinorMode6, "312122");
-            ScaleLib.Add(ScaleTypes.Hindu, "221212");
-            ScaleLib.Add(ScaleTypes.Ionian, "221222");
-            ScaleLib.Add(ScaleTypes.Locrian1, "122122");
-            ScaleLib.Add(ScaleTypes.Locrian2, "212122");
-            ScaleLib.Add(ScaleTypes.Lydian, "222122");
-            ScaleLib.Add(ScaleTypes.LydianAugmented, "222212");
-            ScaleLib.Add(ScaleTypes.LydianDominant, "222121");
-            ScaleLib.Add(ScaleTypes.MelodicMinorAscending, "212222");
-            ScaleLib.Add(ScaleTypes.Mixolydian, "221221");
-            ScaleLib.Add(ScaleTypes.PentatonicMajor, "2232");
-            ScaleLib.Add(ScaleTypes.PentatonicMinor, "3223");
-            ScaleLib.Add(ScaleTypes.Phrygian, "122212");
-            ScaleLib.Add(ScaleTypes.SpanishJewish, "131212");
-            ScaleLib.Add(ScaleTypes.WholeTone, "22222");
+            ScaleLib.Add(ScaleTypes.Augmented, "313131");
+            ScaleLib.Add(ScaleTypes.Aeolian, "2122122");
+            ScaleLib.Add(ScaleTypes.Bebop, "22122111");
+            ScaleLib.Add(ScaleTypes.BebopHalfDiminished, "12211122");
+            ScaleLib.Add(ScaleTypes.BebopMajor, "22121121");
+            ScaleLib.Add(ScaleTypes.BebopMinor1, "21112212");
+            ScaleLib.Add(ScaleTypes.BebopMinor2, "21221121");
+            ScaleLib.Add(ScaleTypes.Blues, "321132");
+            ScaleLib.Add(ScaleTypes.DiminishedH, "12121212");
+            ScaleLib.Add(ScaleTypes.DiminishedW, "21212121");
+            ScaleLib.Add(ScaleTypes.DiminishedWholeTone, "1212222");
+            ScaleLib.Add(ScaleTypes.Dorian, "2122212");
+            ScaleLib.Add(ScaleTypes.HarmonicMajor, "2212131");
+            ScaleLib.Add(ScaleTypes.HarmonicMinor, "2122131");
+            ScaleLib.Add(ScaleTypes.HarmonicMinorMode6, "3121221");
+            ScaleLib.Add(ScaleTypes.Hindu, "2212122");
+            ScaleLib.Add(ScaleTypes.Ionian, "2212221");
+            ScaleLib.Add(ScaleTypes.Locrian1, "1221222");
+            ScaleLib.Add(ScaleTypes.Locrian2, "2121222");
+            ScaleLib.Add(ScaleTypes.Lydian, "2221221");
+            ScaleLib.Add(ScaleTypes.LydianAugmented, "2222121");
+            ScaleLib.Add(ScaleTypes.LydianDominant, "2221212");
+            ScaleLib.Add(ScaleTypes.MelodicMinorAscending, "2122221");
+            ScaleLib.Add(ScaleTypes.Mixolydian, "2212212");
+            ScaleLib.Add(ScaleTypes.PentatonicMajor, "22323");
+            ScaleLib.Add(ScaleTypes.PentatonicMinor, "32232");
+            ScaleLib.Add(ScaleTypes.Phrygian, "1222122");
+            ScaleLib.Add(ScaleTypes.SpanishJewish, "1312122");
+            ScaleLib.Add(ScaleTypes.WholeTone, "222222");
 
             MajorScales = new List<KVTuple<string, string>>();
             MajorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Ionian], ScaleLib[ScaleTypes.Ionian]));
@@ -167,7 +168,7 @@ namespace SongProofWP8
             DominantScales = new List<KVTuple<string, string>>();
             DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Mixolydian], ScaleLib[ScaleTypes.Mixolydian]));
             DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMajor], ScaleLib[ScaleTypes.PentatonicMajor]));
-            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopDominant], ScaleLib[ScaleTypes.BebopDominant]));
+            DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], ScaleLib[ScaleTypes.Bebop]));
             DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.SpanishJewish], ScaleLib[ScaleTypes.SpanishJewish]));
             DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.LydianDominant], ScaleLib[ScaleTypes.LydianDominant]));
             DominantScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Hindu], ScaleLib[ScaleTypes.Hindu]));
@@ -179,7 +180,7 @@ namespace SongProofWP8
             SuspendedScales = new List<KVTuple<string, string>>();
             SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Mixolydian], ScaleLib[ScaleTypes.Mixolydian]));
             SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.PentatonicMajor], ScaleLib[ScaleTypes.PentatonicMajor]));
-            SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], "2212211"));
+            SuspendedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], ScaleLib[ScaleTypes.Bebop]));
 
             MinorScales = new List<KVTuple<string, string>>();
             MinorScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Dorian], ScaleLib[ScaleTypes.Dorian]));
@@ -196,7 +197,7 @@ namespace SongProofWP8
             HalfDiminishedScales = new List<KVTuple<string, string>>();
             HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian1], ScaleLib[ScaleTypes.Locrian1]));
             HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian2], ScaleLib[ScaleTypes.Locrian2]));
-            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Bebop], "1221112"));
+            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopHalfDiminished],ScaleLib[ScaleTypes.BebopHalfDiminished]));
 
             DiminishedScales = new List<KVTuple<string, string>>();
             DiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedW], ScaleLib[ScaleTypes.DiminishedW]));
@@ -223,7 +224,7 @@ namespace SongProofWP8
         /// <returns>The manipulated scale</returns>
         public static Scale MakeScale(string starting_key, KVTuple<string, string> scale, bool showSharp)
         {
-            string[] scale_result = new string[scale.Value.Length + 1];
+            string[] scale_result = new string[scale.Value.Length];
             string[] piano = showSharp ? PianoSharp : PianoFlat;
             int index = 0;
 
@@ -248,7 +249,7 @@ namespace SongProofWP8
             scale_result[0] = piano[index];
 
             //then find the rest
-            for (int i = 0; i < scale.Value.Length; i++)
+            for (int i = 0; i < scale.Value.Length-1; i++)
             {
                 index = (index + int.Parse(scale.Value[i].ToString())) % piano.Length;
                 scale_result[i + 1] = piano[index];
@@ -270,14 +271,14 @@ namespace SongProofWP8
             Random rng = new Random();
             for (int i = 0; i < results.Length; i++)
             {
-                temp = rng.Next(0, s.Notes.Length);
+                temp = rng.Next(0, s.Notes.Length-1);
                 if (i != 0)
                 {
                     //if this note is the same as the last one...
                     if (results[i - 1] == temp)
                     {
                         //...go up one in the scale, or wrap around
-                        temp = (temp + 1) % s.Notes.Length;
+                        temp = (temp + 1) % s.Notes.Length-1;
                     }
                 }
                 results[i] = temp;

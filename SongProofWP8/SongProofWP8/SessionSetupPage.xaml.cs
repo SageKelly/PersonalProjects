@@ -171,15 +171,8 @@ namespace SongProofWP8
         {
             if (ScaleGroupSelected && ScaleSelected && KeySelected && DifficultySelected)
             {
-                Scale temp = ScaleResources.MakeScale((string)CBKey.SelectedValue,
-                    (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked);
-                ScaleResources.Difficulties Diff = (ScaleResources.Difficulties)CBDifficulty.SelectedItem;
-                SessionManager SM = new SessionManager(new Session(Diff, temp,
-                    (bool)ChckSharp.IsChecked ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
-                    ScaleResources.MakeQuiz(temp,
-                    int.Parse(TBNoteCount.Text))));
-                DataHolder.SM = SM;
-                DataHolder.ShowSharp = (bool)ChckSharp.IsChecked;
+                DataHolder.SetupTest((string)CBKey.SelectedValue, (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked,
+                    (ScaleResources.Difficulties)CBDifficulty.SelectedItem, int.Parse(TBNoteCount.Text));
                 Frame.Navigate(typeof(ViewScale));
             }
         }
