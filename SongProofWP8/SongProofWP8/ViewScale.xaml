@@ -45,6 +45,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <TextBlock Text="Scale Structure:" Padding="0,4" FontSize="26" TextAlignment="Center"/>
                 <ItemsControl x:Name="LBScaleSkel" ItemsSource="{Binding}" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -57,6 +58,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+                <TextBlock Text="Tip: try to memorize the scale the here, or you may have to...&quot;cheat&quot; later." TextWrapping="WrapWholeWords" FontSize="18" FontStyle="Italic" TextAlignment="Center"/>
             </StackPanel>
             <Button x:Name="BStart" Content="Begin Proofing" Click="BStart_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
         </Grid>
