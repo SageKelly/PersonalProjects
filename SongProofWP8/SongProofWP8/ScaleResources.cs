@@ -49,7 +49,11 @@ namespace SongProofWP8
             Easy = 3000,
             Medium = 1000,
             Hard = 500,
+<<<<<<< HEAD
             Zen = 0
+=======
+            Zen = 0,
+>>>>>>> master
         }
 
         public static string[] PianoSharp = new string[] { "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B" };
@@ -71,7 +75,7 @@ namespace SongProofWP8
         /// <summary>
         /// Represents the lowest amount of notes that can exist within a test
         /// </summary>
-        public const int LOWEST_SET = 10;
+        public const int LOWEST_SET = 50;
         /// <summary>
         /// Represents the incrementation amount that should be used to
         /// increase/decrease the note amount

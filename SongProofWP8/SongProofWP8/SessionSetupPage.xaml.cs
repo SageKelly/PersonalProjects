@@ -64,6 +64,7 @@ namespace SongProofWP8
             CBScales.IsEnabled = false;
 
             DataContext = this;
+
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
@@ -142,10 +143,10 @@ namespace SongProofWP8
         #endregion
         private void GoBack(object sender, BackPressedEventArgs e)
         {
+            e.Handled = true;
             if (Frame.CanGoBack)
             {
                 Frame.GoBack();
-                e.Handled = true;
             }
         }
 
