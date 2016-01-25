@@ -82,5 +82,13 @@ namespace SongProofWP8
                 PropertyChanged(this, new PropertyChangedEventArgs(property_name));
             }
         }
+
+        public void Reset()
+        {
+            ID = DateTime.Now;
+            UniqueID = ID.Date + ", " + ID.TimeOfDay + ": " + ScaleUsed.Name + ", " + Diff;
+            Data = new NoteData[Notes.Length];
+            internalIndex = 0;
+        }
     }
 }

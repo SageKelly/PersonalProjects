@@ -181,8 +181,18 @@ namespace SongProofWP8
 
                 RecordNoteInput(noteIndex, correct);
                 NextNote();
-                //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
-                PathInOut.Begin();
+                if (correct)
+                {
+                    XBorder.Visibility = Visibility.Collapsed;
+                    CheckBorder.Visibility = Visibility.Visible;
+                    FadeInCheck.Begin();
+                }
+                else
+                {
+                    CheckBorder.Visibility = Visibility.Collapsed;
+                    XBorder.Visibility = Visibility.Visible;
+                    FadeInX.Begin();
+                }
             }
         }
 
@@ -273,12 +283,15 @@ namespace SongProofWP8
                 if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
                     TickDownTimer.Start();
                 else
+                {
+                    countingDown = false;
                     NextNote();
+                }
                 SessionStarted = true;
                 B_Start.IsEnabled = false;
             }
         }
-        
+
         private void B_Quit_Click(object sender, RoutedEventArgs e)
         {
             if (TickDownTimer.IsEnabled)

@@ -278,7 +278,7 @@ namespace SongProofWP8
                     if (results[i - 1] == temp)
                     {
                         //...go up one in the scale, or wrap around
-                        temp = (temp + 1) % s.Notes.Length-1;
+                        temp = (temp + 1) % (s.Notes.Length-1);
                     }
                 }
                 results[i] = temp;

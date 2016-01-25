@@ -39,5 +39,10 @@ namespace SongProofWP8
         {
             CurrentSession = sesh;
         }
+
+        public void ResetSession()
+        {
+            CurrentSession.Reset();
+        }
     }
 }
