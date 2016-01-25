@@ -33,10 +33,11 @@ namespace SongProofWP8
         public ViewScale()
         {
             SM = DataHolder.SM;
+            DataContext = this;
             this.InitializeComponent();
             TB_ScaleName.Text = SM.CurrentSession.ScaleUsed.Name;
             LBScale.ItemsSource = SM.CurrentSession.ScaleUsed.Notes;
-            DataContext = this;
+            LBScaleSkel.ItemsSource = SM.ParsedScale;
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;

@@ -30,6 +30,13 @@
 
 
         <!--TODO: Content should be placed within the following grid-->
+<<<<<<< HEAD
+        <Grid Grid.Row="2" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Here's the Scale you've chosen:" HorizontalAlignment="Center" FontSize="26"/>
+                <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" HorizontalAlignment="Center" FontSize="26"/>
+                <ItemsControl x:Name="LBScale" ItemsSource="{Binding}" >
+=======
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -43,6 +50,7 @@
             <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" HorizontalAlignment="Center" FontSize="26"/>
 
             <ItemsControl x:Name="LBScale" Grid.Row="2" ItemsSource="{Binding}" >
+>>>>>>> master
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>
@@ -50,12 +58,35 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
+<<<<<<< HEAD
+                            <TextBlock Padding="9,0" FontSize="26"  Text="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="Scale Structure:" Padding="0,4" FontSize="26" TextAlignment="Center"/>
+                <ItemsControl x:Name="LBScaleSkel" ItemsSource="{Binding}" >
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapGrid  HorizontalAlignment="Center" Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Padding="9,0" FontSize="26"  Text="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Text="Tip: try to memorize the scale the here, or you may have to...&quot;cheat&quot; later." TextWrapping="WrapWholeWords" FontSize="18" FontStyle="Italic" TextAlignment="Center"/>
+            </StackPanel>
+            <Button x:Name="BStart" Content="Begin Proofing" Click="BStart_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+=======
                             <TextBlock Padding="9" FontSize="26"  Text="{Binding}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             
             <TextBlock Grid.Row="3" Text="Tip: try to memorize the scale the here, or you may have to...&quot;cheat&quot; later." TextWrapping="WrapWholeWords" FontSize="18" FontStyle="Italic" TextAlignment="Center"/>
+>>>>>>> master
         </Grid>
             <Button x:Name="BStart" Grid.Row="2" Content="Begin Proofing" Click="BStart_Click" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
     </Grid>

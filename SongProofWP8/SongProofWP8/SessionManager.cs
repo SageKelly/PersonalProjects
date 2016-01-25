@@ -27,6 +27,8 @@ namespace SongProofWP8
 
         public DispatcherTimer Timer;
 
+        public string[] ParsedScale;
+
         public SessionManager()
         {
             Notes = new List<NoteData>();
@@ -36,6 +38,11 @@ namespace SongProofWP8
         public SessionManager(Session sesh):this()
         {
             CurrentSession = sesh;
+        }
+
+        public void ResetSession()
+        {
+            CurrentSession.Reset();
         }
     }
 }
