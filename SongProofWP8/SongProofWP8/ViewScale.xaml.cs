@@ -33,7 +33,7 @@ namespace SongProofWP8
         public ViewScale()
         {
             SM = DataHolder.SM;
-            DataContext = this;
+            DataContext = SM;
             this.InitializeComponent();
             TB_ScaleName.Text = SM.CurrentSession.ScaleUsed.Name;
             LBScale.ItemsSource = SM.CurrentSession.ScaleUsed.Notes;

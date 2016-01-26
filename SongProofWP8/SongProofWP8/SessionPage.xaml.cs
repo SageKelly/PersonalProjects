@@ -237,8 +237,6 @@ namespace SongProofWP8
                 {
                     //you ran out of time on the last note
                     RecordNoteInput(NoteIndex, false);
-
-
                 }
                 NextNote();
             }

@@ -201,7 +201,7 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
-            <Button x:Name="BStart" Click="BStart_Click" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Next"/>
+            <Button x:Name="BStart" Click="BStart_Click" HorizontalAlignment="Center" FontSize="32" VerticalAlignment="Bottom" Content="Next"/>
         </Grid>
     </Grid>
 </Page>

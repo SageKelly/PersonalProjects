@@ -35,11 +35,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition Height="*"/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Text="Here's the Scale you've chosen:" Grid.Row="0" HorizontalAlignment="Center" FontSize="26"/>
-            <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" HorizontalAlignment="Center" FontSize="26"/>
+            <TextBlock x:Name="TB_ScaleName" Grid.Row="1" Padding="0,24" TextWrapping="WrapWholeWords" HorizontalAlignment="Center" FontSize="26"/>
             <StackPanel Orientation="Vertical" Grid.Row="2">
                 <ItemsControl x:Name="LBScale" ItemsSource="{Binding}" >
                     <ItemsControl.ItemsPanel>
@@ -71,7 +70,7 @@
                            VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
-        <Button x:Name="BStart" Grid.Row="2" Content="Begin Proofing" Click="BStart_Click"
+        <Button x:Name="BStart" Grid.Row="2" Content="Begin Proofing" FontSize="32" Click="BStart_Click"
                 VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
     </Grid>
 </Page>
