@@ -49,11 +49,7 @@ namespace SongProofWP8
             Easy = 3000,
             Medium = 1000,
             Hard = 500,
-<<<<<<< HEAD
             Zen = 0
-=======
-            Zen = 0,
->>>>>>> master
         }
 
         public static string[] PianoSharp = new string[] { "C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B" };

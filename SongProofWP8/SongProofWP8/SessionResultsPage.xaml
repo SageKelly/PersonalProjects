@@ -20,12 +20,10 @@
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="SCALE - PROOF" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
             <TextBlock Text="Proofing Results" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <!-- Accuracy Percentage -->
             <TextBlock x:Name="TB_Percentage" FontSize="32"/>
         </StackPanel>
 
-        <!-- Accuracy Percentage -->
-        <TextBlock x:Name="TB_Percent" Grid.Row="1" FontSize="36"/>
-        
         <!-- Note Info-->
         <ListView x:Name="LV_Results" Grid.Row="2" SelectionMode="None" ItemsSource="{Binding}">
             <ListView.ItemTemplate>
@@ -71,11 +69,7 @@
                                 <TextBlock Text="{Binding StrAvgGuessingTime}" TextWrapping="Wrap" FontSize="18"/>
                             </StackPanel>
                         </Border>
-<<<<<<< HEAD
-                        <TextBlock Text="---------------------------"/>
-=======
                         <TextBlock Text="-------------------------" FontSize="32"/>
->>>>>>> master
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

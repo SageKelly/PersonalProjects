@@ -45,7 +45,6 @@ namespace SongProofWP8
 
         public void RunAnalytics()
         {
-            double percentage = 0;
             Session curSession = DataHolder.SM.CurrentSession;
             string[] scale = curSession.ScaleUsed.Notes;
             double correct_guesses = 0;
@@ -65,7 +64,6 @@ namespace SongProofWP8
             foreach (KeyValuePair<string, NoteAnalytics> na in Analysis)
             {
                 na.Value.AvgGuessingTime = na.Value.Count == 0 ? 0 : Math.Round(((na.Value.AvgGuessingTime / na.Value.Count) / 1000), 2);
-<<<<<<< HEAD
                 correct_guesses += na.Value.CorrectGuesses;
                 double loc_perc = 0, cgs = na.Value.CorrectGuesses;
                 if (na.Value.Count != 0)
@@ -73,12 +71,6 @@ namespace SongProofWP8
                 na.Value.Note += ": " + Math.Round(loc_perc,2) + "%";
             }
             TB_Percentage.Text = "Score: " + Math.Round((correct_guesses / curSession.Notes.Length) * 100.00,2).ToString() + "%";
-=======
-                percentage += na.Value.CorrectGuesses;
-            }
-            percentage = Math.Round(percentage / curSession.Notes.Length, 2);
-            TB_Percent.Text = "Score: " + (percentage * 100) + "%";
->>>>>>> master
         }
 
         /// <summary>
@@ -97,11 +89,8 @@ namespace SongProofWP8
 
         private void RestartSession(object sender, RoutedEventArgs e)
         {
-<<<<<<< HEAD
             DataHolder.SM.ResetSession();
-=======
             DataHolder.SetupTest();
->>>>>>> master
             Frame.Navigate(typeof(ViewScale));
         }
 

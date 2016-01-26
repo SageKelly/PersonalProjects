@@ -190,7 +190,6 @@ namespace SongProofWP8
 
                 RecordNoteInput(noteIndex, correct);
                 NextNote();
-<<<<<<< HEAD
                 if (correct)
                 {
                     XBorder.Visibility = Visibility.Collapsed;
@@ -203,10 +202,8 @@ namespace SongProofWP8
                     XBorder.Visibility = Visibility.Visible;
                     FadeInX.Begin();
                 }
-=======
                 //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
                 //PathInOut.Begin();
->>>>>>> master
             }
         }
 
@@ -298,13 +295,8 @@ namespace SongProofWP8
                     TickDownTimer.Start();
                 else
                 {
-<<<<<<< HEAD
                     countingDown = false;
                     NextNote();
-=======
-                    NextNote();
-                    countingDown = false;
->>>>>>> master
                 }
                 SessionStarted = true;
                 B_Start.IsEnabled = false;
@@ -332,12 +324,5 @@ namespace SongProofWP8
             }
         }
         #endregion
-
-        private void B_Quit_Click(object sender, RoutedEventArgs e)
-        {
-            if (TickDownTimer.IsEnabled)
-                TickDownTimer.Stop();
-            Frame.Navigate(typeof(MainPage));
-        }
     }
 }
