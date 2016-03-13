@@ -104,7 +104,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Padding="9,0" FontSize="26"  Text="{Binding}"/>
+                        <TextBlock Padding="9,0" FontSize="26"  Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -121,7 +121,7 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding}" Padding="8,0" Click="NoteClick" HorizontalAlignment="Left"
+                    <Button Content="{Binding}" Padding="2,0" Click="NoteClick" HorizontalAlignment="Left"
                             VerticalAlignment="Top" MinWidth="50" FontSize="32"/>
                 </DataTemplate>
             </ListView.ItemTemplate>

@@ -197,7 +197,7 @@ namespace SongProofWP8
             HalfDiminishedScales = new List<KVTuple<string, string>>();
             HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian1], ScaleLib[ScaleTypes.Locrian1]));
             HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.Locrian2], ScaleLib[ScaleTypes.Locrian2]));
-            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopHalfDiminished],ScaleLib[ScaleTypes.BebopHalfDiminished]));
+            HalfDiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.BebopHalfDiminished], ScaleLib[ScaleTypes.BebopHalfDiminished]));
 
             DiminishedScales = new List<KVTuple<string, string>>();
             DiminishedScales.Add(new KVTuple<string, string>(ScaleNames[ScaleTypes.DiminishedW], ScaleLib[ScaleTypes.DiminishedW]));
@@ -249,7 +249,7 @@ namespace SongProofWP8
             scale_result[0] = piano[index];
 
             //then find the rest
-            for (int i = 0; i < scale.Value.Length-1; i++)
+            for (int i = 0; i < scale.Value.Length - 1; i++)
             {
                 index = (index + int.Parse(scale.Value[i].ToString())) % piano.Length;
                 scale_result[i + 1] = piano[index];
@@ -271,14 +271,14 @@ namespace SongProofWP8
             Random rng = new Random();
             for (int i = 0; i < results.Length; i++)
             {
-                temp = rng.Next(0, s.Notes.Length-1);
+                temp = rng.Next(0, s.Notes.Length);
                 if (i != 0)
                 {
                     //if this note is the same as the last one...
                     if (results[i - 1] == temp)
                     {
                         //...go up one in the scale, or wrap around
-                        temp = (temp + 1) % (s.Notes.Length-1);
+                        temp = (temp + 1) % s.Notes.Length;
                     }
                 }
                 results[i] = temp;
