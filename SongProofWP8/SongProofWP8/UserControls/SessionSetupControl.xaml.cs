@@ -1,0 +1,270 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
+
+namespace SongProofWP8.UserControls
+{
+    public sealed partial class SessionSetupControl : UserControl, INotifyPropertyChanged
+    {
+        private bool _navSetup = false;
+
+        private MethodInfo _startMethod;
+        private object[] _startMethodParams;
+        private object _startMethodTarget;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private int _noteAmount;
+        public int NoteAmount
+        {
+            get
+            {
+                return _noteAmount;
+            }
+            set
+            {
+                if (_noteAmount != value)
+                {
+                    _noteAmount = value;
+                    OnPropertyChanged("NoteAmount");
+                }
+            }
+        }
+
+        private object _selectedScaleGroup;
+        public object SelectedScaleGroup
+        {
+            get
+            {
+                return _selectedScaleGroup;
+            }
+            set
+            {
+                if (_selectedScaleGroup != value)
+                {
+                    _selectedScaleGroup = value;
+                    OnPropertyChanged("SelectedScaleGroup");
+                }
+            }
+        }
+
+
+        private object _selectedScale;
+        public object SelectedScale
+        {
+            get
+            {
+                return _selectedScale;
+            }
+            set
+            {
+                if (_selectedScale != value)
+                {
+                    _selectedScale = value;
+                    OnPropertyChanged("SelectedScale");
+                }
+            }
+        }
+
+        private object _selectedKey;
+        public object SelectedKey
+        {
+            get
+            {
+                return _selectedKey;
+            }
+            set
+            {
+                if (_selectedKey != value)
+                {
+                    _selectedKey = value;
+                    OnPropertyChanged("SelectedKey");
+                }
+            }
+        }
+
+        private object _selectedDifficulty;
+        public object SelectedDifficulty
+        {
+            get
+            {
+                return _selectedDifficulty;
+            }
+            set
+            {
+                if (_selectedDifficulty != value)
+                {
+                    _selectedDifficulty = value;
+                    OnPropertyChanged("SelectedDifficulty");
+                }
+            }
+        }
+
+        private bool _showSharp;
+        public bool ShowSharp
+        {
+            get
+            {
+                return _showSharp;
+            }
+            set
+            {
+                if (_showSharp != value)
+                {
+                    _showSharp = value;
+                    OnPropertyChanged("ShowSharp");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Instantiates a SessionSetupUserControl
+        /// </summary>
+        /// <param name="showScaleGroups">Should the Scale Groups ComboBox show?</param>
+        /// <param name="showScales">Should the Scales ComboBox show?</param>
+        /// <param name="showScaleKey">Should the Scale ComboBox show?</param>
+        /// <param name="showDifficulty">Should the Difficulty ComboBox show?</param>
+        /// <param name="showNoteAmount">Should the Note Amount UserControl show?</param>
+        public SessionSetupControl(Visibility showScaleGroups = Visibility.Visible, Visibility showScales = Visibility.Visible,
+            Visibility showScaleKey = Visibility.Visible, Visibility showDifficulty = Visibility.Visible,
+            Visibility showNoteAmount = Visibility.Visible)
+        {
+            this.InitializeComponent();
+            CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames.Keys;
+            CBDifficulty.ItemsSource = ScaleResources.DifficultyLevels;
+            CBKey.ItemsSource = ScaleResources.PianoFlat;
+            NoteAmount = ScaleResources.LOWEST_SET;
+            CBScales.IsEnabled = false;
+
+            CBScaleGroups.Visibility = showScaleGroups;
+            CBScales.Visibility = showScales;
+            SPScaleKey.Visibility = showScaleKey;
+            CBDifficulty.Visibility = showDifficulty;
+            BoIncDecButtons.Visibility = showNoteAmount;
+
+            DataContext = this;
+        }
+
+        private void ChckSharp_Checked(object sender, RoutedEventArgs e)
+        {
+            int index = -1;
+            if (CBKey.SelectedIndex != -1)
+                index = CBKey.SelectedIndex;
+            CBKey.ItemsSource = ScaleResources.PianoSharp;
+            CBKey.SelectedIndex = index;
+        }
+
+        private void ChckSharp_Unchecked(object sender, RoutedEventArgs e)
+        {
+            int index = -1;
+            if (CBKey.SelectedIndex != -1)
+                index = CBKey.SelectedIndex;
+            CBKey.ItemsSource = ScaleResources.PianoFlat;
+            CBKey.SelectedIndex = index;
+        }
+
+        private void BStart_Click(object sender, RoutedEventArgs e)
+        {
+            if (_navSetup)
+            {
+                _startClickHandler();
+            }
+        }
+
+        private void _startClickHandler()
+        {
+            _startMethod.Invoke(_startMethodTarget, _startMethodParams);
+        }
+
+        /// <summary>
+        /// Adds a method to invoke upon pressing the start button
+        /// </summary>
+        /// <param name="methodName">The name of the method to ivoke</param>
+        /// <param name="target">The target object for the method</param>
+        /// <param name="targetType">The type of the target object</param>
+        public void SetupNavigation(string methodName, object target, Type targetType)
+        {
+            SetupNavigation(methodName, target, targetType, new object[0]);
+        }
+
+        /// <summary>
+        /// Adds a method to invoke upon pressing the start button
+        /// </summary>
+        /// <param name="methodName">The name of the method to ivoke</param>
+        /// <param name="target">The target object for the method</param>
+        /// <param name="targetType">The type of the target object</param>
+        /// <param name="methodParams">The method's parameters</param>
+        public void SetupNavigation(string methodName, object target, Type targetType, object[] methodParams)
+        {
+            TypeInfo classTypeInfo = targetType.GetTypeInfo();
+            MethodInfo method = classTypeInfo.GetDeclaredMethod(methodName);
+
+            _startMethod = method;
+            _startMethodParams = methodParams;
+            _startMethodTarget = target;
+            _navSetup = true;
+        }
+
+        /// <summary>
+        /// Rigged to the CBScaleGroups.SelectionChanged Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ActivateScales()
+        {
+            if (CBScaleGroups.SelectedIndex != -1)
+            {
+                CBScales.IsEnabled = true;
+                CBScales.ItemsSource = (List<KVTuple<string, string>>)ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
+            }
+        }
+
+        /// <summary>
+        /// Registered to the ComboBox.SelectionChanged Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConfirmSelection(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox sentinel = sender as ComboBox;
+            if (sentinel != null)
+            {
+                ActivateScales();
+            }
+        }
+
+        private void IncDecValue(object sender, RoutedEventArgs e)
+        {
+            Button sentinel = (Button)sender;
+            if (sentinel == UpButton && NoteAmount < ScaleResources.HIGHEST_SET)
+            {
+                NoteAmount += ScaleResources.LOWEST_INC;
+            }
+            else if (sentinel == DownButton && NoteAmount > ScaleResources.LOWEST_SET)
+            {
+                NoteAmount -= ScaleResources.LOWEST_INC;
+            }
+        }
+
+        private void OnPropertyChanged(string property_name_)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(property_name_));
+        }
+    }
+}

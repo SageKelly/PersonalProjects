@@ -6,37 +6,34 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Phone.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SongProofWP8
+namespace SongProofWP8.UserControls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class SessionPage : Page, INotifyPropertyChanged
+    public sealed partial class SessionControl : UserControl, INotifyPropertyChanged
     {
         private int curIndex;
         private int note_index;
         private string current_note;
         private string note_count;
         private string timer_text;
-        private int note_number;
+        private string _testingLabel;
+        private string _testingValue;
         private string scale_name;
         private static string TIMER_FLAVOR = "Time left: ";
         private bool countingDown;
         private bool SessionStarted = false;
         private int remainingTime;
         private DispatcherTimer TickDownTimer;
+        private bool _navigationSetup = false;
 
         #region Properties
         public Session curSession { get; private set; }
@@ -73,18 +70,34 @@ namespace SongProofWP8
             }
         }
 
-        public int NoteNumber
+        public string TestingLabel
         {
             get
             {
-                return note_number;
+                return _testingLabel;
             }
             set
             {
-                if (note_number != value)
+                if (_testingLabel != value)
                 {
-                    note_number = value;
-                    NotifyPropertyChanged("NoteNumber");
+                    _testingLabel = value;
+                    NotifyPropertyChanged("TestingLabel");
+                }
+            }
+        }
+
+        public string TestingValue
+        {
+            get
+            {
+                return _testingValue;
+            }
+            set
+            {
+                if (_testingValue != value)
+                {
+                    _testingValue = value;
+                    NotifyPropertyChanged("TestingValue");
                 }
             }
         }
@@ -104,6 +117,11 @@ namespace SongProofWP8
                 }
             }
         }
+
+        public Frame navFrame { get; set; }
+        public Type ResultNavigationPageType { get; set; }
+        public Type QuitNavigationPageType { get; set; }
+
 
         /// <summary>
         /// The note index number in relation to the scale
@@ -143,7 +161,7 @@ namespace SongProofWP8
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SessionPage()
+        public SessionControl()
         {
             this.InitializeComponent();
             DataContext = this;
@@ -161,14 +179,6 @@ namespace SongProofWP8
             SetTimerText();
             B_ViewResults.IsEnabled = false;
             NoteCount = (curIndex + 1) + " / " + curSession.Notes.Length;
-            HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-        }
-
-        void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
-        {
-            e.Handled = true;
-            if (Frame.CanGoBack)
-                Frame.GoBack();
         }
 
         private void NoteClick(object sender, RoutedEventArgs e)
@@ -207,17 +217,6 @@ namespace SongProofWP8
             }
         }
 
-        //TODO: Research TimeSpan.Parse()
-
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
         /// <summary>
         /// Handler for each time the Timer ticks
         /// </summary>
@@ -246,7 +245,7 @@ namespace SongProofWP8
         private void RecordNoteInput(int index, bool correct)
         {
             curSession.StoreNoteInput(index, correct, curSession.Diff.GetHashCode() - remainingTime);
-            NoteNumber = curSession.Notes[curIndex - 1] + 1;
+            TestingValue = (curSession.Notes[curIndex - 1] + 1).ToString();
         }
 
         private void NotifyPropertyChanged(string propertyName)
@@ -261,7 +260,7 @@ namespace SongProofWP8
         {
             if (curIndex < curSession.Notes.Length)
             {
-                NoteNumber = (curSession.Notes[curIndex++] + 1);
+                TestingValue = (curSession.Notes[curIndex++] + 1).ToString();
                 remainingTime = curSession.Diff.GetHashCode();
                 NoteCount = curIndex + " / " + curSession.Notes.Length;
             }
@@ -278,11 +277,27 @@ namespace SongProofWP8
             TimerText = (remainingTime / 1000) + "." + (remainingTime % 1000);
         }
 
+        /// <summary>
+        /// Sets up navigation for the UserControl's buttons
+        /// </summary>
+        /// <param name="navFrame">The Frame used for navigation</param>
+        /// <param name="ResultsPageType">The Page to which to navigate after proofing is complete</param>
+        /// <param name="QuitPageType">The Page to which to navigate when the user chooses to quit</param>
+        public void SetupNavigation(Frame navFrame, Type ResultsPageType, Type QuitPageType)
+        {
+            this.navFrame = navFrame;
+            ResultNavigationPageType = ResultsPageType;
+            QuitNavigationPageType = QuitPageType;
+            _navigationSetup = true;
+        }
+
         #region Extra Button Handlers
+
+
         private void B_ViewResults_Click(object sender, RoutedEventArgs e)
         {
             DataHolder.SM.CurrentSession = curSession;
-            Frame.Navigate(typeof(SessionResultsPage));
+            navFrame.Navigate(ResultNavigationPageType);
         }
 
         private void B_Start_Click(object sender, RoutedEventArgs e)
@@ -305,7 +320,7 @@ namespace SongProofWP8
         {
             if (TickDownTimer.IsEnabled)
                 TickDownTimer.Stop();
-            Frame.Navigate(typeof(MainPage));
+            navFrame.Navigate(QuitNavigationPageType);
         }
 
         private void ToggleScaleView(object sender, RoutedEventArgs e)

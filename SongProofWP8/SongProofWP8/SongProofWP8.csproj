@@ -86,28 +86,40 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="DataHolder.cs" />
-    <Compile Include="KVTuple.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Classes\DataHolder.cs" />
+    <Compile Include="Classes\KVTuple.cs" />
+    <Compile Include="Pages\HW3SetupPage.xaml.cs">
+      <DependentUpon>HW3SetupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NoteAnalytics.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScaleResources.cs" />
-    <Compile Include="Scale.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="SessionManager.cs" />
-    <Compile Include="SessionPage.xaml.cs">
-      <DependentUpon>SessionPage.xaml</DependentUpon>
+    <Compile Include="Classes\NoteAnalytics.cs" />
+    <Compile Include="Pages\ScaleProofTestListPage.xaml.cs">
+      <DependentUpon>ScaleProofTestListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SessionResultsPage.xaml.cs">
+    <Compile Include="UserControls\SessionControl.xaml.cs">
+      <DependentUpon>SessionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classes\ScaleResources.cs" />
+    <Compile Include="Classes\Scale.cs" />
+    <Compile Include="Classes\Session.cs" />
+    <Compile Include="Classes\SessionManager.cs" />
+    <Compile Include="Pages\PlacingTheNoteSessionPage.xaml.cs">
+      <DependentUpon>PlacingTheNoteSessionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SessionResultsPage.xaml.cs">
       <DependentUpon>SessionResultsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SessionSetupPage.xaml.cs">
-      <DependentUpon>SessionSetupPage.xaml</DependentUpon>
+    <Compile Include="Pages\PlacingTheNoteSetupPage.xaml.cs">
+      <DependentUpon>PlacingTheNoteSetupPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewScale.xaml.cs">
+    <Compile Include="Pages\ViewScale.xaml.cs">
       <DependentUpon>ViewScale.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SessionSetupControl.xaml.cs">
+      <DependentUpon>SessionSetupControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -148,23 +160,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SessionPage.xaml">
+    <Page Include="Pages\HW3SetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SessionResultsPage.xaml">
+    <Page Include="Pages\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ScaleProofTestListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SessionSetupPage.xaml">
+    <Page Include="Pages\PlacingTheNoteSessionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ViewScale.xaml">
+    <Page Include="UserControls\SessionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SessionResultsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PlacingTheNoteSetupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ViewScale.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SessionSetupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
