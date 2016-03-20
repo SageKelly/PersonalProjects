@@ -88,6 +88,9 @@
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Classes\DataHolder.cs" />
     <Compile Include="Classes\KVTuple.cs" />
+    <Compile Include="Pages\HW3SessionPage.xaml.cs">
+      <DependentUpon>HW3SessionPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\HW3SetupPage.xaml.cs">
       <DependentUpon>HW3SetupPage.xaml</DependentUpon>
     </Compile>
@@ -97,6 +100,12 @@
     <Compile Include="Classes\NoteAnalytics.cs" />
     <Compile Include="Pages\ScaleProofTestListPage.xaml.cs">
       <DependentUpon>ScaleProofTestListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PianoKeyControl.xaml.cs">
+      <DependentUpon>PianoKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ProgressTrackerControl.xaml.cs">
+      <DependentUpon>ProgressTrackerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\SessionControl.xaml.cs">
       <DependentUpon>SessionControl.xaml</DependentUpon>
@@ -120,6 +129,9 @@
     </Compile>
     <Compile Include="UserControls\SessionSetupControl.xaml.cs">
       <DependentUpon>SessionSetupControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TitleBarUserControl.xaml.cs">
+      <DependentUpon>TitleBarUserControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Pages\HW3SessionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\HW3SetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -173,6 +189,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PlacingTheNoteSessionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PianoKeyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ProgressTrackerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -193,6 +217,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SessionSetupControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TitleBarUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

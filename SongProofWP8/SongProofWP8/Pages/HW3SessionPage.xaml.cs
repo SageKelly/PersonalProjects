@@ -1,9 +1,7 @@
-﻿using SongProofWP8.UserControls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -22,21 +20,11 @@ namespace SongProofWP8.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class HW3SetupPage : Page
+    public sealed partial class HW3SessionPage : Page
     {
-        public HW3SetupPage()
+        public HW3SessionPage()
         {
             this.InitializeComponent();
-            TitleBarUserControl tbuc = new TitleBarUserControl("Setup");
-            LayoutRoot.Children.Add(tbuc);
-            Grid.SetRow(tbuc, 0);
-            SessionSetupControl ssu = new SessionSetupControl(Visibility.Collapsed, Visibility.Collapsed,
-                Visibility.Collapsed, Visibility.Visible, Visibility.Visible);
-            LayoutRoot.Children.Add(ssu);
-
-            ssu.SetupNavigation("StartMethod", this,this.GetType());
-
-            Grid.SetRow(ssu, 1);
         }
 
         /// <summary>
@@ -46,11 +34,6 @@ namespace SongProofWP8.Pages
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-        }
-
-        private void StartMethod()
-        {
-
         }
     }
 }

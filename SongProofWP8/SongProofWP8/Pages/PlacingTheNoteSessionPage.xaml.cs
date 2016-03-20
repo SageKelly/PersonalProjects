@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SongProofWP8.UserControls;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -146,12 +147,13 @@ namespace SongProofWP8.Pages
         public SessionPage()
         {
             this.InitializeComponent();
+            ScaleName = curSession.ScaleUsed.Name;
             DataContext = this;
+            TitleBarUserControl TitleLabel = new TitleBarUserControl(ScaleName);
             curSession = DataHolder.SM.CurrentSession;
             LBScale.ItemsSource = curSession.ScaleUsed.Notes;
             IC_Buttons.ItemsSource = curSession.Piano;
             //L_Scale.Text = curSession.ScaleUsed.Name;
-            ScaleName = curSession.ScaleUsed.Name;
             curIndex = 0;
             countingDown = true;
             remainingTime = 3000;
