@@ -19,6 +19,26 @@ namespace VideoAudioSyncer
             }
             );
 
+        public static readonly RoutedUICommand LoadVideo = new RoutedUICommand(
+            "Load Video",
+            "Load Video",
+            typeof(CustomCommands),
+            new InputGestureCollection()
+            {
+                new KeyGesture(Key.M,ModifierKeys.Control)
+            }
+            );
+
+        public static readonly RoutedUICommand LoadAudio = new RoutedUICommand(
+            "Load Audio",
+            "Load Audio",
+            typeof(CustomCommands),
+            new InputGestureCollection()
+            {
+                new KeyGesture(Key.P,ModifierKeys.Control)
+            }
+            );
+
         public static readonly RoutedUICommand Exit = new RoutedUICommand(
             "Exit",
             "Exit",
