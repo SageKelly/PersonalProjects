@@ -23,10 +23,14 @@ namespace VideoAudioSyncer
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-
+        //All slider values are represented in MILLISECONDS
         private bool mediaPlayerIsPlaying = false;
         private bool userIsDraggingSlider = false;
         private const double _VOLUME_DELTA = .025;
+        private const string DEFAULT_OFFSET_VALUE = "00:00:00.0000";
+
+        private TimeSpan _videoDuration;
+        private TimeSpan _audioDuration;
 
         private bool audioOffset = false;
 
@@ -37,9 +41,11 @@ namespace VideoAudioSyncer
 
         DispatcherTimer _vidTimer;
         DispatcherTimer _audTimer;
+        DispatcherTimer _progressSlideTicker;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        #region Properties
         private string _offset;
         public string Offset
         {
@@ -64,6 +70,20 @@ namespace VideoAudioSyncer
                 {
                     _syncProgress = value;
                     NotifyPropertyChanged("SyncProgress");
+                }
+            }
+        }
+
+        private string _negSyncProgress;
+        public string NegSyncProgress
+        {
+            get { return _negSyncProgress; }
+            set
+            {
+                if (_negSyncProgress != value)
+                {
+                    _negSyncProgress = value;
+                    NotifyPropertyChanged("NegSyncProgress");
                 }
             }
         }
@@ -109,16 +129,28 @@ namespace VideoAudioSyncer
                 }
             }
         }
+        #endregion
 
         public MainWindow()
         {
-            InitializeComponent();
-            DataContext = this;
+            Offset = DEFAULT_OFFSET_VALUE;
             _vidTimer = new DispatcherTimer();
             _audTimer = new DispatcherTimer();
+            _progressSlideTicker = new DispatcherTimer();
+            _progressSlideTicker.Interval = TimeSpan.FromMilliseconds(1000);
+            _progressSlideTicker.Tick += timer_Tick;
+
+            /*
+             * Doing the timer this way makes pausing wore more accurately:
+             * http://stackoverflow.com/questions/3163300/what-is-the-different-between-isenabled-and-start-stop-of-dispatchertimer
+             */
+            _progressSlideTicker.Start();
+            _progressSlideTicker.IsEnabled = false;
+            InitializeComponent();
+            DataContext = this;
             SyncProgress = "0.00";
-            Offset = "00:00:00.0000";
         }
+
         #region Methods
 
         private void NotifyPropertyChanged(string propertyName)
@@ -129,21 +161,18 @@ namespace VideoAudioSyncer
             }
         }
 
-        private void SetMaxSliderValue()
+        private void SetSliderValues()
         {
             if ((videoPlayer != null && videoPlayer.Source != null) &&
                 (audioPlayer != null && audioPlayer.Source != null))
             {
                 MaxSlideValue = Math.Max(
-                    (_audTimer.Interval.TotalMilliseconds +
-                    (audioPlayer.NaturalDuration.HasTimeSpan ? audioPlayer.NaturalDuration.TimeSpan.TotalMilliseconds : 0)),
-
-                    (_vidTimer.Interval.TotalMilliseconds +
-                    (videoPlayer.NaturalDuration.HasTimeSpan ? videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds : 0))
-                    );
+                    (_audTimer.Interval.TotalMilliseconds + _audioDuration.TotalMilliseconds),
+                    (_vidTimer.Interval.TotalMilliseconds + _videoDuration.TotalMilliseconds));
             }
             MinSlideValue = 0;
-            CurSlideValue = 0;
+            SyncProgress = TimeSpan.FromMilliseconds(CurSlideValue).ToString();
+            NegSyncProgress = TimeSpan.FromMilliseconds(sliSyncProgress.Maximum).ToString();
         }
 
         private void UpdateOffsets()
@@ -158,16 +187,16 @@ namespace VideoAudioSyncer
                 _audTimer.Interval = TimeSpan.Zero;
                 _vidTimer.Interval = TimeSpan.Parse(Offset);
             }
+            SetSliderValues();
         }
+
         #region Event-based
         private void timer_Tick(object sender, EventArgs e)
         {
             if ((audioPlayer.Source != null) && (audioPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
             {
-                sliSyncProgress.Minimum = 0;
-                sliSyncProgress.Maximum = audioPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-                sliSyncProgress.Value = audioPlayer.Position.TotalSeconds;
-
+                CurSlideValue += 1000;
+                NegSyncProgress = TimeSpan.FromMilliseconds(sliSyncProgress.Maximum - CurSlideValue).ToString();
             }
         }
 
@@ -179,22 +208,22 @@ namespace VideoAudioSyncer
         private void Open_ExecutedAudio(object sender, ExecutedRoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Media files (*.wav;*.mp3;*.wma)|*.wav;*.mp3;*.wma|All files (*.*)|*.*";
+            openFileDialog.Title = "Select an Audio File";
+            openFileDialog.Filter = "Media files (*.wav;*.mp3;*.wma; *.m4a; *.ogg)|*.wav;*.mp3;*.wma; *.m4a; *.ogg|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 audioPlayer.Source = new Uri(openFileDialog.FileName);
-                SetMaxSliderValue();
             }
         }
 
         private void Open_ExecutedVideo(object sender, ExecutedRoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Media files (*.mp3;*.mpg;*.mpeg)|*.mp3;*.mpg;*.mpeg|All files (*.*)|*.*";
+            openFileDialog.Title = "Select a Video File";
+            openFileDialog.Filter = "Video files (*.mp4; *.flv; *.avi; .mpg;*.mpeg)|*.mp4; *.flv; *.avi; .mpg;*.mpeg|All files (*.*)|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
                 videoPlayer.Source = new Uri(openFileDialog.FileName);
-                SetMaxSliderValue();
             }
         }
 
@@ -209,6 +238,7 @@ namespace VideoAudioSyncer
             mediaPlayerIsPlaying = true;
             audioPlayer.Play();
             videoPlayer.Play();
+            _progressSlideTicker.IsEnabled = true;
         }
 
         private void Pause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -220,6 +250,7 @@ namespace VideoAudioSyncer
         {
             videoPlayer.Pause();
             audioPlayer.Pause();
+            _progressSlideTicker.IsEnabled = false;
             mediaPlayerIsPlaying = false;
         }
 
@@ -232,6 +263,9 @@ namespace VideoAudioSyncer
         {
             videoPlayer.Stop();
             audioPlayer.Stop();
+            _progressSlideTicker.Stop();
+            _progressSlideTicker.Start();
+            _progressSlideTicker.IsEnabled = false;
             mediaPlayerIsPlaying = false;
         }
 
@@ -249,7 +283,7 @@ namespace VideoAudioSyncer
 
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SyncProgress = Math.Round(sliSyncProgress.Value, 2).ToString("F2");
+            SyncProgress = TimeSpan.FromMilliseconds(sliSyncProgress.Value).ToString();
         }
 
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -324,13 +358,43 @@ namespace VideoAudioSyncer
             UpdateOffsets();
         }
 
+        /// <summary>
+        /// Registered TextBox.LostFocus Event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TB_OffsetChanged(object sender, RoutedEventArgs e)
         {
             TextBox sentinel = sender as TextBox;
             TimeSpan result;
-            TimeSpan.TryParse(sentinel.Text, out result);
-            Offset = result.ToString();
-            UpdateOffsets();
+            if (TimeSpan.TryParse(sentinel.Text, out result))
+            {
+                Offset = result.ToString();
+                UpdateOffsets();
+            }
+            else
+            {
+                Offset = DEFAULT_OFFSET_VALUE;
+            }
+        }
+        private void TestClick(object sender, RoutedEventArgs e)
+        {
+            mediaPlayerIsPlaying = true;
+            audioPlayer.Play();
+            videoPlayer.Play();
+            _progressSlideTicker.Start();
+            SetSliderValues();
+        }
+
+        private void RecordVideoDuration(object sender, RoutedEventArgs e)
+        {
+            _videoDuration = videoPlayer.NaturalDuration.HasTimeSpan ? videoPlayer.NaturalDuration.TimeSpan : TimeSpan.Zero;
+            SetSliderValues();
+        }
+
+        private void RecordAudioDuration(object sender, RoutedEventArgs e)
+        {
+            _audioDuration = audioPlayer.NaturalDuration.HasTimeSpan ? audioPlayer.NaturalDuration.TimeSpan : TimeSpan.Zero;
         }
         #endregion
         #endregion

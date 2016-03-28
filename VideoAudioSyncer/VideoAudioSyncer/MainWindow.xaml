@@ -44,14 +44,21 @@
                 <MenuItem Header="_Load Audio..." Command="self:CustomCommands.LoadAudio"/>
                 <MenuItem Header="_Save Profile..."/>
             </MenuItem>
+            <MenuItem Header="_Media">
+                <MenuItem Header="_Play" Command="MediaCommands.Play"/>
+                <MenuItem Header="_Pause" Command="MediaCommands.Pause"/>
+                <MenuItem Header="_Stop" Command="MediaCommands.Stop"/>
+            </MenuItem>
         </Menu>
 
-        <MediaElement Name="videoPlayer" Grid.Row="1" LoadedBehavior="Manual" />
-        <MediaElement Name="audioPlayer" Grid.Row="2" LoadedBehavior="Manual" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <MediaElement Name="videoPlayer" Grid.Row="1" LoadedBehavior="Manual" MediaOpened="RecordVideoDuration"/>
+        <MediaElement Name="audioPlayer" Grid.Row="2" LoadedBehavior="Manual" Stretch="None" HorizontalAlignment="Left"
+                      VerticalAlignment="Top" MediaOpened="RecordAudioDuration" />
 
         <!-- Synced Bar -->
         <StackPanel Grid.Row="3" >
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="PlayButton" Click="TestClick" Content="Click to Play"/>
                 <Button Command="MediaCommands.Play" Style="{StaticResource ButtonImageStyle}">
                     <Button.OpacityMask>
                         <ImageBrush ImageSource="Images/PlayButton.png"/>
@@ -69,11 +76,13 @@
                 </Button>
                 <TextBlock Style="{StaticResource InnerSpacerStyle}"/>
                 <TextBlock x:Name="TB_SyncProgress" Margin="4,0" VerticalAlignment="Center"
-                           Text="{Binding SyncProgress,Mode=OneWay,FallbackValue=0.00}"/>
+                           Text="{Binding SyncProgress,Mode=OneWay,FallbackValue=00:00:00}"/>
                 <Slider Name="sliSyncProgress" Margin="4,0" Thumb.DragStarted="sliProgress_DragStarted" Thumb.DragCompleted="sliProgress_DragCompleted"
                     ValueChanged="sliProgress_ValueChanged" Minimum="{Binding MinSlideValue,Mode=TwoWay}"
                         Maximum="{Binding MaxSlideValue,Mode=TwoWay}" Value="{Binding CurSlideValue,Mode=TwoWay}"  MinWidth="300" 
                         VerticalAlignment="Center" Cursor="Hand" />
+                <TextBlock x:Name="TB_SyncProgress2" Margin="4,0" VerticalAlignment="Center"
+                           Text="{Binding NegSyncProgress,Mode=OneWay,FallbackValue=00:00:00}"/>
                 <StackPanel>
                     <TextBlock Text="Volume" HorizontalAlignment="Center"/>
                     <ProgressBar Name="pbSyncVolume" Margin="4,0" Width="50" Height="12" Maximum="1"
@@ -119,7 +128,7 @@
                     </StackPanel>
                     <TextBlock Style="{StaticResource InnerSpacerStyle}"/>
                     <StackPanel VerticalAlignment="Center" Margin="4,0">
-                        <RadioButton x:Name="RB_Audio" Foreground="White" Content="Apply to Audio" Checked="RB_AudioChecked"/>
+                        <RadioButton x:Name="RB_Audio" Foreground="White" Content="Apply to Audio" Checked="RB_AudioChecked" IsChecked="True"/>
                         <RadioButton x:Name="RB_Video" Foreground="White" Content="Apply to Video" Checked="RB_VideoChecked"/>
                     </StackPanel>
                 </StackPanel>
