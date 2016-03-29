@@ -24,14 +24,25 @@ namespace VideoAudioSyncer
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         //All slider values are represented in MILLISECONDS
+        //Video media is ALWAYS the last media element to be manipulated
         private bool mediaPlayerIsPlaying = false;
         private bool userIsDraggingSlider = false;
         private const double _VOLUME_DELTA = .025;
         private const string DEFAULT_OFFSET_VALUE = "00:00:00.0000";
 
+        /// <summary>
+        /// Represents the duration of the video media
+        /// </summary>
         private TimeSpan _videoDuration;
+        /// <summary>
+        /// Represents the duration of the audio media
+        /// </summary>
         private TimeSpan _audioDuration;
 
+        /// <summary>
+        /// Represents whether or not the offset dictated corresponds
+        /// to the audio media or the video
+        /// </summary>
         private bool audioOffset = false;
 
         /// <summary>
@@ -39,14 +50,26 @@ namespace VideoAudioSyncer
         /// </summary>
         ProgressBar pbMouseOver;
 
+        /// <summary>
+        /// The offset timer for the the video media
+        /// </summary>
         DispatcherTimer _vidTimer;
+        /// <summary>
+        /// The offse timer for the audio media
+        /// </summary>
         DispatcherTimer _audTimer;
+        /// <summary>
+        /// The timer that updates the values for SyncProgress and NegSyncProgress
+        /// </summary>
         DispatcherTimer _progressSlideTicker;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Properties
         private string _offset;
+        /// <summary>
+        /// The offset delegated to either the audio or video element, pending on the value of audioOffset
+        /// </summary>
         public string Offset
         {
             get { return _offset; }
@@ -61,6 +84,9 @@ namespace VideoAudioSyncer
         }
 
         private string _syncProgress;
+        /// <summary>
+        /// The text representation of the overall progress of both the audio and video media elements
+        /// </summary>
         public string SyncProgress
         {
             get { return _syncProgress; }
@@ -75,6 +101,9 @@ namespace VideoAudioSyncer
         }
 
         private string _negSyncProgress;
+        /// <summary>
+        /// The text representation of the remaining time left for the audio and video media elements
+        /// </summary>
         public string NegSyncProgress
         {
             get { return _negSyncProgress; }
@@ -89,6 +118,9 @@ namespace VideoAudioSyncer
         }
 
         private double _maxSlideValue;
+        /// <summary>
+        /// Represents the maximum value, in milliseconds, for the synced progress
+        /// </summary>
         public double MaxSlideValue
         {
             get { return _maxSlideValue; }
@@ -103,6 +135,9 @@ namespace VideoAudioSyncer
         }
 
         private double _minSlideValue;
+        /// <summary>
+        /// Represents the minimum value, in miiliseconds, for the synced progress
+        /// </summary>
         public double MinSlideValue
         {
             get { return _minSlideValue; }
@@ -117,6 +152,9 @@ namespace VideoAudioSyncer
         }
 
         private double _curSlideValue;
+        /// <summary>
+        /// Represents the current value, in milliseconds, for the synced progress
+        /// </summary>
         public double CurSlideValue
         {
             get { return _curSlideValue; }
@@ -136,6 +174,8 @@ namespace VideoAudioSyncer
             Offset = DEFAULT_OFFSET_VALUE;
             _vidTimer = new DispatcherTimer();
             _audTimer = new DispatcherTimer();
+            _vidTimer.Tick += vidTick;
+            _audTimer.Tick += audTick;
             _progressSlideTicker = new DispatcherTimer();
             _progressSlideTicker.Interval = TimeSpan.FromMilliseconds(1000);
             _progressSlideTicker.Tick += timer_Tick;
@@ -191,12 +231,34 @@ namespace VideoAudioSyncer
         }
 
         #region Event-based
+
+        private void vidTick(object sender, EventArgs e)
+        {
+            DispatcherTimer timer = sender as DispatcherTimer;
+            if (timer != null)
+            {
+                timer.Stop();
+                videoPlayer.Play();
+            }
+        }
+
+        private void audTick(object sender, EventArgs e)
+        {
+            DispatcherTimer timer = sender as DispatcherTimer;
+            if (timer != null)
+            {
+                timer.Stop();
+                audioPlayer.Play();
+            }
+        }
+
         private void timer_Tick(object sender, EventArgs e)
         {
             if ((audioPlayer.Source != null) && (audioPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
             {
                 CurSlideValue += 1000;
                 NegSyncProgress = TimeSpan.FromMilliseconds(sliSyncProgress.Maximum - CurSlideValue).ToString();
+
             }
         }
 
@@ -277,13 +339,13 @@ namespace VideoAudioSyncer
         private void sliProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             userIsDraggingSlider = false;
-            videoPlayer.Position = TimeSpan.FromMilliseconds(sliSyncProgress.Value);
-            audioPlayer.Position = TimeSpan.FromMilliseconds(sliSyncProgress.Value);
         }
 
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            SyncProgress = TimeSpan.FromMilliseconds(sliSyncProgress.Value).ToString();
+            SyncProgress = TimeSpan.FromMilliseconds(CurSlideValue).ToString();
+            audioPlayer.Position = TimeSpan.FromMilliseconds(CurSlideValue - _audTimer.Interval.TotalMilliseconds);
+            videoPlayer.Position = TimeSpan.FromMilliseconds(CurSlideValue - _vidTimer.Interval.TotalMilliseconds);
         }
 
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -367,6 +429,29 @@ namespace VideoAudioSyncer
         {
             TextBox sentinel = sender as TextBox;
             TimeSpan result;
+            StringBuilder text = new StringBuilder(sentinel == null ? string.Empty : sentinel.Text);
+            string temp = string.Empty;
+            if (text[0] == '-')
+            {
+                temp = text.ToString().Substring(1);
+            }
+            else
+            {
+                temp = text.ToString();
+            }
+
+            if (audioOffset)
+            {
+                _vidTimer.Stop();
+                _vidTimer.Interval = TimeSpan.Zero;
+                _audTimer.Interval = TimeSpan.Parse(temp);
+            }
+            else
+            {
+                _audTimer.Stop();
+                _audTimer.Interval = TimeSpan.Zero;
+                _vidTimer.Interval = TimeSpan.Parse(temp);
+            }
             if (TimeSpan.TryParse(sentinel.Text, out result))
             {
                 Offset = result.ToString();
@@ -397,6 +482,121 @@ namespace VideoAudioSyncer
             _audioDuration = audioPlayer.NaturalDuration.HasTimeSpan ? audioPlayer.NaturalDuration.TimeSpan : TimeSpan.Zero;
         }
         #endregion
+
+        /// <summary>
+        /// Inserts data into the textbox without moving the punctuation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TB_Offset_KeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox sentinel = sender as TextBox;
+            StringBuilder text = new StringBuilder(string.Empty);
+            bool isNumber = false;
+            if (sentinel != null)
+            {
+                text.Clear();
+                text.Append(sentinel.Text);
+                char insertChar = ' ';
+                switch (e.Key)
+                {
+                    case Key.NumPad0:
+                    case Key.D0:
+                        insertChar = '0';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad1:
+                    case Key.D1:
+                        insertChar = '1';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad2:
+                    case Key.D2:
+                        insertChar = '2';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad3:
+                    case Key.D3:
+                        insertChar = '3';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad4:
+                    case Key.D4:
+                        insertChar = '4';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad5:
+                    case Key.D5:
+                        insertChar = '5';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad6:
+                    case Key.D6:
+                        insertChar = '6';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad7:
+                    case Key.D7:
+                        insertChar = '7';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad8:
+                    case Key.D8:
+                        insertChar = '8';
+                        isNumber = true;
+                        break;
+                    case Key.NumPad9:
+                    case Key.D9:
+                        insertChar = '9';
+                        isNumber = true;
+                        break;
+                    case Key.Back:
+                        if (sentinel.CaretIndex == 0 && text[sentinel.CaretIndex] == '-')
+                        {
+                            text.Remove(sentinel.CaretIndex, 1);
+                        }
+                        else if (sentinel.CaretIndex == 0)
+                        {
+                            text[sentinel.CaretIndex] = '0';
+                        }
+                        else if (sentinel.CaretIndex != 0 &&
+                            (text[sentinel.CaretIndex - 1] == ':' || text[sentinel.CaretIndex - 1] == '.'))
+                        {
+                            sentinel.CaretIndex--;
+                            text[sentinel.CaretIndex] = '0';
+                            sentinel.CaretIndex--;
+                        }
+                        break;
+                    case Key.Delete:
+                        if (text[sentinel.CaretIndex - 1] == ':' || text[sentinel.CaretIndex - 1] == '.')
+                        {
+                            sentinel.CaretIndex++;
+                        }
+                        text[sentinel.CaretIndex] = '0';
+                        break;
+                    case Key.OemMinus:
+                        text.Insert(0, '-');
+                        break;
+                    case Key.OemPlus:
+                        if (text[0] == '-')
+                        {
+                            text.Remove(0, 1);
+                        }
+                        break;
+                    case Key.Enter:
+                        this.Focus();
+                        break;
+                }
+                if (isNumber)
+                {
+                    if (text[sentinel.CaretIndex] == ':')
+                    {
+                        sentinel.CaretIndex++;
+                    }
+                    text[sentinel.CaretIndex] = insertChar;
+                }
+            }
+        }
         #endregion
     }
 }
