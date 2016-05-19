@@ -147,10 +147,10 @@ namespace SongProofWP8.Pages
         public SessionPage()
         {
             this.InitializeComponent();
+            curSession = DataHolder.SM.CurrentSession;
             ScaleName = curSession.ScaleUsed.Name;
             DataContext = this;
             TitleBarUserControl TitleLabel = new TitleBarUserControl(ScaleName);
-            curSession = DataHolder.SM.CurrentSession;
             LBScale.ItemsSource = curSession.ScaleUsed.Notes;
             IC_Buttons.ItemsSource = curSession.Piano;
             //L_Scale.Text = curSession.ScaleUsed.Name;
@@ -178,7 +178,7 @@ namespace SongProofWP8.Pages
             Button b = sender as Button;
             if (b != null && !countingDown)
             {
-                string note = "C";
+                string note = curSession.Piano[0];
                 foreach (string s in curSession.Piano)
                 {
                     if (b.Content.ToString() == s)

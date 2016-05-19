@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SongProofWP8.UserControls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace SongProofWP8.Pages
         public ScaleProofTestListPage()
         {
             this.InitializeComponent();
+
+            TitleBarUserControl tbuc = new TitleBarUserControl("Concentrate on...", 53.5);
+            LayoutRoot.Children.Add(tbuc);
+            Grid.SetRow(tbuc, 0);            
         }
 
         /// <summary>
@@ -38,12 +43,14 @@ namespace SongProofWP8.Pages
 
         private void ToHW3Setup(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(HW3SetupPage));
+            DataHolder.ProofType = DataHolder.ProofingTypes.HW3;
+            Frame.Navigate(typeof(SessionSetupPage));
         }
 
         private void ToPlacingTheNoteSetup(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(PlacingTheNoteSetupPage));
+            DataHolder.ProofType = DataHolder.ProofingTypes.PlacingTheNote;
+            Frame.Navigate(typeof(SessionSetupPage));
         }
     }
 }

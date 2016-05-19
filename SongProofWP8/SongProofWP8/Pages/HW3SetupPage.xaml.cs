@@ -30,13 +30,6 @@ namespace SongProofWP8.Pages
             TitleBarUserControl tbuc = new TitleBarUserControl("Setup");
             LayoutRoot.Children.Add(tbuc);
             Grid.SetRow(tbuc, 0);
-            SessionSetupControl ssu = new SessionSetupControl(Visibility.Collapsed, Visibility.Collapsed,
-                Visibility.Collapsed, Visibility.Visible, Visibility.Visible);
-            LayoutRoot.Children.Add(ssu);
-
-            ssu.SetupNavigation("StartMethod", this,this.GetType());
-
-            Grid.SetRow(ssu, 1);
         }
 
         /// <summary>

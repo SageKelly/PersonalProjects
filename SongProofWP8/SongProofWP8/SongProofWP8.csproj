@@ -101,6 +101,9 @@
     <Compile Include="Pages\ScaleProofTestListPage.xaml.cs">
       <DependentUpon>ScaleProofTestListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SessionSetupPage.xaml.cs">
+      <DependentUpon>SessionSetupPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\PianoKeyControl.xaml.cs">
       <DependentUpon>PianoKeyControl.xaml</DependentUpon>
     </Compile>
@@ -189,6 +192,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PlacingTheNoteSessionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SessionSetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

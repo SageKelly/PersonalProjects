@@ -45,7 +45,7 @@ namespace SongProofWP8.Pages
             // this event is handled for you.
         }
 
-        private void ToSessionSetup(object sender, RoutedEventArgs e)
+        private void ToProofList(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(ScaleProofTestListPage));
         }

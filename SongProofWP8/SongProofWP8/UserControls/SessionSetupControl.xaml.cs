@@ -19,6 +19,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SongProofWP8.UserControls
 {
+    /// <summary>
+    /// All the Scale-deciding stuff for each testing type
+    /// </summary>
     public sealed partial class SessionSetupControl : UserControl, INotifyPropertyChanged
     {
         private bool _navSetup = false;
@@ -46,8 +49,8 @@ namespace SongProofWP8.UserControls
             }
         }
 
-        private object _selectedScaleGroup;
-        public object SelectedScaleGroup
+        private string _selectedScaleGroup;
+        public string SelectedScaleGroup
         {
             get
             {
@@ -81,8 +84,8 @@ namespace SongProofWP8.UserControls
             }
         }
 
-        private object _selectedKey;
-        public object SelectedKey
+        private string _selectedKey;
+        public string SelectedKey
         {
             get
             {
@@ -98,8 +101,8 @@ namespace SongProofWP8.UserControls
             }
         }
 
-        private object _selectedDifficulty;
-        public object SelectedDifficulty
+        private ScaleResources.Difficulties _selectedDifficulty;
+        public ScaleResources.Difficulties SelectedDifficulty
         {
             get
             {
@@ -140,22 +143,20 @@ namespace SongProofWP8.UserControls
         /// <param name="showScaleKey">Should the Scale ComboBox show?</param>
         /// <param name="showDifficulty">Should the Difficulty ComboBox show?</param>
         /// <param name="showNoteAmount">Should the Note Amount UserControl show?</param>
-        public SessionSetupControl(Visibility showScaleGroups = Visibility.Visible, Visibility showScales = Visibility.Visible,
-            Visibility showScaleKey = Visibility.Visible, Visibility showDifficulty = Visibility.Visible,
-            Visibility showNoteAmount = Visibility.Visible)
+        public SessionSetupControl(bool showScaleGroups = true, bool showScales = true, bool showScaleKey = true)
         {
             this.InitializeComponent();
             CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames.Keys;
             CBDifficulty.ItemsSource = ScaleResources.DifficultyLevels;
             CBKey.ItemsSource = ScaleResources.PianoFlat;
             NoteAmount = ScaleResources.LOWEST_SET;
+
+            //disabled until scale group is chosen
             CBScales.IsEnabled = false;
 
-            CBScaleGroups.Visibility = showScaleGroups;
-            CBScales.Visibility = showScales;
-            SPScaleKey.Visibility = showScaleKey;
-            CBDifficulty.Visibility = showDifficulty;
-            BoIncDecButtons.Visibility = showNoteAmount;
+            CBScaleGroups.Visibility = showScaleGroups ? Visibility.Visible : Visibility.Collapsed;
+            CBScales.Visibility = showScales ? Visibility.Visible : Visibility.Collapsed;
+            SPScaleKey.Visibility = showScaleKey ? Visibility.Visible : Visibility.Collapsed;
 
             DataContext = this;
         }
@@ -230,9 +231,45 @@ namespace SongProofWP8.UserControls
             if (CBScaleGroups.SelectedIndex != -1)
             {
                 CBScales.IsEnabled = true;
-                CBScales.ItemsSource = (List<KVTuple<string, string>>)ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
+                CBScales.ItemsSource = ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
             }
         }
+
+
+        #region Show/Hides
+        public void ShowKeys()
+        {
+            CBKey.Visibility = Visibility.Visible;
+        }
+
+        public void HideKeys()
+        {
+            CBKey.Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowScaleGroups()
+        {
+            CBScaleGroups.Visibility = Visibility.Visible;
+        }
+
+        public void HideScaleGroups()
+        {
+            CBScaleGroups.Visibility = Visibility.Collapsed;
+        }
+
+        public void ShowScales()
+        {
+            CBScales.Visibility = Visibility.Visible;
+        }
+
+        public void HideScales()
+        {
+            CBScales.Visibility = Visibility.Collapsed;
+        }
+
+        #endregion
+
+
 
         /// <summary>
         /// Registered to the ComboBox.SelectionChanged Event

@@ -8,12 +8,26 @@ namespace SongProofWP8
 {
     public static class DataHolder
     {
+        public enum ProofingTypes
+        {
+            PlacingTheNote,
+            HW3,
+            GrabBag,
+            ScaleWriting
+        }
+
+        /// <summary>
+        /// Denote the type of the intended proofing Used with the Main Page and SessionSetup
+        /// </summary>
+        public static ProofingTypes ProofType;
         public static SessionManager SM;
         public static bool ShowSharp;
         static string Key;
         static KVTuple<string, string> Scale;
         static ScaleResources.Difficulties Diff;
         static int NoteCount;
+
+
 
         public static void SetupTest(string key, KVTuple<string, string> scale, bool sharp, ScaleResources.Difficulties diff, int note_count)
         {
