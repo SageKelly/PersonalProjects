@@ -27,7 +27,7 @@ namespace SongProofWP8.Pages
         {
             this.InitializeComponent();
 
-            TitleBarUserControl tbuc = new TitleBarUserControl("Concentrate on...", 53.5);
+            TitleBarControl tbuc = new TitleBarControl("Concentrate on...", 53.5);
             LayoutRoot.Children.Add(tbuc);
             Grid.SetRow(tbuc, 0);            
         }

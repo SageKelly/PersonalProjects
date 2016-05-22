@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -84,6 +85,20 @@ namespace SongProofWP8.UserControls
             }
         }
 
+        private string _timerText;
+        public string TimerText
+        {
+            get { return _timerText; }
+            set
+            {
+                if (_timerText != value)
+                {
+                    _timerText = value;
+                    NotifyPropertyChanged("TimerText");
+                }
+            }
+        }
+
         private double _pBValue;
         public double PBValue
         {
@@ -98,17 +113,74 @@ namespace SongProofWP8.UserControls
             }
         }
 
+        public int RemainingTime { get; set; }
+        public bool CountingDown { get; set; }
+        private DispatcherTimer TickDownTimer;
+
+
+
+        private object _methodTarget;
+        private MethodInfo timerMethod;
         /// <summary>
         /// Makes a ProgressTrackerControl to visually represent the user's progress
         /// </summary>
         /// <param name="testingLabel">The label to be printed
         /// above the place showing the testing value</param>
-        public ProgressTrackerControl(string testingLabel)
+        public ProgressTrackerControl(string testingLabel, string timerMethodName, object methodTarget, Type targetType)
         {
             this.InitializeComponent();
             TestingLabel = testingLabel;
+
+            _methodTarget = methodTarget;
+            timerMethod = targetType.GetTypeInfo().GetDeclaredMethod(timerMethodName);
+
+            SetTimerText();
             DataContext = this;
+            CountingDown = true;
+            RemainingTime = 3000;
+            TickDownTimer = new DispatcherTimer();
+            TickDownTimer.Tick += TickDownTimer_Tick;
+            TickDownTimer.Interval = TimeSpan.Parse("00:00:1");
         }
+
+        void TickDownTimer_Tick(object sender, object e)
+        {
+            timerMethod.Invoke(_methodTarget, new object[1] { sender });
+            SetTimerText();
+        }
+
+        public void StartTimer()
+        {
+            TickDownTimer.Start();
+        }
+
+        public void StopTimer()
+        {
+            TickDownTimer.Stop();
+        }
+
+        public bool TimerEnabled()
+        {
+            return TickDownTimer.IsEnabled;
+        }
+
+        public void SetTimerInterval(TimeSpan interval)
+        {
+            TickDownTimer.Interval = interval;
+        }
+
+        public void SetTimerText(bool defaultText = false)
+        {
+            if (defaultText)
+            {
+                TimerText = "0.000";
+            }
+            else
+            {
+                TimerText = (RemainingTime / 1000) + "." + (RemainingTime % 1000);
+            }
+        }
+
 
 
         public void NotifyPropertyChanged(string propertyName)

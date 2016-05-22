@@ -24,17 +24,36 @@ namespace SongProofWP8.UserControls
         private MethodInfo _noteClickMethod;
         private object _methodTarget;
 
-        public PianoKeyControl(string[] sessionPiano, string methodName, object methodTarget, Type targetType)
+        public PianoKeyControl(string[] sessionPiano, string[] usedNotes,
+            string pianoKeysMethodName, object methodTarget, Type targetType)
         {
             this.InitializeComponent();
             DataContext = this;
             IC_Buttons.ItemsSource = sessionPiano;
-            _noteClickMethod = targetType.GetTypeInfo().GetDeclaredMethod(methodName);
+            _noteClickMethod = targetType.GetTypeInfo().GetDeclaredMethod(pianoKeysMethodName);
+            _methodTarget = methodTarget;
+
+            LBScale.ItemsSource = usedNotes;
+            IC_Buttons.ItemsSource = sessionPiano;
         }
 
         private void _noteClick(object sender, RoutedEventArgs e)
         {
-            _noteClickMethod.Invoke(_methodTarget, new object[0]);
+            _noteClickMethod.Invoke(_methodTarget, new object[1] { sender });
+        }
+
+        private void ToggleScaleView(object sender, RoutedEventArgs e)
+        {
+            if ((bool)B_Cheat.IsChecked)
+            {
+                B_Cheat.Content = "Be Honest?";
+                FadeIn.Begin();
+            }
+            else
+            {
+                B_Cheat.Content = "Cheat?";
+                FadeOut.Begin();
+            }
         }
     }
 }

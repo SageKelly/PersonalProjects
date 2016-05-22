@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SongProofWP8.UserControls
 {
-    public sealed partial class TitleBarUserControl : UserControl, INotifyPropertyChanged
+    public sealed partial class TitleBarControl : UserControl, INotifyPropertyChanged
     {
         string _textValue;
         double _fontSizeValue;
@@ -57,7 +57,7 @@ namespace SongProofWP8.UserControls
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        public TitleBarUserControl(string text, double fontSize = DEFAULT_FONT_SIZE)
+        public TitleBarControl(string text, double fontSize = DEFAULT_FONT_SIZE)
         {
             this.InitializeComponent();
             TextValue = text;

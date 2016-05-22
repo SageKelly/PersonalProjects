@@ -264,7 +264,7 @@ namespace SongProofWP8
         /// <param name="s">The scale being used in the session</param>
         /// <param name="noteCount">The amount of notes quizzed</param>
         /// <returns>An array of ints directly related to the scale used</returns>
-        public static int[] MakeQuiz(Scale s, int noteCount)
+        public static int[] MakePTNQuiz(Scale s, int noteCount)
         {
             int temp = 0;
             int[] results = new int[noteCount];
@@ -321,6 +321,18 @@ namespace SongProofWP8
                         break;
                 }
             }
+            return result;
+        }
+
+        public static int[] MakeHW3Quiz(int noteCount)
+        {
+            Random r = new Random();
+            int[] result = new int[noteCount];
+            for (int i = 0; i < noteCount; i++)
+            {
+                result[i] = r.Next(1, 4);
+            }
+
             return result;
         }
     }

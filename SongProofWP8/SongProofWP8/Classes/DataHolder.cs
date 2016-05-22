@@ -39,7 +39,7 @@ namespace SongProofWP8
             Scale temp = ScaleResources.MakeScale(key, scale, sharp);
             SM = new SessionManager(new Session(Diff, temp,
                 sharp ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
-                ScaleResources.MakeQuiz(temp, note_count)));
+                ScaleResources.MakePTNQuiz(temp, note_count)));
             SM.ParsedScale = ScaleResources.ParseScale(Scale);
             ShowSharp = sharp;
         }

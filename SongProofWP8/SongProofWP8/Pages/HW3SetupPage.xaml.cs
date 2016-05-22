@@ -27,7 +27,7 @@ namespace SongProofWP8.Pages
         public HW3SetupPage()
         {
             this.InitializeComponent();
-            TitleBarUserControl tbuc = new TitleBarUserControl("Setup");
+            TitleBarControl tbuc = new TitleBarControl("Setup");
             LayoutRoot.Children.Add(tbuc);
             Grid.SetRow(tbuc, 0);
         }

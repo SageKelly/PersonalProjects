@@ -30,14 +30,10 @@ namespace SongProofWP8.Pages
         private int note_index;
         private string current_note;
         private string note_count;
-        private string timer_text;
         private int note_number;
         private string scale_name;
         private static string TIMER_FLAVOR = "Time left: ";
-        private bool countingDown;
         private bool SessionStarted = false;
-        private int remainingTime;
-        private DispatcherTimer TickDownTimer;
 
         #region Properties
         public Session curSession { get; private set; }
@@ -54,22 +50,6 @@ namespace SongProofWP8.Pages
                 {
                     scale_name = value;
                     NotifyPropertyChanged("ScaleName");
-                }
-            }
-        }
-
-        public string TimerText
-        {
-            get
-            {
-                return TIMER_FLAVOR + timer_text;
-            }
-            set
-            {
-                if (timer_text != value)
-                {
-                    timer_text = value;
-                    NotifyPropertyChanged("TimerText");
                 }
             }
         }
@@ -140,6 +120,9 @@ namespace SongProofWP8.Pages
                 }
             }
         }
+
+        ProgressTrackerControl ptc;
+        SessionButtonsControl sbc;
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -150,19 +133,29 @@ namespace SongProofWP8.Pages
             curSession = DataHolder.SM.CurrentSession;
             ScaleName = curSession.ScaleUsed.Name;
             DataContext = this;
-            TitleBarUserControl TitleLabel = new TitleBarUserControl(ScaleName);
-            LBScale.ItemsSource = curSession.ScaleUsed.Notes;
-            IC_Buttons.ItemsSource = curSession.Piano;
-            //L_Scale.Text = curSession.ScaleUsed.Name;
             curIndex = 0;
-            countingDown = true;
-            remainingTime = 3000;
-            TickDownTimer = new DispatcherTimer();
-            TickDownTimer.Tick += TickDownTimer_Tick;
-            TickDownTimer.Interval = TimeSpan.Parse("00:00:1");
-            SetTimerText();
-            B_ViewResults.IsEnabled = false;
             NoteCount = (curIndex + 1) + " / " + curSession.Notes.Length;
+
+            TitleBarControl tbc = new TitleBarControl(ScaleName,32);
+            ptc = new ProgressTrackerControl("Note Amount", "TickDownTimer_Tick", this, typeof(SessionPage));
+            PianoKeyControl pkc = new PianoKeyControl(curSession.Piano, curSession.ScaleUsed.Notes, "NoteClick", this, typeof(SessionPage));
+            sbc = new SessionButtonsControl("B_Start_Click", "B_Quit_Click", "B_ViewResults_Click", this, typeof(SessionPage));
+
+            LayoutRoot.Children.Add(tbc);
+            LayoutRoot.Children.Add(ptc);
+            LayoutRoot.Children.Add(pkc);
+            LayoutRoot.Children.Add(sbc);
+
+            Grid.SetRow(tbc, 0);
+            Grid.SetRow(ptc, 1);
+            Grid.SetRow(pkc, 2);
+            Grid.SetRow(sbc, 3);
+
+            ptc.MaxValue = curSession.Notes.Length;
+            ptc.PBValue = 0;
+
+            sbc.EnableViewResults(false);
+
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
 
@@ -173,10 +166,10 @@ namespace SongProofWP8.Pages
                 Frame.GoBack();
         }
 
-        private void NoteClick(object sender, RoutedEventArgs e)
+        private void NoteClick(object sender)
         {
             Button b = sender as Button;
-            if (b != null && !countingDown)
+            if (b != null && !ptc.CountingDown)
             {
                 string note = curSession.Piano[0];
                 foreach (string s in curSession.Piano)
@@ -192,18 +185,7 @@ namespace SongProofWP8.Pages
 
                 RecordNoteInput(noteIndex, correct);
                 NextNote();
-                if (correct)
-                {
-                    XBorder.Visibility = Visibility.Collapsed;
-                    CheckBorder.Visibility = Visibility.Visible;
-                    FadeInCheck.Begin();
-                }
-                else
-                {
-                    CheckBorder.Visibility = Visibility.Collapsed;
-                    XBorder.Visibility = Visibility.Visible;
-                    FadeInX.Begin();
-                }
+                ptc.ShowResultPic(correct);
                 //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
                 //PathInOut.Begin();
             }
@@ -225,15 +207,15 @@ namespace SongProofWP8.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TickDownTimer_Tick(object sender, object e)
+        private void TickDownTimer_Tick(object sender)
         {
-            remainingTime -= countingDown ? 1000 : 100;
-            if (remainingTime == 0)
+            ptc.RemainingTime -= ptc.CountingDown ? 1000 : 100;
+            if (ptc.RemainingTime == 0)
             {
-                if (countingDown)
+                if (ptc.CountingDown)
                 {
-                    countingDown = false;
-                    TickDownTimer.Interval = TimeSpan.Parse("00:00:0.100");
+                    ptc.CountingDown = false;
+                    ptc.SetTimerInterval(TimeSpan.Parse("00:00:0.100"));
                 }
                 if (curIndex > 0)
                 {
@@ -242,12 +224,11 @@ namespace SongProofWP8.Pages
                 }
                 NextNote();
             }
-            SetTimerText();
         }
 
         private void RecordNoteInput(int index, bool correct)
         {
-            curSession.StoreNoteInput(index, correct, curSession.Diff.GetHashCode() - remainingTime);
+            curSession.StoreNoteInput(index, correct, curSession.Diff.GetHashCode() - ptc.RemainingTime);
             NoteNumber = curSession.Notes[curIndex - 1] + 1;
         }
 
@@ -264,65 +245,51 @@ namespace SongProofWP8.Pages
             if (curIndex < curSession.Notes.Length)
             {
                 NoteNumber = (curSession.Notes[curIndex++] + 1);
-                remainingTime = curSession.Diff.GetHashCode();
+                ptc.TestingValue = NoteNumber.ToString();
+                ptc.RemainingTime = curSession.Diff.GetHashCode();
+                ptc.PBValue++;
                 NoteCount = curIndex + " / " + curSession.Notes.Length;
             }
             else
             {
-                TickDownTimer.Stop();
-                B_ViewResults.IsEnabled = true;
-                TimerText = "0.000";
+                ptc.StopTimer();
+                sbc.EnableViewResults(true);
+                ptc.SetTimerText(true);
             }
         }
 
-        private void SetTimerText()
-        {
-            TimerText = (remainingTime / 1000) + "." + (remainingTime % 1000);
-        }
 
         #region Extra Button Handlers
-        private void B_ViewResults_Click(object sender, RoutedEventArgs e)
+        private void B_ViewResults_Click(object sender)
         {
             DataHolder.SM.CurrentSession = curSession;
             Frame.Navigate(typeof(SessionResultsPage));
         }
 
-        private void B_Start_Click(object sender, RoutedEventArgs e)
+        private void B_Start_Click(object sender)
         {
             if (!SessionStarted)
             {
                 if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
-                    TickDownTimer.Start();
+                    ptc.StartTimer();
                 else
                 {
-                    countingDown = false;
+                    ptc.CountingDown = false;
                     NextNote();
                 }
                 SessionStarted = true;
-                B_Start.IsEnabled = false;
+                sbc.EnableStart(false);
             }
         }
 
-        private void B_Quit_Click(object sender, RoutedEventArgs e)
+        private void B_Quit_Click(object sender)
         {
-            if (TickDownTimer.IsEnabled)
-                TickDownTimer.Stop();
+            if (ptc.TimerEnabled())
+                ptc.StopTimer();
             Frame.Navigate(typeof(MainPage));
         }
 
-        private void ToggleScaleView(object sender, RoutedEventArgs e)
-        {
-            if ((bool)B_Cheat.IsChecked)
-            {
-                B_Cheat.Content = "Be Honest?";
-                FadeIn.Begin();
-            }
-            else
-            {
-                B_Cheat.Content = "Cheat?";
-                FadeOut.Begin();
-            }
-        }
+
         #endregion
     }
 }
