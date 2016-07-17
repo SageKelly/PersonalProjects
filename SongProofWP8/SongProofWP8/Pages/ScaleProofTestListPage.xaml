@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="1" x:Name="buttonStack" Orientation="Vertical" VerticalAlignment="Center">
             <Button x:Name="B_PlacingTheNote" Content="Placing The Note" Click="ToPlacingTheNoteSetup" Style="{StaticResource ButtonStyle}"/>
-            <Button x:Name="B_HW3" Content="H, W, -3 Reaction" Click="ToHW3Setup" Style="{StaticResource ButtonStyle}"/>
+            <Button x:Name="B_HW3" Content="H, W, -3 Reaction" Click="ToHW3Setup" Visibility="Collapsed" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
     </Grid>
 </Page>

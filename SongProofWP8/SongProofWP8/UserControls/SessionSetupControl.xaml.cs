@@ -24,10 +24,8 @@ namespace SongProofWP8.UserControls
     /// </summary>
     public sealed partial class SessionSetupControl : UserControl, INotifyPropertyChanged
     {
-        private bool _navSetup = false;
 
         private MethodInfo _startMethod;
-        private object[] _startMethodParams;
         private object _startMethodTarget;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -143,9 +141,17 @@ namespace SongProofWP8.UserControls
         /// <param name="showScaleKey">Should the Scale ComboBox show?</param>
         /// <param name="showDifficulty">Should the Difficulty ComboBox show?</param>
         /// <param name="showNoteAmount">Should the Note Amount UserControl show?</param>
-        public SessionSetupControl(bool showScaleGroups = true, bool showScales = true, bool showScaleKey = true)
+        public SessionSetupControl(string methodName, object target, Type targetType,
+            bool showScaleGroups = true, bool showScales = true, bool showScaleKey = true)
         {
             this.InitializeComponent();
+
+            TypeInfo classTypeInfo = targetType.GetTypeInfo();
+            MethodInfo method = classTypeInfo.GetDeclaredMethod(methodName);
+
+            _startMethod = method;
+            _startMethodTarget = target;
+
             CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames.Keys;
             CBDifficulty.ItemsSource = ScaleResources.DifficultyLevels;
             CBKey.ItemsSource = ScaleResources.PianoFlat;
@@ -181,44 +187,8 @@ namespace SongProofWP8.UserControls
 
         private void BStart_Click(object sender, RoutedEventArgs e)
         {
-            if (_navSetup)
-            {
-                _startClickHandler();
-            }
-        }
+            _startMethod.Invoke(_startMethodTarget, new object[1] { sender });
 
-        private void _startClickHandler()
-        {
-            _startMethod.Invoke(_startMethodTarget, _startMethodParams);
-        }
-
-        /// <summary>
-        /// Adds a method to invoke upon pressing the start button
-        /// </summary>
-        /// <param name="methodName">The name of the method to ivoke</param>
-        /// <param name="target">The target object for the method</param>
-        /// <param name="targetType">The type of the target object</param>
-        public void SetupNavigation(string methodName, object target, Type targetType)
-        {
-            SetupNavigation(methodName, target, targetType, new object[0]);
-        }
-
-        /// <summary>
-        /// Adds a method to invoke upon pressing the start button
-        /// </summary>
-        /// <param name="methodName">The name of the method to ivoke</param>
-        /// <param name="target">The target object for the method</param>
-        /// <param name="targetType">The type of the target object</param>
-        /// <param name="methodParams">The method's parameters</param>
-        public void SetupNavigation(string methodName, object target, Type targetType, object[] methodParams)
-        {
-            TypeInfo classTypeInfo = targetType.GetTypeInfo();
-            MethodInfo method = classTypeInfo.GetDeclaredMethod(methodName);
-
-            _startMethod = method;
-            _startMethodParams = methodParams;
-            _startMethodTarget = target;
-            _navSetup = true;
         }
 
         /// <summary>
@@ -234,7 +204,6 @@ namespace SongProofWP8.UserControls
                 CBScales.ItemsSource = ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
             }
         }
-
 
         #region Show/Hides
         public void ShowKeys()

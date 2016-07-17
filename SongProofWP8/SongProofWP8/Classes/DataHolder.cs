@@ -10,6 +10,8 @@ namespace SongProofWP8
     {
         public enum ProofingTypes
         {
+            Dummy,
+            BuildTheScale,
             PlacingTheNote,
             HW3,
             GrabBag,
@@ -22,35 +24,72 @@ namespace SongProofWP8
         public static ProofingTypes ProofType;
         public static SessionManager SM;
         public static bool ShowSharp;
-        static string Key;
-        static KVTuple<string, string> Scale;
-        static ScaleResources.Difficulties Diff;
-        static int NoteCount;
+
+        private static ProofingTypes _prevProofType = ProofingTypes.Dummy;
+        private static string Key;
+        private static KVTuple<string, string> Scale;
+        private static ScaleResources.Difficulties Diff;
+        private static int NoteCount;
 
 
-
-        public static void SetupTest(string key, KVTuple<string, string> scale, bool sharp, ScaleResources.Difficulties diff, int note_count)
+        public static void SetupPTNTest(ProofingTypes proofingType, string key, KVTuple<string, string> scale, bool sharp, ScaleResources.Difficulties diff, int note_count)
         {
+            ProofType = proofingType;
+            _prevProofType = ProofType;
             Key = key;
             Scale = scale;
             ShowSharp = sharp;
             Diff = diff;
             NoteCount = note_count;
             Scale temp = ScaleResources.MakeScale(key, scale, sharp);
-            SM = new SessionManager(new Session(Diff, temp,
+            SM = new SessionManager(new Session(ProofType, Diff, temp,
                 sharp ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
                 ScaleResources.MakePTNQuiz(temp, note_count)));
             SM.ParsedScale = ScaleResources.ParseScale(Scale);
             ShowSharp = sharp;
         }
 
-        public static void SetupTest()
+        private static void SetupPTNTest()
         {
             if (Scale != null)
-            if(Scale!=null)
             {
-                SetupTest(Key, Scale, ShowSharp, Diff, NoteCount);
+                SetupPTNTest(ProofType, Key, Scale, ShowSharp, Diff, NoteCount);
             }
         }
+
+        public static void SetupHW3Test(ProofingTypes proofingType, bool sharp, ScaleResources.Difficulties diff, int note_count)
+        {
+            ProofType = proofingType;
+            _prevProofType = ProofType;
+            ShowSharp = sharp;
+            Diff = diff;
+            NoteCount = note_count;
+            SM = new SessionManager(new Session(ProofType, Diff,
+                sharp ? ScaleResources.PianoSharp : ScaleResources.PianoFlat,
+                ScaleResources.MakeHW3Quiz(note_count)));
+        }
+
+        private static void SetupHW3Test()
+        {
+            if (NoteCount != null)
+            {
+                SetupHW3Test(ProofType, ShowSharp, Diff, NoteCount);
+            }
+        }
+
+        public static void ResetTest()
+        {
+            switch (ProofType)
+            {
+                case ProofingTypes.PlacingTheNote:
+                    SetupPTNTest();
+                    break;
+                case ProofingTypes.HW3:
+                    SetupHW3Test();
+                    break;
+            }
+        }
+
+
     }
 }

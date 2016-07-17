@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -17,16 +18,23 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SongProofWP8.UserControls
 {
-    public sealed partial class HW3DisplayControl : UserControl
+    public sealed partial class ListResultsControl : UserControl, INotifyPropertyChanged
     {
-        public string Note1Var { get; set; }
-        public string Note2Var { get; set; }
-        public string Note3Var { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
-        public HW3DisplayControl()
+        public ListResultsControl(List<NoteAnalytics> Data)
         {
             this.InitializeComponent();
+            LV_Results.ItemsSource = Data;
+        }
+
+        private void NotifyPropertyChanged(string property_name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property_name));
+            }
         }
     }
 }

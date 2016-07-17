@@ -88,9 +88,6 @@
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Classes\DataHolder.cs" />
     <Compile Include="Classes\KVTuple.cs" />
-    <Compile Include="Pages\HW3SessionPage.xaml.cs">
-      <DependentUpon>HW3SessionPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\HW3SetupPage.xaml.cs">
       <DependentUpon>HW3SetupPage.xaml</DependentUpon>
     </Compile>
@@ -107,11 +104,18 @@
     <Compile Include="Pages\SessionSetupPage.xaml.cs">
       <DependentUpon>SessionSetupPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\HW3Control.xaml.cs">
-      <DependentUpon>HW3Control.xaml</DependentUpon>
+    <Compile Include="UserControls\FrameworkPropertyMetadata.cs" />
+    <Compile Include="UserControls\HW3ButtonsControl.xaml.cs">
+      <DependentUpon>HW3ButtonsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\HW3DisplayControl.xaml.cs">
-      <DependentUpon>HW3DisplayControl.xaml</DependentUpon>
+    <Compile Include="UserControls\HW3IntervalHolderControl.xaml.cs">
+      <DependentUpon>HW3IntervalHolderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\HW3ProgressTrackerControl.xaml.cs">
+      <DependentUpon>HW3ProgressTrackerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListResultsControl.xaml.cs">
+      <DependentUpon>ListResultsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\PianoKeyControl.xaml.cs">
       <DependentUpon>PianoKeyControl.xaml</DependentUpon>
@@ -181,10 +185,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Pages\HW3SessionPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\HW3SetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -205,11 +205,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\HW3Control.xaml">
+    <Page Include="UserControls\HW3ButtonsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\HW3DisplayControl.xaml">
+    <Page Include="UserControls\HW3IntervalHolderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\HW3ProgressTrackerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListResultsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

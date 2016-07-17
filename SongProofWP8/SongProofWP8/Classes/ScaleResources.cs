@@ -238,7 +238,7 @@ namespace SongProofWP8
                 }
                 else if (piano[i] != starting_key && i == piano.Length - 1)//If it still doesn't match...
                 {
-                    //..the starting key
+                    //..the starting key will be the last note on the piano
                     starting_key = piano[i];
                     index = i;
                     break;
@@ -259,7 +259,7 @@ namespace SongProofWP8
         }
 
         /// <summary>
-        /// Creates a the notes for the current session
+        /// Creates the notes for the current session
         /// </summary>
         /// <param name="s">The scale being used in the session</param>
         /// <param name="noteCount">The amount of notes quizzed</param>
@@ -285,6 +285,24 @@ namespace SongProofWP8
             }
             return results;
         }
+
+        /// <summary>
+        /// Creates the interval array for the current session
+        /// </summary>
+        /// <param name="noteCount">The amount of notes quizzed</param>
+        /// <returns>An array of ints directly related to the intervals used</returns>
+        public static int[] MakeHW3Quiz(int noteCount)
+        {
+            Random r = new Random();
+            int[] result = new int[noteCount];
+            for (int i = 0; i < noteCount; i++)
+            {
+                result[i] = r.Next(1, 4);
+            }
+
+            return result;
+        }
+
 
         public static bool IsANumber(string input)
         {
@@ -324,16 +342,5 @@ namespace SongProofWP8
             return result;
         }
 
-        public static int[] MakeHW3Quiz(int noteCount)
-        {
-            Random r = new Random();
-            int[] result = new int[noteCount];
-            for (int i = 0; i < noteCount; i++)
-            {
-                result[i] = r.Next(1, 4);
-            }
-
-            return result;
-        }
     }
 }

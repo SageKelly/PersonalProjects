@@ -38,11 +38,9 @@ namespace SongProofWP8.Pages
         public PlacingTheNoteSetupPage()
         {
             this.InitializeComponent();
-            _ssu = new SessionSetupControl();
+            _ssu = new SessionSetupControl("ToViewScalePage", this, typeof(PlacingTheNoteSetupPage));
             LayoutRoot.Children.Add(_ssu);
             Grid.SetRow(_ssu, 1);
-
-            _ssu.SetupNavigation("ToViewScalePage",this,this.GetType());
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -134,12 +132,13 @@ namespace SongProofWP8.Pages
             if (_ssu.SelectedScaleGroup != null && _ssu.SelectedScale != null &&
                 _ssu.SelectedKey != null && _ssu.SelectedDifficulty != null)
             {
-                DataHolder.SetupTest((string)_ssu.SelectedKey, (KVTuple<string, string>)_ssu.SelectedScale, (bool)_ssu.ShowSharp,
-                    (ScaleResources.Difficulties)_ssu.SelectedDifficulty, _ssu.NoteAmount);
+                DataHolder.SetupPTNTest(DataHolder.ProofingTypes.PlacingTheNote, (string)_ssu.SelectedKey,
+                    (KVTuple<string, string>)_ssu.SelectedScale, (bool)_ssu.ShowSharp, (ScaleResources.Difficulties)_ssu.SelectedDifficulty,
+                    _ssu.NoteAmount);
                 Frame.Navigate(typeof(ViewScale));
             }
         }
-      
+
         private void OnPropertyChanged(string property_name_)
         {
             if (PropertyChanged != null)

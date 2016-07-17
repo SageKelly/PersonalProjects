@@ -28,12 +28,14 @@ namespace SongProofWP8.Pages
     {
         private int curIndex;
         private int note_index;
-        private string current_note;
-        private string note_count;
         private int note_number;
         private string scale_name;
-        private static string TIMER_FLAVOR = "Time left: ";
         private bool SessionStarted = false;
+        private string[] piano;
+
+        private const string IH = "H";
+        private const string IW = "W";
+        private const string I3 = "-3";
 
         #region Properties
         public Session curSession { get; private set; }
@@ -70,21 +72,10 @@ namespace SongProofWP8.Pages
             }
         }
 
-        public string NoteCount
-        {
-            get
-            {
-                return note_count;
-            }
-            set
-            {
-                if (note_count != value)
-                {
-                    note_count = value;
-                    NotifyPropertyChanged("NoteCount");
-                }
-            }
-        }
+        #region HW3 Variables
+
+        private int incrementor;
+        #endregion
 
         /// <summary>
         /// The note index number in relation to the scale
@@ -102,28 +93,11 @@ namespace SongProofWP8.Pages
                 }
             }
         }
-        /// <summary>
-        /// Represents the previous note being tested
-        /// </summary>
-        public string CurrentNote
-        {
-            get
-            {
-                return current_note;
-            }
-            private set
-            {
-                if (current_note != value)
-                {
-                    current_note = value;
-                    NotifyPropertyChanged("CurrentNote");
-                }
-            }
-        }
+        #endregion
 
         ProgressTrackerControl ptc;
         SessionButtonsControl sbc;
-        #endregion
+        HW3ProgressTrackerControl hptc;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -131,30 +105,32 @@ namespace SongProofWP8.Pages
         {
             this.InitializeComponent();
             curSession = DataHolder.SM.CurrentSession;
-            ScaleName = curSession.ScaleUsed.Name;
+            if (DataHolder.ProofType == DataHolder.ProofingTypes.PlacingTheNote)
+            {
+                ScaleName = curSession.ScaleUsed.Name;
+            }
+            piano = curSession.Piano;
             DataContext = this;
             curIndex = 0;
-            NoteCount = (curIndex + 1) + " / " + curSession.Notes.Length;
 
-            TitleBarControl tbc = new TitleBarControl(ScaleName,32);
-            ptc = new ProgressTrackerControl("Note Amount", "TickDownTimer_Tick", this, typeof(SessionPage));
-            PianoKeyControl pkc = new PianoKeyControl(curSession.Piano, curSession.ScaleUsed.Notes, "NoteClick", this, typeof(SessionPage));
+            incrementor = 0;
+
+            SetTitleText();
+            SetupProgressTracker();
+            SetupButtons();
+
+
             sbc = new SessionButtonsControl("B_Start_Click", "B_Quit_Click", "B_ViewResults_Click", this, typeof(SessionPage));
 
-            LayoutRoot.Children.Add(tbc);
-            LayoutRoot.Children.Add(ptc);
-            LayoutRoot.Children.Add(pkc);
             LayoutRoot.Children.Add(sbc);
-
-            Grid.SetRow(tbc, 0);
-            Grid.SetRow(ptc, 1);
-            Grid.SetRow(pkc, 2);
             Grid.SetRow(sbc, 3);
-
-            ptc.MaxValue = curSession.Notes.Length;
-            ptc.PBValue = 0;
-
             sbc.EnableViewResults(false);
+
+            if (DataHolder.ProofType == DataHolder.ProofingTypes.PlacingTheNote)
+            {
+                ptc.MaxValue = curSession.ProofingData.Length;
+                ptc.PBValue = 0;
+            }
 
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
         }
@@ -162,10 +138,93 @@ namespace SongProofWP8.Pages
         void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {
             e.Handled = true;
-            if (Frame.CanGoBack)
-                Frame.GoBack();
+            Frame.Navigate(typeof(MainPage));
+        }
+        #region Global Methods
+        private void SetTitleText()
+        {
+            TitleBarControl tbc = new TitleBarControl("");
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    tbc = new TitleBarControl(ScaleName, 32);
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                    tbc = new TitleBarControl("HW3");
+                    break;
+            }
+            LayoutRoot.Children.Add(tbc);
+            Grid.SetRow(tbc, 0);
         }
 
+        private void SetupProgressTracker()
+        {
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    ptc = new ProgressTrackerControl("Note Amount", "TickDownTimer_Tick", this, typeof(SessionPage));
+                    LayoutRoot.Children.Add(ptc);
+                    Grid.SetRow(ptc, 1);
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                    hptc = new HW3ProgressTrackerControl(curSession.Data.Length, "HW3TickDown", this, typeof(SessionPage));
+                    LayoutRoot.Children.Add(hptc);
+                    Grid.SetRow(hptc, 1);
+                    break;
+            }
+        }
+
+        private void SetupButtons()
+        {
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    PianoKeyControl pkc = new PianoKeyControl(curSession.Piano, curSession.ScaleUsed.Notes, "NoteClick", this, typeof(SessionPage));
+                    LayoutRoot.Children.Add(pkc);
+                    Grid.SetRow(pkc, 2);
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                    HW3ButtonsControl hbc = new HW3ButtonsControl(IH, IW, I3, "IntervalClick", this, typeof(SessionPage));
+                    LayoutRoot.Children.Add(hbc);
+                    Grid.SetRow(hbc, 2);
+                    break;
+            }
+        }
+
+        private void RecordData(int index, bool correct)
+        {
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    curSession.StoreData(index, correct, curSession.Diff.GetHashCode() - ptc.RemainingTime);
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                    curSession.StoreData(index, correct, curSession.Diff.GetHashCode() - hptc.RemainingTime);
+                    break;
+            }
+        }
+        #endregion
+
+        #region Particular Methods
+        #region Placing The Note
+        private void TickDownTimer_Tick(object sender)
+        {
+            ptc.RemainingTime -= ptc.CountingDown ? 1000 : 100;
+            if (ptc.RemainingTime == 0)
+            {
+                if (ptc.CountingDown)
+                {
+                    ptc.CountingDown = false;
+                    ptc.SetTimerInterval(TimeSpan.Parse("00:00:0.100"));
+                }
+                if (curIndex > 0)
+                {
+                    //you ran out of time on the last note
+                    RecordData(NoteIndex, false);
+                }
+                NextNote();
+            }
+        }
         private void NoteClick(object sender)
         {
             Button b = sender as Button;
@@ -180,16 +239,118 @@ namespace SongProofWP8.Pages
                         break;
                     }
                 }
-                int noteIndex = curSession.Notes[curIndex - 1];
+                int noteIndex = curSession.ProofingData[curIndex - 1];
                 bool correct = curSession.ScaleUsed.Notes[noteIndex] == note;
 
-                RecordNoteInput(noteIndex, correct);
+                RecordData(noteIndex, correct);
                 NextNote();
                 ptc.ShowResultPic(correct);
                 //NoteCheckSymbol.Data = correct ? (Geometry)Resources["Checkmark"] : (Geometry)Resources["X"];
                 //PathInOut.Begin();
             }
         }
+        private void NextNote()
+        {
+            if (curIndex < curSession.ProofingData.Length)
+            {
+                NoteNumber = (curSession.ProofingData[curIndex++] + 1);
+                ptc.TestingValue = NoteNumber.ToString();
+                ptc.RemainingTime = curSession.Diff.GetHashCode();
+                ptc.PBValue++;
+            }
+            else
+            {
+                ptc.StopTimer();
+                sbc.EnableViewResults(true);
+                ptc.SetTimerText(true);
+            }
+        }
+        #endregion
+
+        #region HW3 Reaction
+        private void IntervalClick(object sender)
+        {
+            Button sentinel = sender as Button;
+            int interval = 1;
+            if (sentinel != null && !hptc.CountingDown)
+            {
+                string pressedButton = sentinel.Content.ToString();
+                switch (pressedButton)
+                {
+                    case IH:
+                        interval = 1;
+                        break;
+                    case IW:
+                        interval = 2;
+                        break;
+                    case I3:
+                        interval = 3;
+                        break;
+                }
+                int curData = curSession.ProofingData[curIndex - (hptc.PBValue > 3 ? 1 : 3)];
+                bool correct = curData == interval;
+                RecordData(curData, correct);
+                GetNextHW3Note();
+            }
+        }
+        private void HPTCTimer_Tick(object sender)
+        {
+            hptc.RemainingTime -= hptc.CountingDown ? 1000 : 100;
+            if (hptc.RemainingTime == 0)
+            {
+                if (hptc.CountingDown)
+                {
+                    hptc.CountingDown = false;
+                    hptc.SetTimerInterval(TimeSpan.Parse("00:00:0.100"));
+                    GetNextHW3Interval();
+                    GetNextHW3Interval();
+                    GetNextHW3Interval();
+                    hptc.ToggleViewIntervals();
+                }
+                if (curIndex > 0)
+                {
+                    //you ran out of time on the last note
+                    RecordData(NoteIndex, false);
+                }
+                GetNextHW3Note();
+            }
+        }
+
+        private void GetNextHW3Interval(bool Slide = false)
+        {
+            incrementor = (incrementor + curSession.ProofingData[curIndex++]) % piano.Length;
+            if (!Slide)
+            {
+                hptc.SetNextNote(piano[incrementor]);
+            }
+            else
+            {
+                hptc.NextInterval(piano[incrementor]);
+            }
+        }
+
+        private void GetNextHW3Note()
+        {
+            if (curIndex < curSession.ProofingData.Length)
+            {
+                if (hptc.PBValue > 3)
+                {
+                    GetNextHW3Interval();
+                }
+                hptc.RemainingTime = curSession.Diff.GetHashCode();
+                hptc.IncrementProgress();
+                GetNextHW3Interval(true);
+            }
+            else
+            {
+                hptc.StopTimer();
+                sbc.EnableViewResults(true);
+                hptc.SetTimerText(true);
+            }
+        }
+        #endregion
+        #endregion
+
 
         //TODO: Research TimeSpan.Parse()
 
@@ -207,30 +368,8 @@ namespace SongProofWP8.Pages
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TickDownTimer_Tick(object sender)
-        {
-            ptc.RemainingTime -= ptc.CountingDown ? 1000 : 100;
-            if (ptc.RemainingTime == 0)
-            {
-                if (ptc.CountingDown)
-                {
-                    ptc.CountingDown = false;
-                    ptc.SetTimerInterval(TimeSpan.Parse("00:00:0.100"));
-                }
-                if (curIndex > 0)
-                {
-                    //you ran out of time on the last note
-                    RecordNoteInput(NoteIndex, false);
-                }
-                NextNote();
-            }
-        }
 
-        private void RecordNoteInput(int index, bool correct)
-        {
-            curSession.StoreNoteInput(index, correct, curSession.Diff.GetHashCode() - ptc.RemainingTime);
-            NoteNumber = curSession.Notes[curIndex - 1] + 1;
-        }
+
 
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -239,25 +378,6 @@ namespace SongProofWP8.Pages
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        private void NextNote()
-        {
-            if (curIndex < curSession.Notes.Length)
-            {
-                NoteNumber = (curSession.Notes[curIndex++] + 1);
-                ptc.TestingValue = NoteNumber.ToString();
-                ptc.RemainingTime = curSession.Diff.GetHashCode();
-                ptc.PBValue++;
-                NoteCount = curIndex + " / " + curSession.Notes.Length;
-            }
-            else
-            {
-                ptc.StopTimer();
-                sbc.EnableViewResults(true);
-                ptc.SetTimerText(true);
-            }
-        }
-
 
         #region Extra Button Handlers
         private void B_ViewResults_Click(object sender)
@@ -270,13 +390,37 @@ namespace SongProofWP8.Pages
         {
             if (!SessionStarted)
             {
-                if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
-                    ptc.StartTimer();
-                else
+                switch (DataHolder.ProofType)
                 {
-                    ptc.CountingDown = false;
-                    NextNote();
+                    case DataHolder.ProofingTypes.PlacingTheNote:
+                        if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
+                        {
+                            ptc.StartTimer();
+                        }
+                        else
+                        {
+                            ptc.CountingDown = false;
+                            NextNote();
+                        }
+                        break;
+                    case DataHolder.ProofingTypes.HW3:
+                        if (DataHolder.SM.CurrentSession.Diff != ScaleResources.Difficulties.Zen)
+                        {
+                            hptc.StartTimer();
+                        }
+                        else
+                        {
+                            hptc.CountingDown = false;
+                            GetNextHW3Interval();
+                            GetNextHW3Interval();
+                            GetNextHW3Interval();
+                            hptc.ToggleViewIntervals();
+                            hptc.RemainingTime = curSession.Diff.GetHashCode();
+                        }
+                        break;
                 }
+
+
                 SessionStarted = true;
                 sbc.EnableStart(false);
             }
@@ -284,8 +428,17 @@ namespace SongProofWP8.Pages
 
         private void B_Quit_Click(object sender)
         {
-            if (ptc.TimerEnabled())
-                ptc.StopTimer();
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    if (ptc.TimerEnabled())
+                        ptc.StopTimer();
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                    if (hptc.TimerEnabled())
+                        hptc.StopTimer();
+                    break;
+            }
             Frame.Navigate(typeof(MainPage));
         }
 

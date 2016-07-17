@@ -12,7 +12,7 @@ namespace SongProofWP8
         private int _count;
         private double _avg_guessing_time;
         private int _correct_guesses;
-        private string _note;
+        private string _sentinel_value;
 
         public int Count
         {
@@ -60,18 +60,18 @@ namespace SongProofWP8
             }
         }
 
-        public string Note
+        public string SentinelValue
         {
             get
             {
-                return _note;
+                return _sentinel_value;
             }
             set
             {
-                if (_note != value)
+                if (_sentinel_value != value)
                 {
-                    _note = value;
-                    NotifyPropertyChanged("Note");
+                    _sentinel_value = value;
+                    NotifyPropertyChanged("SentinelValue");
                 }
             }
         }
@@ -108,13 +108,13 @@ namespace SongProofWP8
             Count = 0;
             AvgGuessingTime = 0;
             CorrectGuesses = 0;
-            Note = "C";
+            SentinelValue = "C";
         }
 
         public NoteAnalytics(string note)
             : this()
         {
-            Note = note;
+            SentinelValue = note;
         }
 
         private void NotifyPropertyChanged(string property_name)

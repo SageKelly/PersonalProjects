@@ -9,9 +9,8 @@
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid>
+    <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
@@ -24,58 +23,8 @@
             <TextBlock x:Name="TB_Percentage" FontSize="32"/>
         </StackPanel>
 
-        <!-- Note Info-->
-        <ListView x:Name="LV_Results" Grid.Row="2" SelectionMode="None" ItemsSource="{Binding}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Note}" FontSize="32" Padding="4,4,8,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                        <!--
-                            <ToggleButton.Triggers>
-                                <EventTrigger  RoutedEvent="ToggleButton.Checked">
-                                    <BeginStoryboard>
-                                        <Storyboard x:Name="Reveal">
-                                            <DoubleAnimation Storyboard.TargetName="border"
-                                                             Storyboard.TargetProperty="Height"
-                                                             From="0" To="113"
-                                                             Duration=".5">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CircleEase EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="ToggleButton.Unchecked">
-                                    <BeginStoryboard>
-                                        <Storyboard x:Name="Hide">
-                                            <DoubleAnimation Storyboard.TargetName="border"
-                                                             Storyboard.TargetProperty="Height"
-                                                             From="113" To="0" 
-                                                             Duration=".5">
-                                                <DoubleAnimation.EasingFunction>
-                                                    <CircleEase EasingMode="EaseOut"/>
-                                                </DoubleAnimation.EasingFunction>
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </ToggleButton.Triggers>
-                            -->
-                        <Border x:Name="border" CornerRadius="6" BorderThickness="2.5" Padding="4,0" BorderBrush="White">
-                            <StackPanel Background="Black" Orientation="Vertical">
-                                <TextBlock Text="{Binding StrCorrectGuesses}" TextWrapping="Wrap" FontSize="18"/>
-                                <TextBlock Text="{Binding StrCount}" TextWrapping="Wrap" FontSize="18"/>
-                                <TextBlock Text="{Binding StrAvgGuessingTime}" TextWrapping="Wrap" FontSize="18"/>
-                            </StackPanel>
-                        </Border>
-                        <TextBlock Text="-------------------------" FontSize="32"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Grid Grid.Row="3">
+       
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

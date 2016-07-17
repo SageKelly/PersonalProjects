@@ -23,16 +23,16 @@ namespace SongProofWP8.Pages
     /// </summary>
     public sealed partial class SessionSetupPage : Page
     {
-        private SessionSetupControl ssc = new SessionSetupControl();
+        private SessionSetupControl _ssc;
 
         public SessionSetupPage()
         {
             this.InitializeComponent();
+            _ssc = new SessionSetupControl("ToViewScalePage", this, typeof(SessionSetupPage));
 
             TitleBarControl tbuc = new TitleBarControl("Setup");
             LayoutRoot.Children.Add(tbuc);
             Grid.SetRow(tbuc, 0);
-            ssc.SetupNavigation("ToViewScalePage", this, this.GetType());
         }
 
         /// <summary>
@@ -45,49 +45,54 @@ namespace SongProofWP8.Pages
             switch (DataHolder.ProofType)
             {
                 case DataHolder.ProofingTypes.HW3:
-                    ssc.HideKeys();
-                    ssc.HideScaleGroups();
-                    ssc.HideScales();
+                    _ssc.HideKeys();
+                    _ssc.HideScaleGroups();
+                    _ssc.HideScales();
                     break;
                 case DataHolder.ProofingTypes.ScaleWriting:
                 default:
-                    ssc.HideKeys();
+                    _ssc.HideKeys();
                     break;
                 case DataHolder.ProofingTypes.GrabBag:
                 case DataHolder.ProofingTypes.PlacingTheNote:
                     break;
             }
-            LayoutRoot.Children.Add(ssc);
-            Grid.SetRow(ssc, 1);
+            LayoutRoot.Children.Add(_ssc);
+            Grid.SetRow(_ssc, 1);
         }
 
 
-        private void ToViewScalePage()
+        private void ToViewScalePage(object sender)
         {
             bool valid = false;
-            if (ssc.SelectedScaleGroup != null && ssc.SelectedScale != null &&
-                 ssc.SelectedDifficulty != null)
+            switch (DataHolder.ProofType)
+            {
+                case DataHolder.ProofingTypes.GrabBag:
+                case DataHolder.ProofingTypes.PlacingTheNote:
+                    if (_ssc.SelectedScaleGroup != null && _ssc.SelectedScale != null && _ssc.SelectedKey != null)
+                    {
+                        valid = true;
+                    }
+                    break;
+                case DataHolder.ProofingTypes.HW3:
+                case DataHolder.ProofingTypes.ScaleWriting:
+                default:
+                    valid = true;
+                    break;
+            }
+            if (valid)
             {
                 switch (DataHolder.ProofType)
                 {
-                    case DataHolder.ProofingTypes.GrabBag:
                     case DataHolder.ProofingTypes.PlacingTheNote:
-                        if (ssc.SelectedKey != null)
-                        {
-                            valid = true;
-                        }
+                        DataHolder.SetupPTNTest(DataHolder.ProofType, (string)_ssc.SelectedKey, (KVTuple<string, string>)_ssc.SelectedScale, (bool)_ssc.ShowSharp,
+                            (ScaleResources.Difficulties)_ssc.SelectedDifficulty, _ssc.NoteAmount);
+                        Frame.Navigate(typeof(ViewScale));
                         break;
                     case DataHolder.ProofingTypes.HW3:
-                    case DataHolder.ProofingTypes.ScaleWriting:
-                    default:
-                        valid = true;
+                        DataHolder.SetupHW3Test(DataHolder.ProofType, _ssc.ShowSharp, (ScaleResources.Difficulties)_ssc.SelectedDifficulty, _ssc.NoteAmount);
+                        Frame.Navigate(typeof(SessionPage));
                         break;
-                }
-                if (valid)
-                {
-                    DataHolder.SetupTest((string)ssc.SelectedKey, (KVTuple<string, string>)ssc.SelectedScale, (bool)ssc.ShowSharp,
-                        (ScaleResources.Difficulties)ssc.SelectedDifficulty, ssc.NoteAmount);
-                    Frame.Navigate(typeof(ViewScale));
                 }
             }
         }

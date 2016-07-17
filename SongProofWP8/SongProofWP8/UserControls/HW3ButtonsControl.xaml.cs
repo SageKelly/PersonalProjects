@@ -18,11 +18,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SongProofWP8.UserControls
 {
-    public sealed partial class HW3Control : UserControl
+    public sealed partial class HW3ButtonsControl : UserControl
     {
         private MethodInfo _targetMethod;
         private object _methodTarget;
-        public HW3Control(string buttonHContent, string buttonWContent, string button3Content,
+        public HW3ButtonsControl(string buttonHContent, string buttonWContent, string button3Content,
             string methodName, object methodTarget, Type targetType)
         {
             this.InitializeComponent();
