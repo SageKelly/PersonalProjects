@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SongProofWP8.UserControls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
-namespace SongProofWP8
+namespace SongProofWP8.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -30,7 +31,11 @@ namespace SongProofWP8
             this.InitializeComponent();
             Analysis = new Dictionary<string, NoteAnalytics>();
             RunAnalytics();
-            DataContext = Analysis.Values;
+
+            ListResultsControl lrc = new ListResultsControl(Analysis.Values.ToList());
+            LayoutRoot.Children.Add(lrc);
+            Grid.SetRow(lrc, 1);
+
             HardwareButtons.BackPressed += HardwareButtons_BackPressed;
 
         }
@@ -38,9 +43,7 @@ namespace SongProofWP8
         void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {
             e.Handled = true;
-            if (Frame.CanGoBack)
-                Frame.GoBack();
-
+            Frame.Navigate(typeof(MainPage));
         }
 
         public void RunAnalytics()
@@ -52,14 +55,14 @@ namespace SongProofWP8
             {
                 Analysis.Add(s, new NoteAnalytics(s));
             }
-            foreach (Session.NoteData nd in curSession.Data)
+            foreach (Session.SessionData nd in curSession.Data)
             {
-                NoteAnalytics na = Analysis[scale[nd.NoteIndex]];
+                NoteAnalytics na = Analysis[scale[nd.DataIndex]];
                 na.Count++;
                 na.AvgGuessingTime += nd.GuessTime;//we're just collecting them here
                 na.CorrectGuesses += nd.Correct ? 1 : 0;
 
-                Analysis[scale[nd.NoteIndex]] = na;
+                Analysis[scale[nd.DataIndex]] = na;
             }
             foreach (KeyValuePair<string, NoteAnalytics> na in Analysis)
             {
@@ -68,9 +71,9 @@ namespace SongProofWP8
                 double loc_perc = 0, cgs = na.Value.CorrectGuesses;
                 if (na.Value.Count != 0)
                     loc_perc = (cgs / na.Value.Count) * 100.00;
-                na.Value.Note += ": " + Math.Round(loc_perc,2) + "%";
+                na.Value.SentinelValue += ": " + Math.Round(loc_perc,2) + "%";
             }
-            TB_Percentage.Text = "Score: " + Math.Round((correct_guesses / curSession.Notes.Length) * 100.00,2).ToString() + "%";
+            TB_Percentage.Text = "Score: " + Math.Round((correct_guesses / curSession.ProofingData.Length) * 100.00,2).ToString() + "%";
         }
 
         /// <summary>
@@ -90,7 +93,9 @@ namespace SongProofWP8
         private void RestartSession(object sender, RoutedEventArgs e)
         {
             DataHolder.SM.ResetSession();
-            DataHolder.SetupTest();
+
+            DataHolder.ResetTest();
+
             Frame.Navigate(typeof(ViewScale));
         }
 

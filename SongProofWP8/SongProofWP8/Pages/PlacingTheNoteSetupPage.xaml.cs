@@ -1,4 +1,5 @@
 ﻿using SongProofWP8.Common;
+using SongProofWP8.UserControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,50 +21,26 @@ using Windows.UI.Xaml.Navigation;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
-namespace SongProofWP8
+namespace SongProofWP8.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SessionSetupPage : Page, INotifyPropertyChanged
+    public sealed partial class PlacingTheNoteSetupPage : Page, INotifyPropertyChanged
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-        bool ScaleGroupSelected = false;
-        bool ScaleSelected = false;
-        bool KeySelected = false;
-        bool DifficultySelected = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private int note_amount;
+        private SessionSetupControl _ssu;
 
-        public int NoteAmount
-        {
-            get
-            {
-                return note_amount;
-            }
-            set
-            {
-                if (note_amount != value)
-                {
-                    note_amount = value;
-                    OnPropertyChanged("NoteAmount");
-                }
-            }
-        }
-
-        public SessionSetupPage()
+        public PlacingTheNoteSetupPage()
         {
             this.InitializeComponent();
-            CBScaleGroups.ItemsSource = ScaleResources.ScaleDivisionNames.Keys;
-            CBDifficulty.ItemsSource = ScaleResources.DifficultyLevels;
-            CBKey.ItemsSource = ScaleResources.PianoFlat;
-            NoteAmount = ScaleResources.LOWEST_SET;
-            CBScales.IsEnabled = false;
-
-            DataContext = this;
+            _ssu = new SessionSetupControl("ToViewScalePage", this, typeof(PlacingTheNoteSetupPage));
+            LayoutRoot.Children.Add(_ssu);
+            Grid.SetRow(_ssu, 1);
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -150,86 +127,15 @@ namespace SongProofWP8
             }
         }
 
-        private void ChckSharp_Checked(object sender, RoutedEventArgs e)
+        private void ToViewScalePage()
         {
-            int index = -1;
-            if (CBKey.SelectedIndex != -1)
-                index = CBKey.SelectedIndex;
-            CBKey.ItemsSource = ScaleResources.PianoSharp;
-            CBKey.SelectedIndex = index;
-        }
-
-        private void ChckSharp_Unchecked(object sender, RoutedEventArgs e)
-        {
-            int index = -1;
-            if (CBKey.SelectedIndex != -1)
-                index = CBKey.SelectedIndex;
-            CBKey.ItemsSource = ScaleResources.PianoFlat;
-            CBKey.SelectedIndex = index;
-        }
-
-        private void BStart_Click(object sender, RoutedEventArgs e)
-        {
-            if (ScaleGroupSelected && ScaleSelected && KeySelected && DifficultySelected)
+            if (_ssu.SelectedScaleGroup != null && _ssu.SelectedScale != null &&
+                _ssu.SelectedKey != null && _ssu.SelectedDifficulty != null)
             {
-                DataHolder.SetupTest((string)CBKey.SelectedValue, (KVTuple<string, string>)CBScales.SelectedItem, (bool)ChckSharp.IsChecked,
-                    (ScaleResources.Difficulties)CBDifficulty.SelectedItem, int.Parse(TBNoteCount.Text));
+                DataHolder.SetupPTNTest(DataHolder.ProofingTypes.PlacingTheNote, (string)_ssu.SelectedKey,
+                    (KVTuple<string, string>)_ssu.SelectedScale, (bool)_ssu.ShowSharp, (ScaleResources.Difficulties)_ssu.SelectedDifficulty,
+                    _ssu.NoteAmount);
                 Frame.Navigate(typeof(ViewScale));
-            }
-        }
-
-
-        /// <summary>
-        /// Rigged to the CBScaleGroups.SelectionChanged Event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ActivateScales()
-        {
-            if (CBScaleGroups.SelectedIndex != -1)
-            {
-                CBScales.IsEnabled = true;
-                CBScales.ItemsSource = (List<KVTuple<string, string>>)ScaleResources.ScaleDivisionNames[(string)CBScaleGroups.SelectedValue];
-            }
-        }
-
-        /// <summary>
-        /// Registered to the ComboBox.SelectionChanged Event
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ConfirmSelection(object sender, SelectionChangedEventArgs e)
-        {
-            ComboBox sentinel = (ComboBox)sender;
-            if (sentinel == CBScaleGroups)
-            {
-                ActivateScales();
-                ScaleGroupSelected = true;
-            }
-            else if (sentinel == CBScales)
-            {
-                ScaleSelected = true;
-            }
-            else if (sentinel == CBKey)
-            {
-                KeySelected = true;
-            }
-            else if (sentinel == CBDifficulty)
-            {
-                DifficultySelected = true;
-            }
-        }
-
-        private void IncDecValue(object sender, RoutedEventArgs e)
-        {
-            Button sentinel = (Button)sender;
-            if (sentinel == UpButton && NoteAmount < ScaleResources.HIGHEST_SET)
-            {
-                NoteAmount += ScaleResources.LOWEST_INC;
-            }
-            else if (sentinel == DownButton && NoteAmount > ScaleResources.LOWEST_SET)
-            {
-                NoteAmount -= ScaleResources.LOWEST_INC;
             }
         }
 

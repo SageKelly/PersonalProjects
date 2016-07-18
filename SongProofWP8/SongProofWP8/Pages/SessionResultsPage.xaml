@@ -1,0 +1,36 @@
+﻿<Page
+    x:Class="SongProofWP8.Pages.SessionResultsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SongProofWP8.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!-- Page Info -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="SCALE - PROOF" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="Proofing Results" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <!-- Accuracy Percentage -->
+            <TextBlock x:Name="TB_Percentage" FontSize="32"/>
+        </StackPanel>
+
+       
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="B_Restart" Grid.Column="0" Content="Again!!!" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RestartSession"/>
+            <Button x:Name="B_Main" Grid.Column="1" Content="Back to Main" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ToMain"/>
+        </Grid>
+    </Grid>
+</Page>

@@ -86,28 +86,65 @@
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="DataHolder.cs" />
-    <Compile Include="KVTuple.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Classes\DataHolder.cs" />
+    <Compile Include="Classes\KVTuple.cs" />
+    <Compile Include="Pages\HW3SetupPage.xaml.cs">
+      <DependentUpon>HW3SetupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NoteAnalytics.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScaleResources.cs" />
-    <Compile Include="Scale.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="SessionManager.cs" />
-    <Compile Include="SessionPage.xaml.cs">
+    <Compile Include="Classes\NoteAnalytics.cs" />
+    <Compile Include="Pages\ScaleProofTestListPage.xaml.cs">
+      <DependentUpon>ScaleProofTestListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SessionPage.xaml.cs">
       <DependentUpon>SessionPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SessionResultsPage.xaml.cs">
-      <DependentUpon>SessionResultsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SessionSetupPage.xaml.cs">
+    <Compile Include="Pages\SessionSetupPage.xaml.cs">
       <DependentUpon>SessionSetupPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewScale.xaml.cs">
+    <Compile Include="UserControls\FrameworkPropertyMetadata.cs" />
+    <Compile Include="UserControls\HW3ButtonsControl.xaml.cs">
+      <DependentUpon>HW3ButtonsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\HW3IntervalHolderControl.xaml.cs">
+      <DependentUpon>HW3IntervalHolderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\HW3ProgressTrackerControl.xaml.cs">
+      <DependentUpon>HW3ProgressTrackerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ListResultsControl.xaml.cs">
+      <DependentUpon>ListResultsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PianoKeyControl.xaml.cs">
+      <DependentUpon>PianoKeyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ProgressTrackerControl.xaml.cs">
+      <DependentUpon>ProgressTrackerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SessionButtonsControl.xaml.cs">
+      <DependentUpon>SessionButtonsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Classes\ScaleResources.cs" />
+    <Compile Include="Classes\Scale.cs" />
+    <Compile Include="Classes\Session.cs" />
+    <Compile Include="Classes\SessionManager.cs" />
+    <Compile Include="Pages\SessionResultsPage.xaml.cs">
+      <DependentUpon>SessionResultsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PlacingTheNoteSetupPage.xaml.cs">
+      <DependentUpon>PlacingTheNoteSetupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ViewScale.xaml.cs">
       <DependentUpon>ViewScale.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SessionSetupControl.xaml.cs">
+      <DependentUpon>SessionSetupControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TitleBarControl.xaml.cs">
+      <DependentUpon>TitleBarControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -148,23 +185,71 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SessionPage.xaml">
+    <Page Include="Pages\HW3SetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SessionResultsPage.xaml">
+    <Page Include="Pages\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ScaleProofTestListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SessionSetupPage.xaml">
+    <Page Include="Pages\SessionPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\SessionSetupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ViewScale.xaml">
+    <Page Include="UserControls\HW3ButtonsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\HW3IntervalHolderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\HW3ProgressTrackerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ListResultsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\PianoKeyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ProgressTrackerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SessionButtonsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SessionResultsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PlacingTheNoteSetupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ViewScale.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SessionSetupControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\TitleBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

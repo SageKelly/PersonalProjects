@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SongProofWP8.UserControls;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -13,20 +15,21 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
-namespace SongProofWP8
+namespace SongProofWP8.Pages
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class HW3SetupPage : Page
     {
-        public MainPage()
+        public HW3SetupPage()
         {
             this.InitializeComponent();
-
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            TitleBarControl tbuc = new TitleBarControl("Setup");
+            LayoutRoot.Children.Add(tbuc);
+            Grid.SetRow(tbuc, 0);
         }
 
         /// <summary>
@@ -36,18 +39,11 @@ namespace SongProofWP8
         /// This parameter is typically used to configure the page.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // TODO: Prepare page for display here.
-
-            // TODO: If your application contains multiple pages, ensure that you are
-            // handling the hardware Back button by registering for the
-            // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
-            // If you are using the NavigationHelper provided by some templates,
-            // this event is handled for you.
         }
 
-        private void ToSessionSetup(object sender, RoutedEventArgs e)
+        private void StartMethod()
         {
-            Frame.Navigate(typeof(SessionSetupPage));
+
         }
     }
 }

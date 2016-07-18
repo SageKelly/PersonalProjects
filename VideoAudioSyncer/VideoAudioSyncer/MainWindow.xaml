@@ -1,0 +1,158 @@
+﻿<Window x:Class="VideoAudioSyncer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:VideoAudioSyncer"
+        Title="Audio / Video Syncer" MinHeight="400" MinWidth="800" Background="Black" Foreground="White" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="ButtonImageStyle" TargetType="Button">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="Foreground" Value="{x:Null}"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="Margin" Value="4"/>
+        </Style>
+        <Style x:Key="OuterSpacerStyle" TargetType="TextBlock">
+            <Setter Property="MinWidth" Value="8"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="Background" Value="#3DACACAC"/>
+        </Style>
+        <Style x:Key="InnerSpacerStyle" BasedOn="{StaticResource OuterSpacerStyle}" TargetType="TextBlock">
+            <Setter Property="MinWidth" Value="4"/>
+        </Style>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="self:CustomCommands.LoadVideo" CanExecute="Open_CanExecute" Executed="Open_ExecutedVideo" />
+        <CommandBinding Command="self:CustomCommands.LoadAudio" CanExecute="Open_CanExecute" Executed="Open_ExecutedAudio" />
+        <CommandBinding Command="self:CustomCommands.SaveProfile" CanExecute="SaveProfile_CanExecute" Executed="SaveProfile_Executed"/>
+        <CommandBinding Command="MediaCommands.Play" CanExecute="Play_CanExecute" Executed="Play_Executed" />
+        <CommandBinding Command="MediaCommands.Pause" CanExecute="Pause_CanExecute" Executed="Pause_Executed" />
+        <CommandBinding Command="MediaCommands.Stop" CanExecute="Stop_CanExecute" Executed="Stop_Executed" />
+    </Window.CommandBindings>
+    <Grid MouseWheel="Grid_MouseWheel" Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Menu x:Name="SP_MediaButtons" Grid.Row="0">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Load Video..." Command="self:CustomCommands.LoadVideo"/>
+                <MenuItem Header="_Load Audio..." Command="self:CustomCommands.LoadAudio"/>
+                <MenuItem Header="_Save Profile..."/>
+            </MenuItem>
+            <MenuItem Header="_Media">
+                <MenuItem Header="_Play" Command="MediaCommands.Play"/>
+                <MenuItem Header="_Pause" Command="MediaCommands.Pause"/>
+                <MenuItem Header="_Stop" Command="MediaCommands.Stop"/>
+            </MenuItem>
+        </Menu>
+
+        <MediaElement Name="videoPlayer" Grid.Row="1" LoadedBehavior="Manual" MediaOpened="RecordVideoDuration"/>
+        <MediaElement Name="audioPlayer" Grid.Row="2" LoadedBehavior="Manual" Stretch="None" HorizontalAlignment="Left"
+                      VerticalAlignment="Top" MediaOpened="RecordAudioDuration" />
+
+        <!-- Synced Bar -->
+        <StackPanel Grid.Row="3" >
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button x:Name="PlayButton" Click="TestClick" Content="Click to Play"/>
+                <Button Command="MediaCommands.Play" Style="{StaticResource ButtonImageStyle}">
+                    <Button.OpacityMask>
+                        <ImageBrush ImageSource="Images/PlayButton.png"/>
+                    </Button.OpacityMask>
+                </Button >
+                <Button Command="MediaCommands.Pause" Style="{StaticResource ButtonImageStyle}">
+                    <Button.OpacityMask>
+                        <ImageBrush ImageSource="Images/PauseButton.png"/>
+                    </Button.OpacityMask>
+                </Button>
+                <Button Command="MediaCommands.Stop" Style="{StaticResource ButtonImageStyle}">
+                    <Button.OpacityMask>
+                        <ImageBrush ImageSource="Images/StopButton.png"/>
+                    </Button.OpacityMask>
+                </Button>
+                <TextBlock Style="{StaticResource InnerSpacerStyle}"/>
+                <TextBlock x:Name="TB_SyncProgress" Margin="4,0" VerticalAlignment="Center"
+                           Text="{Binding SyncProgress,Mode=OneWay,FallbackValue=00:00:00}"/>
+                <Slider Name="sliSyncProgress" Margin="4,0" Thumb.DragStarted="sliProgress_DragStarted" Thumb.DragCompleted="sliProgress_DragCompleted"
+                        ValueChanged="sliProgress_ValueChanged" Minimum="{Binding MinSlideValue,Mode=TwoWay}"
+                        Maximum="{Binding MaxSlideValue,Mode=TwoWay}" Value="{Binding CurSlideValue,Mode=TwoWay}"  MinWidth="300" 
+                        VerticalAlignment="Center" Cursor="Hand" />
+                <TextBlock x:Name="TB_SyncProgress2" Margin="4,0" VerticalAlignment="Center"
+                           Text="{Binding NegSyncProgress,Mode=OneWay,FallbackValue=00:00:00}"/>
+                <StackPanel>
+                    <TextBlock Text="Volume" HorizontalAlignment="Center"/>
+                    <ProgressBar Name="pbSyncVolume" Margin="4,0" Width="50" Height="12" Maximum="1"
+                                 Value=".5"
+                                 MouseEnter="pb_MouseEnter" MouseLeave="pb_MouseLeave"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="8*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Video -->
+                <Grid Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="4,0">
+                        <TextBlock Text="Video Progress"/>
+                        <TextBlock Name="lblVidProgressStatus" Text="00:00:00"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="4,0">
+                        <TextBlock Text="Volume" HorizontalAlignment="Center"/>
+                        <ProgressBar Name="pbVidVolume" Width="50" Height="12" Maximum="1"
+                                     Value="{Binding ElementName=videoPlayer, Path=Volume}" MouseEnter="pb_MouseEnter" MouseLeave="pb_MouseLeave"/>
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Grid.Column="1" Style="{StaticResource OuterSpacerStyle}"/>
+
+                <!-- Offset -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <StackPanel Margin="4,0">
+                        <TextBlock Text="Audio / Video Offset" HorizontalAlignment="Center"/>
+                        <TextBox x:Name="TB_Offset" Margin="0,2" Text="{Binding Offset,Mode=TwoWay,FallbackValue=00:00:00.0000}"
+                                 TextAlignment="Center" LostFocus="TB_OffsetChanged" KeyDown="TB_Offset_KeyDown"/>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource InnerSpacerStyle}"/>
+                    <StackPanel VerticalAlignment="Center" Margin="4,0">
+                        <RadioButton x:Name="RB_Audio" Foreground="White" Content="Apply to Audio" Checked="RB_AudioChecked" IsChecked="True"/>
+                        <RadioButton x:Name="RB_Video" Foreground="White" Content="Apply to Video" Checked="RB_VideoChecked"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Grid.Column="3" Style="{StaticResource OuterSpacerStyle}"/>
+
+                <!-- Audio -->
+                <Grid Grid.Column="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Margin="4,0">
+                        <TextBlock Text="Audio Progress"/>
+                        <TextBlock Name="lblAudProgressStatus" Text="{Binding AudProgress, FallbackValue=00:00:00}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="4,0">
+                        <TextBlock Text="Volume" HorizontalAlignment="Center"/>
+                        <ProgressBar Name="pbAudVolume" Margin="4,0" Width="50" Height="12" Maximum="1"
+                                     Value="{Binding ElementName=audioPlayer, Path=Volume}"
+                                     MouseEnter="pb_MouseEnter" MouseLeave="pb_MouseLeave"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
